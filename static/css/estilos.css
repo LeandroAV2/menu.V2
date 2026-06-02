@@ -1,11 +1,11 @@
 :root {
   --rojo: #c0392b;
-  --rojo-oscuro: #912a21;
+  --rojo-oscuro: #922b21;
   --rojo-suave: #f9eae8;
-  --rojo-medio: #f77d70;
-  --crema: #fce3e3;
+  --rojo-medio: #e8b4ae;
+  --crema: #fdf6f0;
   --dark: #1c1008;
-  --dark2: #131111;
+  --dark2: #3d2314;
   --muted: #7a5c52;
   --border: #e8ddd8;
   --white: #ffffff;
@@ -700,4 +700,144 @@ body {
   .sidebar { width: 100%; }
   .carrito-panel { width: 100%; right: -100%; }
   .modal { max-width: calc(100% - 2rem); }
+}
+
+/* ===== PUNTOS — NAVBAR ===== */
+.btn-puntos-nav {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  padding: 0.42rem 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(217,119,6,0.4);
+}
+.btn-puntos-nav:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); transform: translateY(-1px); }
+
+/* ===== PUNTOS — SIDEBAR ===== */
+.sidebar-puntos-box {
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1.5px solid #fde68a;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sidebar-puntos-box:hover { border-color: #f59e0b; background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.spb-icon { font-size: 1.5rem; }
+.spb-pts { font-size: 0.95rem; font-weight: 700; color: #92400e; }
+.spb-link { font-size: 0.74rem; color: #b45309; margin-top: 1px; }
+
+/* ===== PUNTOS — ITEM CARD ===== */
+.item-pts {
+  font-size: 0.72rem;
+  color: #b45309;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* ===== PUNTOS — CARRITO ===== */
+.carrito-puntos-preview {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  color: #92400e;
+  margin-bottom: 1rem;
+  text-align: center;
+  min-height: 0;
+  transition: all 0.2s;
+}
+.carrito-puntos-preview:empty { display: none; }
+.pts-preview-icon { margin-right: 4px; }
+
+/* ===== MODAL BENEFICIOS ===== */
+.modal-beneficios {
+  max-width: 520px;
+}
+.beneficios-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-bottom: 1.5rem;
+}
+.beneficios-puntos-header {
+  font-size: 1rem;
+  color: var(--dark2);
+  margin-bottom: 0.3rem;
+}
+.beneficios-puntos-header strong {
+  color: #d97706;
+  font-size: 1.15rem;
+}
+.beneficios-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+}
+.beneficios-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.beneficio-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--crema);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  transition: all 0.2s;
+}
+.beneficio-card:not(.bloqueado):hover {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+.beneficio-card.bloqueado { opacity: 0.55; }
+.beneficio-emoji { font-size: 2rem; width: 44px; text-align: center; flex-shrink: 0; }
+.beneficio-info { flex: 1; min-width: 0; }
+.beneficio-nombre { font-weight: 600; font-size: 0.92rem; margin-bottom: 0.2rem; }
+.beneficio-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-bottom: 0.4rem; }
+.pts-badge {
+  display: inline-block;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 50px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.btn-canjear {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1.1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(217,119,6,0.3);
+}
+.btn-canjear:hover:not(.disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(217,119,6,0.4); }
+.btn-canjear.disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+  box-shadow: none;
+  font-size: 0.76rem;
 }
