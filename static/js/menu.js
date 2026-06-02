@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (primerSubBtn) primerSubBtn.classList.add('active');
   renderItems(primeraCat, primeraSubcat);
   if (AUTH_ERROR) abrirModal(AUTH_TAB || 'login');
+  actualizarPuntosUI();
 });
 
 // ===== NAVEGACIÓN =====
@@ -33,10 +34,8 @@ function selectSubcat(catKey, subcatKey, btn) {
 function renderItems(catKey, subcatKey) {
   const subcat = MENU_DATA[catKey].subcategorias[subcatKey];
   if (!subcat) return;
-
   document.getElementById('section-title').textContent = subcat.nombre;
   document.getElementById('section-count').textContent = subcat.items.length + ' platos';
-
   document.getElementById('items-grid').innerHTML = subcat.items.map(item => `
     <div class="item-card">
       <div class="item-emoji">${item.emoji}</div>
@@ -44,7 +43,10 @@ function renderItems(catKey, subcatKey) {
         <div class="item-name">${item.nombre}</div>
         <div class="item-desc">${item.desc}</div>
         <div class="item-footer">
-          <div class="item-precio">$${item.precio.toLocaleString('es-AR')}</div>
+          <div>
+            <div class="item-precio">$${item.precio.toLocaleString('es-AR')}</div>
+            <div class="item-pts">+${Math.floor(item.precio / PUNTOS_POR_PESO)} pts</div>
+          </div>
           <button class="btn-add" onclick="agregarAlCarrito(${item.id}, '${catKey}', '${subcatKey}')" title="Agregar">+</button>
         </div>
       </div>
@@ -94,6 +96,7 @@ function renderCarrito() {
         <p>Tu carrito está vacío.<br>Agregá algo del menú.</p>
       </div>`;
     document.getElementById('carrito-total').textContent = '$0';
+    document.getElementById('carrito-puntos-preview').textContent = '';
     return;
   }
   container.innerHTML = carrito.map(item => `
@@ -111,7 +114,10 @@ function renderCarrito() {
     </div>
   `).join('');
   const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+  const puntosGanar = Math.floor(total / PUNTOS_POR_PESO);
   document.getElementById('carrito-total').textContent = '$' + total.toLocaleString('es-AR');
+  document.getElementById('carrito-puntos-preview').innerHTML =
+    `<span class="pts-preview-icon">⭐</span> Ganás <strong>${puntosGanar} puntos</strong> con este pedido`;
 }
 
 function toggleCarrito() {
@@ -138,8 +144,10 @@ async function confirmarPedido() {
     });
     const data = await resp.json();
     if (data.ok) {
+      USUARIO.puntos = data.puntos_total;
+      actualizarPuntosUI();
       const resumen = items.map(i => `${i.cantidad}x ${i.nombre}`).join('\n');
-      alert(`✅ ¡Pedido confirmado!\n\n${resumen}\n\nTotal: $${total.toLocaleString('es-AR')}\n\n📲 Tu pedido fue enviado a la cocina.`);
+      alert(`✅ ¡Pedido confirmado!\n\n${resumen}\n\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n📊 Total acumulado: ${data.puntos_total} puntos\n\n📲 Tu pedido fue enviado a la cocina.`);
       carrito = [];
       actualizarCarritoUI();
       toggleCarrito();
@@ -154,7 +162,74 @@ async function confirmarPedido() {
   }
 }
 
-// ===== MODAL =====
+// ===== PUNTOS UI =====
+function actualizarPuntosUI() {
+  if (!USUARIO) return;
+  const el = document.getElementById('nav-puntos');
+  if (el) el.textContent = `⭐ ${USUARIO.puntos} pts`;
+}
+
+// ===== MODAL BENEFICIOS =====
+function abrirBeneficios() {
+  if (!USUARIO) { abrirModal('login'); return; }
+  document.getElementById('modal-beneficios-overlay').classList.add('open');
+  document.getElementById('modal-beneficios').classList.add('open');
+  renderBeneficios();
+}
+function cerrarBeneficios() {
+  document.getElementById('modal-beneficios-overlay').classList.remove('open');
+  document.getElementById('modal-beneficios').classList.remove('open');
+}
+
+function renderBeneficios() {
+  const puntos = USUARIO ? USUARIO.puntos : 0;
+  document.getElementById('beneficios-puntos-actuales').innerHTML =
+    `Tenés <strong>${puntos} puntos</strong> disponibles`;
+
+  document.getElementById('beneficios-grid').innerHTML = BENEFICIOS_DATA.map(b => {
+    const puedeX = puntos >= b.puntos;
+    return `
+      <div class="beneficio-card ${puedeX ? '' : 'bloqueado'}">
+        <div class="beneficio-emoji">${b.emoji}</div>
+        <div class="beneficio-info">
+          <div class="beneficio-nombre">${b.nombre}</div>
+          <div class="beneficio-desc">${b.descripcion}</div>
+          <div class="beneficio-costo"><span class="pts-badge">⭐ ${b.puntos} pts</span></div>
+        </div>
+        <button class="btn-canjear ${puedeX ? '' : 'disabled'}"
+          onclick="${puedeX ? `canjear(${b.id})` : 'mostrarToast(\'Puntos insuficientes\')'}"
+          ${puedeX ? '' : 'disabled'}>
+          ${puedeX ? 'Canjear' : 'Faltan ' + (b.puntos - puntos) + ' pts'}
+        </button>
+      </div>`;
+  }).join('');
+}
+
+async function canjear(beneficioId) {
+  const b = BENEFICIOS_DATA.find(x => x.id === beneficioId);
+  if (!b) return;
+  if (!confirm(`¿Canjear "${b.nombre}" por ${b.puntos} puntos?`)) return;
+  try {
+    const resp = await fetch('/canjear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ beneficio_id: beneficioId })
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      USUARIO.puntos = data.puntos_restantes;
+      actualizarPuntosUI();
+      mostrarToast(`🎉 ¡"${data.beneficio}" canjeado! Mostráselo al mozo.`);
+      renderBeneficios();
+    } else {
+      mostrarToast(data.error || 'Error al canjear');
+    }
+  } catch(e) {
+    mostrarToast('Error de conexión');
+  }
+}
+
+// ===== MODAL AUTH =====
 function abrirModal(tab) {
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('modal-auth').classList.add('open');
@@ -170,7 +245,7 @@ function switchTab(tab) {
   document.getElementById('form-login').style.display    = tab === 'login'    ? 'block' : 'none';
   document.getElementById('form-registro').style.display = tab === 'registro' ? 'block' : 'none';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarModal(); cerrarBeneficios(); } });
 
 // ===== TOAST =====
 function mostrarToast(msg) {
