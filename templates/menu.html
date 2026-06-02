@@ -15,6 +15,7 @@
   <div class="nav-right">
     {% if usuario %}
       <span class="nav-user">Hola, <strong>{{ usuario.nombre.split(' ')[0] }}</strong></span>
+      <button class="btn-puntos-nav" id="nav-puntos" onclick="abrirBeneficios()">⭐ {{ usuario.puntos }} pts</button>
       <a href="/logout" class="btn-logout">Salir</a>
     {% else %}
       <button class="btn-nav-auth" onclick="abrirModal('login')">Iniciar sesión</button>
@@ -37,7 +38,7 @@
     <div class="hero-actions">
       <div class="hero-precio">
         <span class="precio-num">${{ "{:,}".format(menu.menu_del_dia.precio).replace(",", ".") }}</span>
-        <span class="precio-etq">precio del día</span>
+        <span class="precio-etq">precio del día · +{{ menu.menu_del_dia.precio // puntos_por_peso }} pts</span>
       </div>
       <button class="btn-hero-agregar"
         onclick="agregarMenuDia('{{ menu.menu_del_dia.nombre }}', {{ menu.menu_del_dia.precio }}, '{{ menu.menu_del_dia.emoji }}')">
@@ -69,6 +70,15 @@
       {% endfor %}
     </div>
     {% endfor %}
+    {% if usuario %}
+    <div class="sidebar-puntos-box" onclick="abrirBeneficios()">
+      <div class="spb-icon">⭐</div>
+      <div>
+        <div class="spb-pts">{{ usuario.puntos }} puntos</div>
+        <div class="spb-link">Ver beneficios →</div>
+      </div>
+    </div>
+    {% endif %}
   </aside>
 
   <!-- PLATOS -->
@@ -100,6 +110,7 @@
       <span>Total</span>
       <span class="total-precio" id="carrito-total">$0</span>
     </div>
+    <div class="carrito-puntos-preview" id="carrito-puntos-preview"></div>
     <button class="btn-confirmar" onclick="confirmarPedido()">Confirmar pedido</button>
     <p class="pedido-nota">📲 Tu pedido llegará a la cocina al instante</p>
   </div>
@@ -110,56 +121,69 @@
 <div class="modal" id="modal-auth">
   <button class="modal-close" onclick="cerrarModal()">✕</button>
   <div class="modal-logo">Tu<span>Menú</span></div>
-
-  <div class="modal-body"><div class="auth-tabs">
-    <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
-    <button class="auth-tab" id="tab-registro" onclick="switchTab('registro')">Crear cuenta</button>
+  <div class="modal-body">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="auth-tab" id="tab-registro" onclick="switchTab('registro')">Crear cuenta</button>
+    </div>
+    {% if request.args.get('auth_error') %}
+      <div class="auth-error">{{ request.args.get('auth_error') }}</div>
+    {% endif %}
+    <form id="form-login" method="POST" action="/login">
+      <input type="hidden" name="next" value="/" />
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="tu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-primary">Ingresar</button>
+    </form>
+    <form id="form-registro" method="POST" action="/registro" style="display:none">
+      <input type="hidden" name="next" value="/" />
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" name="nombre" placeholder="Tu nombre completo" required />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="tu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="Mínimo 6 caracteres" required />
+      </div>
+      <button type="submit" class="btn-primary">Crear cuenta</button>
+    </form>
   </div>
-
-  {% if request.args.get('auth_error') %}
-    <div class="auth-error">{{ request.args.get('auth_error') }}</div>
-  {% endif %}
-
-  <form id="form-login" method="POST" action="/login">
-    <input type="hidden" name="next" value="/" />
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" name="email" placeholder="tu@email.com" required />
-    </div>
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input type="password" name="password" placeholder="••••••••" required />
-    </div>
-    <button type="submit" class="btn-primary">Ingresar</button>
-  </form>
-
-  <form id="form-registro" method="POST" action="/registro" style="display:none">
-    <input type="hidden" name="next" value="/" />
-    <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" name="nombre" placeholder="Tu nombre completo" required />
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" name="email" placeholder="tu@email.com" required />
-    </div>
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input type="password" name="password" placeholder="Mínimo 6 caracteres" required />
-    </div>
-    <button type="submit" class="btn-primary">Crear cuenta</button>
-  </form>
 </div>
 
+<!-- ===== MODAL BENEFICIOS ===== -->
+<div class="modal-overlay" id="modal-beneficios-overlay" onclick="cerrarBeneficios()"></div>
+<div class="modal modal-beneficios" id="modal-beneficios">
+  <button class="modal-close" onclick="cerrarBeneficios()">✕</button>
+  <div class="modal-logo">
+    <span style="position:relative">Tu<span style="color:var(--rojo)">Menú</span> · Beneficios</span>
+  </div>
+  <div class="modal-body beneficios-body">
+    <div class="beneficios-puntos-header" id="beneficios-puntos-actuales"></div>
+    <p class="beneficios-hint">Cada ${{ puntos_por_peso }} gastados = 1 punto ⭐</p>
+    <div class="beneficios-grid" id="beneficios-grid"></div>
+  </div>
 </div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-  const MENU_DATA  = {{ menu.categorias | tojson }};
-  const USUARIO    = {{ usuario | tojson if usuario else 'null' }};
-  const AUTH_ERROR = {{ request.args.get('auth_error') | tojson if request.args.get('auth_error') else 'null' }};
-  const AUTH_TAB   = {{ request.args.get('tab') | tojson if request.args.get('tab') else 'null' }};
+  const MENU_DATA      = {{ menu.categorias | tojson }};
+  const USUARIO        = {{ usuario | tojson if usuario else 'null' }};
+  const AUTH_ERROR     = {{ request.args.get('auth_error') | tojson if request.args.get('auth_error') else 'null' }};
+  const AUTH_TAB       = {{ request.args.get('tab') | tojson if request.args.get('tab') else 'null' }};
+  const BENEFICIOS_DATA= {{ beneficios | tojson }};
+  const PUNTOS_POR_PESO= {{ puntos_por_peso }};
 </script>
 <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
 
