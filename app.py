@@ -10,12 +10,12 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "tumenu.db")
 PUNTOS_POR_PESO = 100   # cada $100 = 1 punto
 
 BENEFICIOS = [
-    {"id": 1, "nombre": "Postre gratis",        "descripcion": "Cualquier postre de la carta sin cargo",           "puntos": 50,  "emoji": "🍰"},
-    {"id": 2, "nombre": "Bebida gratis",         "descripcion": "Gaseosa, agua o cerveza rubia sin cargo",         "puntos": 30,  "emoji": "🥤"},
-    {"id": 3, "nombre": "10% descuento",         "descripcion": "10% off en tu próximo pedido",                    "puntos": 80,  "emoji": "🏷️"},
-    {"id": 4, "nombre": "Entrada gratis",        "descripcion": "Empanadas (x2) o ensalada mixta sin cargo",       "puntos": 40,  "emoji": "🥗"},
-    {"id": 5, "nombre": "Menú del día gratis",   "descripcion": "El menú completo del día sin cargo",              "puntos": 120, "emoji": "🍽️"},
-    {"id": 6, "nombre": "Café + postre",         "descripcion": "Café o té con postre de la carta",               "puntos": 60,  "emoji": "☕"},
+    {"id": 1, "nombre": "Postre gratis",        "descripcion": "Cualquier postre de la carta sin cargo",           "puntos": 50,  "emoji": ""},
+    {"id": 2, "nombre": "Bebida gratis",         "descripcion": "Gaseosa, agua o cerveza rubia sin cargo",         "puntos": 30,  "emoji": ""},
+    {"id": 3, "nombre": "10% descuento",         "descripcion": "10% off en tu próximo pedido",                    "puntos": 80,  "emoji": ""},
+    {"id": 4, "nombre": "Entrada gratis",        "descripcion": "Empanadas (x2) o ensalada mixta sin cargo",       "puntos": 40,  "emoji": ""},
+    {"id": 5, "nombre": "Menú del día gratis",   "descripcion": "El menú completo del día sin cargo",              "puntos": 120, "emoji": ""},
+    {"id": 6, "nombre": "Café + postre",         "descripcion": "Café o té con postre de la carta",               "puntos": 60,  "emoji": ""},
 ]
 
 # ===== BASE DE DATOS =====
@@ -83,25 +83,25 @@ MENU = {
             "nombre": "Comidas", "emoji": "🍽️",
             "subcategorias": {
                 "pastas": { "nombre": "Pastas", "items": [
-                    {"id":1,"nombre":"Ñoquis al fileto","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":"🍝"},
-                    {"id":2,"nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto","precio":2400,"emoji":"🍝"},
-                    {"id":3,"nombre":"Sorrentinos de ricotta","desc":"Rellenos de ricotta y espinaca, salsa blanca","precio":2700,"emoji":"🫕"},
-                    {"id":4,"nombre":"Fetuccini al pesto","desc":"Pesto de albahaca casero, nueces, parmesano","precio":2300,"emoji":"🍝"}
+                    {"id":1,"nombre":"Ñoquis al fileto","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":""},
+                    {"id":2,"nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto","precio":2400,"emoji":""},
+                    {"id":3,"nombre":"Sorrentinos de ricotta","desc":"Rellenos de ricotta y espinaca, salsa blanca","precio":2700,"emoji":""},
+                    {"id":4,"nombre":"Fetuccini al pesto","desc":"Pesto de albahaca casero, nueces, parmesano","precio":2300,"emoji":""}
                 ]},
                 "carnes": { "nombre": "Carnes", "items": [
-                    {"id":10,"nombre":"Milanesa napolitana","desc":"Con jamón, mozzarella y salsa de tomate","precio":3200,"emoji":"🥩"},
-                    {"id":11,"nombre":"Bife de chorizo","desc":"300g a la plancha con papas fritas","precio":4100,"emoji":"🥩"},
-                    {"id":12,"nombre":"Pollo a la plancha","desc":"Con ensalada mixta y papas al horno","precio":2900,"emoji":"🍗"},
-                    {"id":13,"nombre":"Asado de tira","desc":"Corte de res, chimichurri casero","precio":3800,"emoji":"🥩"}
+                    {"id":10,"nombre":"Milanesa napolitana","desc":"Con jamón, mozzarella y salsa de tomate","precio":3200,"emoji":""},
+                    {"id":11,"nombre":"Bife de chorizo","desc":"300g a la plancha con papas fritas","precio":4100,"emoji":""},
+                    {"id":12,"nombre":"Pollo a la plancha","desc":"Con ensalada mixta y papas al horno","precio":2900,"emoji":""},
+                    {"id":13,"nombre":"Asado de tira","desc":"Corte de res, chimichurri casero","precio":3800,"emoji":""}
                 ]},
                 "sandwiches": { "nombre": "Sandwiches", "items": [
-                    {"id":20,"nombre":"Lomito completo","desc":"Lomito, jamón, queso, lechuga, tomate, huevo","precio":2600,"emoji":"🥪"},
-                    {"id":21,"nombre":"Hamburguesa clásica","desc":"200g de carne, cheddar, pepino, cebolla","precio":2200,"emoji":"🍔"},
-                    {"id":22,"nombre":"Club sandwich","desc":"Pollo, panceta, lechuga, tomate, mayonesa","precio":2400,"emoji":"🥪"}
+                    {"id":20,"nombre":"Lomito completo","desc":"Lomito, jamón, queso, lechuga, tomate, huevo","precio":2600,"emoji":""},
+                    {"id":21,"nombre":"Hamburguesa clásica","desc":"200g de carne, cheddar, pepino, cebolla","precio":2200,"emoji":""},
+                    {"id":22,"nombre":"Club sandwich","desc":"Pollo, panceta, lechuga, tomate, mayonesa","precio":2400,"emoji":""}
                 ]},
                 "ensaladas": { "nombre": "Ensaladas", "items": [
-                    {"id":30,"nombre":"Ensalada César","desc":"Pollo grillado, lechuga romana, crutones","precio":1900,"emoji":"🥗"},
-                    {"id":31,"nombre":"Ensalada mixta","desc":"Lechuga, tomate, zanahoria, choclo","precio":1400,"emoji":"🥗"}
+                    {"id":30,"nombre":"Ensalada César","desc":"Pollo grillado, lechuga romana, crutones","precio":1900,"emoji":""},
+                    {"id":31,"nombre":"Ensalada mixta","desc":"Lechuga, tomate, zanahoria, choclo","precio":1400,"emoji":""}
                 ]}
             }
         },
@@ -109,41 +109,41 @@ MENU = {
             "nombre": "Bebidas", "emoji": "🍺",
             "subcategorias": {
                 "cervezas": { "nombre": "Cervezas", "items": [
-                    {"id":40,"nombre":"Cerveza rubia 500cc","desc":"Chopp de barril bien frío","precio":900,"emoji":"🍺"},
-                    {"id":41,"nombre":"Cerveza negra 500cc","desc":"Stout artesanal de la casa","precio":1000,"emoji":"🍺"},
-                    {"id":42,"nombre":"Craft IPA 330cc","desc":"India Pale Ale, lupulada y aromática","precio":1100,"emoji":"🍻"}
+                    {"id":40,"nombre":"Cerveza rubia 500cc","desc":"Chopp de barril bien frío","precio":900,"emoji":""},
+                    {"id":41,"nombre":"Cerveza negra 500cc","desc":"Stout artesanal de la casa","precio":1000,"emoji":""},
+                    {"id":42,"nombre":"Craft IPA 330cc","desc":"India Pale Ale, lupulada y aromática","precio":1100,"emoji":""}
                 ]},
                 "gaseosas": { "nombre": "Gaseosas", "items": [
-                    {"id":50,"nombre":"Coca-Cola 500cc","desc":"Botella personal bien fría","precio":700,"emoji":"🥤"},
-                    {"id":51,"nombre":"Sprite 500cc","desc":"Lima limón refrescante","precio":700,"emoji":"🥤"},
-                    {"id":52,"nombre":"Fanta naranja 500cc","desc":"Sabor naranja","precio":700,"emoji":"🥤"}
+                    {"id":50,"nombre":"Coca-Cola 500cc","desc":"Botella personal bien fría","precio":700,"emoji":""},
+                    {"id":51,"nombre":"Sprite 500cc","desc":"Lima limón refrescante","precio":700,"emoji":""},
+                    {"id":52,"nombre":"Fanta naranja 500cc","desc":"Sabor naranja","precio":700,"emoji":""}
                 ]},
                 "aguas": { "nombre": "Aguas", "items": [
-                    {"id":60,"nombre":"Agua sin gas 500cc","desc":"Botella individual","precio":500,"emoji":"💧"},
-                    {"id":61,"nombre":"Agua con gas 500cc","desc":"Con burbujas","precio":550,"emoji":"💧"},
-                    {"id":62,"nombre":"Agua saborizada","desc":"Durazno o manzana verde","precio":650,"emoji":"💧"}
+                    {"id":60,"nombre":"Agua sin gas 500cc","desc":"Botella individual","precio":500,"emoji":""},
+                    {"id":61,"nombre":"Agua con gas 500cc","desc":"Con burbujas","precio":550,"emoji":""},
+                    {"id":62,"nombre":"Agua saborizada","desc":"Durazno o manzana verde","precio":650,"emoji":""}
                 ]},
                 "vinos": { "nombre": "Vinos", "items": [
-                    {"id":70,"nombre":"Malbec copa","desc":"Mendoza, 150cc","precio":1200,"emoji":"🍷"},
-                    {"id":71,"nombre":"Chardonnay copa","desc":"Vino blanco frío, 150cc","precio":1100,"emoji":"🥂"}
+                    {"id":70,"nombre":"Malbec copa","desc":"Mendoza, 150cc","precio":1200,"emoji":""},
+                    {"id":71,"nombre":"Chardonnay copa","desc":"Vino blanco frío, 150cc","precio":1100,"emoji":""}
                 ]}
             }
         },
         "postres": {
-            "nombre": "Postres", "emoji": "🍰",
+            "nombre": "Postres", "emoji": "",
             "subcategorias": {
                 "helados": { "nombre": "Helados", "items": [
-                    {"id":80,"nombre":"Helado 2 bochas","desc":"Dulce de leche, chocolate, vainilla o frutilla","precio":900,"emoji":"🍨"},
-                    {"id":81,"nombre":"Helado 3 bochas","desc":"A elección con salsa o granizado","precio":1200,"emoji":"🍨"}
+                    {"id":80,"nombre":"Helado 2 bochas","desc":"Dulce de leche, chocolate, vainilla o frutilla","precio":900,"emoji":""},
+                    {"id":81,"nombre":"Helado 3 bochas","desc":"A elección con salsa o granizado","precio":1200,"emoji":""}
                 ]},
                 "tortas": { "nombre": "Tortas", "items": [
-                    {"id":90,"nombre":"Torta de chocolate","desc":"Con ganache y crema batida","precio":1400,"emoji":"🎂"},
-                    {"id":91,"nombre":"Cheesecake de frutos rojos","desc":"Base de galleta, queso crema, coulis","precio":1500,"emoji":"🍰"}
+                    {"id":90,"nombre":"Torta de chocolate","desc":"Con ganache y crema batida","precio":1400,"emoji":""},
+                    {"id":91,"nombre":"Cheesecake de frutos rojos","desc":"Base de galleta, queso crema, coulis","precio":1500,"emoji":""}
                 ]},
                 "otros": { "nombre": "Otros postres", "items": [
-                    {"id":100,"nombre":"Tiramisú","desc":"Receta italiana clásica con mascarpone","precio":1300,"emoji":"🍮"},
-                    {"id":101,"nombre":"Panqueques con dulce de leche","desc":"Con crema y nueces","precio":1100,"emoji":"🥞"},
-                    {"id":102,"nombre":"Flan con crema","desc":"Casero, con caramelo y crema batida","precio":950,"emoji":"🍮"}
+                    {"id":100,"nombre":"Tiramisú","desc":"Receta italiana clásica con mascarpone","precio":1300,"emoji":""},
+                    {"id":101,"nombre":"Panqueques con dulce de leche","desc":"Con crema y nueces","precio":1100,"emoji":""},
+                    {"id":102,"nombre":"Flan con crema","desc":"Casero, con caramelo y crema batida","precio":950,"emoji":""}
                 ]}
             }
         }
