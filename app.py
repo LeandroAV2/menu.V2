@@ -76,11 +76,11 @@ MENU = {
         "nombre": "Milanesa napolitana + guarnición + postre",
         "descripcion": "Incluye bebida sin alcohol. Disponible hasta las 15:00 hs",
         "precio": 3800,
-        "emoji": "🍽️"
+        "emoji": ""
     },
     "categorias": {
         "comidas": {
-            "nombre": "Comidas", "emoji": "🍽️",
+            "nombre": "Comidas", "emoji": "",
             "subcategorias": {
                 "pastas": { "nombre": "Pastas", "items": [
                     {"id":1,"nombre":"Ñoquis al fileto","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":""},
@@ -106,7 +106,7 @@ MENU = {
             }
         },
         "bebidas": {
-            "nombre": "Bebidas", "emoji": "🍺",
+            "nombre": "Bebidas", "emoji": "",
             "subcategorias": {
                 "cervezas": { "nombre": "Cervezas", "items": [
                     {"id":40,"nombre":"Cerveza rubia 500cc","desc":"Chopp de barril bien frío","precio":900,"emoji":""},
