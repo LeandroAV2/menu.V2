@@ -72,6 +72,9 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Ejecutar siempre al importar (gunicorn + python app.py)
+init_db()
+
 # ===== MENÚ =====
 MENU = {
     "menu_del_dia": {"nombre":"Milanesa napolitana + guarnición + postre",
