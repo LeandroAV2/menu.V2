@@ -79,9 +79,9 @@ init_db()
 MENU = {
     "menu_del_dia": {"nombre":"Milanesa napolitana + guarnición + postre",
                      "descripcion":"Incluye bebida sin alcohol. Disponible hasta las 15:00 hs",
-                     "precio":3800,"emoji":"🍽️"},
+                     "precio":3800,"emoji":""},
     "categorias": {
-        "comidas": {"nombre":"Comidas","emoji":"🍽️","subcategorias":{
+        "comidas": {"nombre":"Comidas","emoji":"","subcategorias":{
             "pastas":{"nombre":"Pastas","items":[
                 {"id":1,"nombre":"Ñoquis al fileto","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":""},
                 {"id":2,"nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto","precio":2400,"emoji":""},
