@@ -3,20 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TuMenú · Admin</title>
+<title>TuMenú · Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
     --bg: #0d0d0d;
     --surface: #161616;
+    --surface2: #1e1e1e;
     --border: #2a2a2a;
     --accent: #c0392b;
     --accent2: #e74c3c;
     --text: #f0f0f0;
-    --muted: #666;
+    --muted: #777;
     --gold: #f59e0b;
+    --green: #10b981;
+    --blue: #3b82f6;
+    --orange: #f97316;
   }
 
   body {
@@ -24,172 +27,518 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+  }
+
+  /* ===== TOPBAR ===== */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 1.5rem; }
+  .brand {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .brand span { color: var(--accent); }
+  .badge-panel {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .admin-name { font-size: 0.85rem; color: var(--muted); }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 0.35rem 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--accent); color: var(--text); }
+
+  .live-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--green);
+  }
+  .live-dot::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  /* ===== LAYOUT ===== */
+  .main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+
+  /* ===== STATS ===== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
     position: relative;
     overflow: hidden;
   }
-
-  /* Grid background */
-  body::before {
+  .stat-card::after {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(192,57,43,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(192,57,43,0.06) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
   }
-
-  .login-wrap {
-    width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 0.5s ease;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .brand {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  .brand-logo {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 2rem;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-  .brand-logo span { color: var(--accent); }
-  .brand-sub {
+  .stat-card.rojo::after  { background: var(--accent); }
+  .stat-card.verde::after { background: var(--green); }
+  .stat-card.azul::after  { background: var(--blue); }
+  .stat-card.naranja::after { background: var(--orange); }
+  .stat-label {
     font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 6px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-  }
-
-  .card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--text);
-  }
-
-  .field { margin-bottom: 1.1rem; }
-  .field label {
-    display: block;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     color: var(--muted);
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.6rem;
   }
-  .field input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .field input:focus { border-color: var(--accent); }
-
-  .btn-submit {
-    width: 100%;
-    padding: 0.85rem;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
+  .stat-value {
+    font-size: 1.8rem;
     font-weight: 600;
+    line-height: 1;
+  }
+  .stat-card.rojo .stat-value   { color: #f87171; }
+  .stat-card.verde .stat-value  { color: var(--green); }
+  .stat-card.azul .stat-value   { color: #60a5fa; }
+  .stat-card.naranja .stat-value { color: #fb923c; }
+
+  /* ===== FILTROS ===== */
+  .filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .filters-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-right: 0.4rem;
+  }
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
     cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.3px;
+    transition: all 0.15s;
   }
-  .btn-submit:hover { background: var(--accent2); }
-  .btn-submit:active { transform: scale(0.98); }
+  .filter-btn:hover { border-color: #444; color: var(--text); }
+  .filter-btn.active { border-color: var(--accent); color: var(--text); background: rgba(192,57,43,0.1); }
 
-  .error-box {
-    background: rgba(192,57,43,0.12);
-    border: 1px solid rgba(192,57,43,0.35);
-    color: #f87171;
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
-    font-size: 0.84rem;
-    margin-bottom: 1.2rem;
+  /* ===== TABLA ===== */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
   }
-
-  .default-creds {
-    margin-top: 1.2rem;
-    padding: 0.8rem 1rem;
-    background: rgba(245,158,11,0.08);
-    border: 1px solid rgba(245,158,11,0.2);
-    border-radius: 8px;
+  .table-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .table-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .table-count {
     font-family: 'DM Mono', monospace;
     font-size: 0.72rem;
-    color: var(--gold);
-    line-height: 1.8;
+    color: var(--muted);
   }
-  .default-creds strong { color: #fbbf24; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.75rem 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  td {
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    vertical-align: middle;
+  }
+
+  .pedido-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .cliente-nombre { font-weight: 500; }
+  .cliente-email  { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+  /* Items lista */
+  .items-list { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .items-list strong { color: var(--text); }
+
+  /* Badges tipo */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 5px;
+    padding: 3px 9px;
+    font-size: 0.74rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-local     { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .badge-llevar    { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+  .badge-efectivo  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+  .badge-transf    { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+
+  /* Total */
+  .total-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .pts-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--gold);
+  }
+
+  /* Estado selector */
+  .estado-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .estado-select:focus { border-color: var(--accent); }
+  .estado-pendiente   { border-color: #f59e0b; color: #fbbf24; }
+  .estado-preparacion { border-color: var(--blue); color: #60a5fa; }
+  .estado-listo       { border-color: var(--green); color: #34d399; }
+  .estado-entregado   { border-color: #444; color: var(--muted); }
+
+  /* Hora */
+  .hora-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.4; }
+  .empty-state p { font-size: 0.88rem; }
+
+  /* Loader */
+  .loading { text-align: center; padding: 3rem; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 500;
+    border-left: 3px solid var(--green);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { border-left-color: var(--accent); }
+
+  /* Nuevos pedidos highlight */
+  @keyframes newRow {
+    from { background: rgba(192,57,43,0.15); }
+    to   { background: transparent; }
+  }
+  .nuevo { animation: newRow 2s ease forwards; }
+
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .main { padding: 1rem; }
+    table { font-size: 0.8rem; }
+    td, th { padding: 0.7rem 0.8rem; }
+  }
 </style>
 </head>
 <body>
-<div class="login-wrap">
-  <div class="brand">
-    <div class="brand-logo">Tu<span>Menú</span></div>
-    <div class="brand-sub">Panel de Administración</div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand">Tu<span>Menú</span></div>
+    <div class="badge-panel">Panel vendedor</div>
+    <div class="live-dot">EN VIVO</div>
   </div>
-
-  <div class="card">
-    <div class="card-title">Acceso para vendedores</div>
-
-    {% if error %}
-      <div class="error-box">{{ error }}</div>
-    {% endif %}
-
-    <form method="POST" action="/admin/login">
-      <div class="field">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="admin@tumenu.com" required autofocus />
-      </div>
-      <div class="field">
-        <label>Contraseña</label>
-        <input type="password" name="password" placeholder="••••••••" required />
-      </div>
-      <button type="submit" class="btn-submit">Ingresar al panel</button>
-    </form>
-
-    <div class="default-creds">
-      <strong>Credenciales por defecto:</strong><br>
-      Email: admin@tumenu.com<br>
-      Contraseña: admin123
-    </div>
+  <div class="topbar-right">
+    <span class="admin-name">{{ admin.nombre }}</span>
+    <a href="/admin/logout" class="btn-logout">Salir</a>
   </div>
 </div>
+
+<div class="main">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card rojo">
+      <div class="stat-label">Recaudado hoy</div>
+      <div class="stat-value" id="stat-total">—</div>
+    </div>
+    <div class="stat-card verde">
+      <div class="stat-label">Pedidos hoy</div>
+      <div class="stat-value" id="stat-cant">—</div>
+    </div>
+    <div class="stat-card naranja">
+      <div class="stat-label">Pendientes</div>
+      <div class="stat-value" id="stat-pendientes">—</div>
+    </div>
+    <div class="stat-card azul">
+      <div class="stat-label">En preparación</div>
+      <div class="stat-value" id="stat-prep">—</div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters-row">
+    <span class="filters-label">Filtrar:</span>
+    <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
+    <button class="filter-btn" onclick="setFiltro('pendiente', this)">⏳ Pendientes</button>
+    <button class="filter-btn" onclick="setFiltro('en_preparacion', this)">🔥 En preparación</button>
+    <button class="filter-btn" onclick="setFiltro('listo', this)">✅ Listos</button>
+    <button class="filter-btn" onclick="setFiltro('entregado', this)">📦 Entregados</button>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">Pedidos</div>
+      <div class="table-count" id="table-count">—</div>
+    </div>
+    <div id="table-body-wrap">
+      <div class="loading">Cargando pedidos...</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let filtroActual = 'todos';
+let pedidosConocidos = new Set();
+let primeraVez = true;
+
+function setFiltro(f, btn) {
+  filtroActual = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  cargarPedidos();
+}
+
+async function cargarStats() {
+  try {
+    const r = await fetch('/admin/api/stats');
+    const d = await r.json();
+    document.getElementById('stat-total').textContent = '$' + d.total_hoy.toLocaleString('es-AR');
+    document.getElementById('stat-cant').textContent = d.cant_hoy;
+    document.getElementById('stat-pendientes').textContent = d.pendientes;
+    document.getElementById('stat-prep').textContent = d.en_preparacion;
+  } catch(e) {}
+}
+
+async function cargarPedidos() {
+  try {
+    const r = await fetch('/admin/api/pedidos?estado=' + filtroActual);
+    const pedidos = await r.json();
+
+    document.getElementById('table-count').textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
+
+    if (pedidos.length === 0) {
+      document.getElementById('table-body-wrap').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">📋</div>
+          <p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p>
+        </div>`;
+      return;
+    }
+
+    // Detectar nuevos pedidos
+    const nuevos = new Set();
+    if (!primeraVez) {
+      pedidos.forEach(p => { if (!pedidosConocidos.has(p.id)) nuevos.add(p.id); });
+      if (nuevos.size > 0) mostrarToast(`🔔 ${nuevos.size} nuevo${nuevos.size>1?'s':''} pedido${nuevos.size>1?'s':''}!`);
+    }
+    pedidos.forEach(p => pedidosConocidos.add(p.id));
+    primeraVez = false;
+
+    const rows = pedidos.map(p => {
+      const itemsHtml = p.items.map(i =>
+        `<span><strong>${i.cantidad}x</strong> ${i.nombre}</span>`
+      ).join('<br>');
+
+      const tipoHtml = p.tipo === 'local'
+        ? '<span class="badge badge-local">🪑 Para comer</span>'
+        : '<span class="badge badge-llevar">🛍️ Para llevar</span>';
+
+      const pagoHtml = p.pago === 'efectivo'
+        ? '<span class="badge badge-efectivo">💵 Efectivo</span>'
+        : '<span class="badge badge-transf">📲 Transferencia</span>';
+
+      const estadoClass = {
+        pendiente: 'estado-pendiente',
+        en_preparacion: 'estado-preparacion',
+        listo: 'estado-listo',
+        entregado: 'estado-entregado'
+      }[p.estado] || '';
+
+      const esNuevo = nuevos.has(p.id) ? 'nuevo' : '';
+
+      return `
+        <tr class="${esNuevo}" id="row-${p.id}">
+          <td><div class="pedido-num">#${String(p.id).padStart(4,'0')}</div></td>
+          <td>
+            <div class="cliente-nombre">${p.usuario_nombre}</div>
+            <div class="cliente-email">${p.usuario_email}</div>
+          </td>
+          <td><div class="items-list">${itemsHtml}</div></td>
+          <td>${tipoHtml}</td>
+          <td>${pagoHtml}</td>
+          <td>
+            <div class="total-cell">$${p.total.toLocaleString('es-AR')}</div>
+            <div class="pts-cell">+${p.puntos_ganados} pts</div>
+          </td>
+          <td>
+            <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
+              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>⏳ Pendiente</option>
+              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}>🔥 En preparación</option>
+              <option value="listo"          ${p.estado==='listo'?'selected':''}>✅ Listo</option>
+              <option value="entregado"      ${p.estado==='entregado'?'selected':''}>📦 Entregado</option>
+            </select>
+          </td>
+          <td><div class="hora-cell">${p.hora}</div></td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('table-body-wrap').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Items</th>
+            <th>Tipo</th>
+            <th>Pago</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Hora</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('table-body-wrap').innerHTML =
+      '<div class="empty-state"><p>Error al cargar pedidos. Reintentando...</p></div>';
+  }
+}
+
+async function cambiarEstado(id, select) {
+  const nuevoEstado = select.value;
+  select.className = 'estado-select estado-' + {
+    pendiente:'pendiente', en_preparacion:'preparacion', listo:'listo', entregado:'entregado'
+  }[nuevoEstado];
+  try {
+    const r = await fetch(`/admin/api/pedidos/${id}/estado`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({estado: nuevoEstado})
+    });
+    const d = await r.json();
+    if (d.ok) mostrarToast(`Pedido #${String(id).padStart(4,'0')} → ${nuevoEstado.replace('_',' ')}`);
+    else mostrarToast('Error al actualizar', true);
+  } catch(e) { mostrarToast('Error de conexión', true); }
+}
+
+function mostrarToast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (error ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// Actualización automática cada 8 segundos
+function tick() {
+  cargarStats();
+  cargarPedidos();
+}
+tick();
+setInterval(tick, 8000);
+</script>
 </body>
 </html>
