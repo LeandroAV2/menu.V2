@@ -327,22 +327,6 @@ def admin_stats():
     return jsonify({"total_hoy": total_hoy, "cant_hoy": cant_hoy,
                     "pendientes": pendientes, "en_preparacion": en_prep})
     
-@app.route("/setup-admin-temporal")
-def setup_admin():
-    conn = get_db()
-    try:
-        conn.execute(
-            "INSERT OR REPLACE INTO admins (nombre,email,password,creado_en) VALUES (?,?,?,?)",
-            ("Admin", "admin@tumenu.com",
-             hashlib.sha256("admin123".encode()).hexdigest(),
-             datetime.datetime.now().isoformat())
-        )
-        conn.commit()
-        conn.close()
-        return "✅ Admin creado. Ahora borrá esta ruta del código."
-    except Exception as e:
-        return f"❌ Error: {e}"
-        
 if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 5000))
