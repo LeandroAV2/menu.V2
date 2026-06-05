@@ -96,7 +96,7 @@ function renderCarrito() {
         <p>Tu carrito está vacío.<br>Agregá algo del menú.</p>
       </div>`;
     document.getElementById('carrito-total').textContent = '$0';
-    document.getElementById('carrito-puntos-preview').textContent = '';
+    document.getElementById('carrito-puntos-preview').innerHTML = '';
     return;
   }
   container.innerHTML = carrito.map(item => `
@@ -134,20 +134,40 @@ async function confirmarPedido() {
     setTimeout(() => abrirModal('login'), 400);
     return;
   }
+  // Abrir modal de opciones de pedido
+  abrirModalPedido();
+}
+
+function abrirModalPedido() {
+  document.getElementById('modal-pedido-overlay').classList.add('open');
+  document.getElementById('modal-pedido').classList.add('open');
+}
+function cerrarModalPedido() {
+  document.getElementById('modal-pedido-overlay').classList.remove('open');
+  document.getElementById('modal-pedido').classList.remove('open');
+}
+
+async function enviarPedido() {
+  const tipo = document.querySelector('input[name="tipo"]:checked')?.value || 'local';
+  const pago = document.querySelector('input[name="pago"]:checked')?.value || 'efectivo';
   const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
   const items = carrito.map(i => ({ id: i.id, nombre: i.nombre, cantidad: i.cantidad, precio: i.precio }));
+
+  cerrarModalPedido();
+
   try {
     const resp = await fetch('/pedido', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items, total })
+      body: JSON.stringify({ items, total, tipo, pago })
     });
     const data = await resp.json();
     if (data.ok) {
       USUARIO.puntos = data.puntos_total;
       actualizarPuntosUI();
-      const resumen = items.map(i => `${i.cantidad}x ${i.nombre}`).join('\n');
-      alert(`✅ ¡Pedido confirmado!\n\n${resumen}\n\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n📊 Total acumulado: ${data.puntos_total} puntos\n\n📲 Tu pedido fue enviado a la cocina.`);
+      const tipoLabel = tipo === 'local' ? '🪑 Para comer aquí' : '🛍️ Para llevar';
+      const pagoLabel = pago === 'efectivo' ? '💵 Efectivo' : '📲 Transferencia';
+      alert(`✅ ¡Pedido confirmado!\n\n${items.map(i=>`${i.cantidad}x ${i.nombre}`).join('\n')}\n\n${tipoLabel} · ${pagoLabel}\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n📊 Total acumulado: ${data.puntos_total} puntos\n\n📲 Tu pedido fue enviado a la cocina.`);
       carrito = [];
       actualizarCarritoUI();
       toggleCarrito();
@@ -185,7 +205,6 @@ function renderBeneficios() {
   const puntos = USUARIO ? USUARIO.puntos : 0;
   document.getElementById('beneficios-puntos-actuales').innerHTML =
     `Tenés <strong>${puntos} puntos</strong> disponibles`;
-
   document.getElementById('beneficios-grid').innerHTML = BENEFICIOS_DATA.map(b => {
     const puedeX = puntos >= b.puntos;
     return `
@@ -224,9 +243,7 @@ async function canjear(beneficioId) {
     } else {
       mostrarToast(data.error || 'Error al canjear');
     }
-  } catch(e) {
-    mostrarToast('Error de conexión');
-  }
+  } catch(e) { mostrarToast('Error de conexión'); }
 }
 
 // ===== MODAL AUTH =====
@@ -245,7 +262,9 @@ function switchTab(tab) {
   document.getElementById('form-login').style.display    = tab === 'login'    ? 'block' : 'none';
   document.getElementById('form-registro').style.display = tab === 'registro' ? 'block' : 'none';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarModal(); cerrarBeneficios(); } });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { cerrarModal(); cerrarBeneficios(); cerrarModalPedido(); }
+});
 
 // ===== TOAST =====
 function mostrarToast(msg) {
