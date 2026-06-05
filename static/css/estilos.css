@@ -841,3 +841,35 @@ body {
   box-shadow: none;
   font-size: 0.76rem;
 }
+
+/* ===== MODAL PEDIDO (tipo + pago) ===== */
+.modal-pedido { max-width: 380px; }
+.pedido-opcion-titulo {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.75rem;
+}
+.pedido-opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.opcion-card { cursor: pointer; }
+.opcion-card input { display: none; }
+.opcion-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--crema);
+  transition: all 0.15s;
+}
+.opcion-icon { font-size: 1.6rem; }
+.opcion-label { font-size: 0.82rem; font-weight: 500; color: var(--muted); }
+.opcion-card input:checked + .opcion-inner {
+  border-color: var(--rojo);
+  background: var(--rojo-suave);
+}
+.opcion-card input:checked + .opcion-inner .opcion-label { color: var(--rojo); }
