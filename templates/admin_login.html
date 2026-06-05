@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuMenú · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --accent: #c0392b;
+    --accent2: #e74c3c;
+    --text: #f0f0f0;
+    --muted: #666;
+    --gold: #f59e0b;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(192,57,43,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(192,57,43,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .login-wrap {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .brand {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .brand-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .brand-logo span { color: var(--accent); }
+  .brand-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input:focus { border-color: var(--accent); }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+  .btn-submit:hover { background: var(--accent2); }
+  .btn-submit:active { transform: scale(0.98); }
+
+  .error-box {
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.35);
+    color: #f87171;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.84rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .default-creds {
+    margin-top: 1.2rem;
+    padding: 0.8rem 1rem;
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--gold);
+    line-height: 1.8;
+  }
+  .default-creds strong { color: #fbbf24; }
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="brand">
+    <div class="brand-logo">Tu<span>Menú</span></div>
+    <div class="brand-sub">Panel de Administración</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Acceso para vendedores</div>
+
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/admin/login">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="admin@tumenu.com" required autofocus />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-submit">Ingresar al panel</button>
+    </form>
+
+    <div class="default-creds">
+      <strong>Credenciales por defecto:</strong><br>
+      Email: admin@tumenu.com<br>
+      Contraseña: admin123
+    </div>
+  </div>
+</div>
+</body>
+</html>
