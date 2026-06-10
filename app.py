@@ -8,15 +8,15 @@ app.secret_key = os.environ.get("SECRET_KEY", "tumenu_secret_2025")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-PUNTOS_POR_PESO = 100
+PUNTOS_POR_PESO = 50
 
 BENEFICIOS = [
-    {"id": 1, "nombre": "Postre gratis",       "descripcion": "Cualquier postre de la carta sin cargo",      "puntos": 50,  "emoji": ""},
-    {"id": 2, "nombre": "Bebida gratis",        "descripcion": "Gaseosa, agua o cerveza rubia sin cargo",    "puntos": 30,  "emoji": ""},
-    {"id": 3, "nombre": "10% descuento",        "descripcion": "10% off en tu próximo pedido",               "puntos": 80,  "emoji": ""},
-    {"id": 4, "nombre": "Entrada gratis",       "descripcion": "Empanadas (x2) o ensalada mixta sin cargo",  "puntos": 40,  "emoji": ""},
-    {"id": 5, "nombre": "Menú del día gratis",  "descripcion": "El menú completo del día sin cargo",         "puntos": 120, "emoji": ""},
-    {"id": 6, "nombre": "Café + postre",        "descripcion": "Café o té con postre de la carta",           "puntos": 60,  "emoji": ""},
+    {"id": 1, "nombre": "Postre gratis",       "descripcion": "Cualquier postre de la carta sin cargo",      "puntos": 500,  "emoji": ""},
+    {"id": 2, "nombre": "Bebida gratis",        "descripcion": "Gaseosa, agua o cerveza rubia sin cargo",    "puntos": 300,  "emoji": ""},
+    {"id": 3, "nombre": "10% descuento",        "descripcion": "10% off en tu próximo pedido",               "puntos": 800,  "emoji": ""},
+    {"id": 4, "nombre": "Entrada gratis",       "descripcion": "Empanadas (x2) o ensalada mixta sin cargo",  "puntos": 600,  "emoji": ""},
+    {"id": 5, "nombre": "Menú del día gratis",  "descripcion": "El menú completo del día sin cargo",         "puntos": 1500, "emoji": ""},
+    {"id": 6, "nombre": "Café + postre",        "descripcion": "Café o té con postre de la carta",           "puntos": 400,  "emoji": ""},
 ]
 
 # ===== DB =====
@@ -83,15 +83,14 @@ MENU = {
     "categorias": {
         "comidas": {"nombre":"Comidas","emoji":"","subcategorias":{
             "pastas":{"nombre":"Pastas","items":[
-                {"id":1,"nombre":"Ñoquis al fileto","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":""},
+                {"id":1,"nombre":"Ñoquis","desc":"Salsa de tomate fresco, albahaca y parmesano","precio":2100,"emoji":""},
                 {"id":2,"nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto","precio":2400,"emoji":""},
                 {"id":3,"nombre":"Sorrentinos de ricotta","desc":"Rellenos de ricotta y espinaca, salsa blanca","precio":2700,"emoji":""},
-                {"id":4,"nombre":"Fetuccini al pesto","desc":"Pesto de albahaca casero, nueces, parmesano","precio":2300,"emoji":""}]},
             "carnes":{"nombre":"Carnes","items":[
                 {"id":10,"nombre":"Milanesa napolitana","desc":"Con jamón, mozzarella y salsa de tomate","precio":3200,"emoji":""},
-                {"id":11,"nombre":"Bife de chorizo","desc":"300g a la plancha con papas fritas","precio":4100,"emoji":""},
+                {"id":11,"nombre":"Bife de chorizo","desc":"A la plancha con papas fritas","precio":4100,"emoji":""},
                 {"id":12,"nombre":"Pollo a la plancha","desc":"Con ensalada mixta y papas al horno","precio":2900,"emoji":""},
-                {"id":13,"nombre":"Asado de tira","desc":"Corte de res, chimichurri casero","precio":3800,"emoji":""}]},
+                {"id":13,"nombre":"Asado","desc":"Fuente como para 2 personas","precio":3800,"emoji":""}]},
             "sandwiches":{"nombre":"Sandwiches","items":[
                 {"id":20,"nombre":"Lomito completo","desc":"Lomito, jamón, queso, lechuga, tomate, huevo","precio":2600,"emoji":""},
                 {"id":21,"nombre":"Hamburguesa clásica","desc":"200g de carne, cheddar, pepino, cebolla","precio":2200,"emoji":""},
@@ -101,9 +100,8 @@ MENU = {
                 {"id":31,"nombre":"Ensalada mixta","desc":"Lechuga, tomate, zanahoria, choclo","precio":1400,"emoji":""}]}}},
         "bebidas":{"nombre":"Bebidas","emoji":"","subcategorias":{
             "cervezas":{"nombre":"Cervezas","items":[
-                {"id":40,"nombre":"Cerveza rubia 500cc","desc":"Chopp de barril bien frío","precio":900,"emoji":""},
-                {"id":41,"nombre":"Cerveza negra 500cc","desc":"Stout artesanal de la casa","precio":1000,"emoji":""},
-                {"id":42,"nombre":"Craft IPA 330cc","desc":"India Pale Ale, lupulada y aromática","precio":1100,"emoji":""}]},
+                {"id":40,"nombre":"Cerveza Brahma","desc":"Cerveza clasica","precio":900,"emoji":""},
+                {"id":41,"nombre":"Cerveza Andes negra, en LATA 473cc","desc":"Aroma y sabor tostado","precio":1000,"emoji":""},
             "gaseosas":{"nombre":"Gaseosas","items":[
                 {"id":50,"nombre":"Coca-Cola 500cc","desc":"Botella personal bien fría","precio":700,"emoji":""},
                 {"id":51,"nombre":"Sprite 500cc","desc":"Lima limón refrescante","precio":700,"emoji":""},
@@ -111,10 +109,9 @@ MENU = {
             "aguas":{"nombre":"Aguas","items":[
                 {"id":60,"nombre":"Agua sin gas 500cc","desc":"Botella individual","precio":500,"emoji":""},
                 {"id":61,"nombre":"Agua con gas 500cc","desc":"Con burbujas","precio":550,"emoji":""},
-                {"id":62,"nombre":"Agua saborizada","desc":"Durazno o manzana verde","precio":650,"emoji":""}]},
+                {"id":62,"nombre":"Agua saborizada","desc":"Pomelo, Manzana y Pera","precio":650,"emoji":""}]},
             "vinos":{"nombre":"Vinos","items":[
                 {"id":70,"nombre":"Malbec copa","desc":"Mendoza, 150cc","precio":1200,"emoji":""},
-                {"id":71,"nombre":"Chardonnay copa","desc":"Vino blanco frío, 150cc","precio":1100,"emoji":""}]}}},
         "postres":{"nombre":"Postres","emoji":"","subcategorias":{
             "helados":{"nombre":"Helados","items":[
                 {"id":80,"nombre":"Helado 2 bochas","desc":"Dulce de leche, chocolate, vainilla o frutilla","precio":900,"emoji":""},
