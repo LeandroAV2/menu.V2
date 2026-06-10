@@ -165,8 +165,8 @@ async function enviarPedido() {
     if (data.ok) {
       USUARIO.puntos = data.puntos_total;
       actualizarPuntosUI();
-      const tipoLabel = tipo === 'local' ? '🪑 Para comer aquí' : '🛍️ Para llevar';
-      const pagoLabel = pago === 'efectivo' ? '💵 Efectivo' : '📲 Transferencia';
+      const tipoLabel = tipo === 'local' ? 'Para comer aquí' : 'Para llevar';
+      const pagoLabel = pago === 'efectivo' ? 'Efectivo' : 'Transferencia';
       alert(`✅ ¡Pedido confirmado!\n\n${items.map(i=>`${i.cantidad}x ${i.nombre}`).join('\n')}\n\n${tipoLabel} · ${pagoLabel}\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n📊 Total acumulado: ${data.puntos_total} puntos\n\n📲 Tu pedido fue enviado a la cocina.`);
       carrito = [];
       actualizarCarritoUI();
