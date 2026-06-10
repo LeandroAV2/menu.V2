@@ -90,7 +90,7 @@ MENU = {
                 {"id":10,"nombre":"Milanesa napolitana","desc":"Con jamón, mozzarella y salsa de tomate","precio":3200,"emoji":""},
                 {"id":11,"nombre":"Bife de chorizo","desc":"A la plancha con papas fritas","precio":4100,"emoji":""},
                 {"id":12,"nombre":"Pollo a la plancha","desc":"Con ensalada mixta y papas al horno","precio":2900,"emoji":""},
-                {"id":13,"nombre":"Asado","desc":"Fuente como para 2 personas","precio":3800,"emoji":""}]}}}}}},      
+                {"id":13,"nombre":"Asado","desc":"Fuente como para 2 personas","precio":3800,"emoji":""}]},      
             "sandwiches":{"nombre":"Sandwiches","items":[
                 {"id":20,"nombre":"Lomito completo","desc":"Lomito, jamón, queso, lechuga, tomate, huevo","precio":2600,"emoji":""},
                 {"id":21,"nombre":"Hamburguesa clásica","desc":"200g de carne, cheddar, pepino, cebolla","precio":2200,"emoji":""},
