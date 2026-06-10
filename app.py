@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import hashlib, datetime, os, json
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import psycopg
+from psycopg.rows import dict_row
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "tumenu_secret_2025")
@@ -21,7 +21,7 @@ BENEFICIOS = [
 
 # ===== DB =====
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+    conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
     return conn
 
 def init_db():
@@ -183,7 +183,7 @@ def registro():
         c.execute("INSERT INTO usuarios (nombre,email,password,creado_en,puntos) VALUES (%s,%s,%s,%s,%s)",
                   (nombre, email, hashear(password), datetime.datetime.now().isoformat(), 0))
         conn.commit(); c.close(); conn.close()
-    except psycopg2.errors.UniqueViolation:
+    except psycopg.errors.UniqueViolation:
         return redirect("/?auth_error=Ese+email+ya+está+registrado&tab=login")
     session["usuario"] = {"email": email, "nombre": nombre, "puntos": 0}
     return redirect(next_url)
