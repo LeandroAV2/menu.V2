@@ -144,7 +144,7 @@ MENU = {
                 "aguas": {
                     "nombre": "Aguas",
                     "items": [
-                        {"id": 60, "nombre": "Agua sin gas 500cc",  "desc": "Botella individual",           "precio": 500, "emoji": ""},
+                        {"id": 60, "nombre": "Agua sin gas 500cc",  "desc": "Botella individual",           "precio": 100, "emoji": ""},
                         {"id": 61, "nombre": "Agua con gas 500cc",  "desc": "Con burbujas",                 "precio": 550, "emoji": ""},
                         {"id": 62, "nombre": "Agua saborizada",     "desc": "Pomelo, Manzana y Pera",       "precio": 650, "emoji": ""},
                     ]
