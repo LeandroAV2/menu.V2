@@ -369,10 +369,10 @@
   <div class="filters-row">
     <span class="filters-label">Filtrar:</span>
     <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
-    <button class="filter-btn" onclick="setFiltro('pendiente', this)">⏳ Pendientes</button>
-    <button class="filter-btn" onclick="setFiltro('en_preparacion', this)">🔥 En preparación</button>
-    <button class="filter-btn" onclick="setFiltro('listo', this)">✅ Listos</button>
-    <button class="filter-btn" onclick="setFiltro('entregado', this)">📦 Entregados</button>
+    <button class="filter-btn" onclick="setFiltro('pendiente', this)"> Pendientes</button>
+    <button class="filter-btn" onclick="setFiltro('en_preparacion', this)"> En preparación</button>
+    <button class="filter-btn" onclick="setFiltro('listo', this)"> Listos</button>
+    <button class="filter-btn" onclick="setFiltro('entregado', this)"> Entregados</button>
   </div>
 
   <!-- TABLA -->
@@ -423,7 +423,7 @@ async function cargarPedidos() {
     if (pedidos.length === 0) {
       document.getElementById('table-body-wrap').innerHTML = `
         <div class="empty-state">
-          <div class="icon">📋</div>
+          <div class="icon"></div>
           <p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p>
         </div>`;
       return;
