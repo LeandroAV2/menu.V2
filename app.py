@@ -99,7 +99,7 @@ MENU = {
             "ensaladas":{"nombre":"Ensaladas","items":[
                 {"id":30,"nombre":"Ensalada César","desc":"Pollo grillado, lechuga romana, crutones","precio":1900,"emoji":""},
                 {"id":31,"nombre":"Ensalada mixta","desc":"Lechuga, tomate, zanahoria, choclo","precio":1400,"emoji":""}]}}},
-        "bebidas":{"nombre":"Bebidas","emoji":"🍺","subcategorias":{
+        "bebidas":{"nombre":"Bebidas","emoji":"","subcategorias":{
             "cervezas":{"nombre":"Cervezas","items":[
                 {"id":40,"nombre":"Cerveza rubia 500cc","desc":"Chopp de barril bien frío","precio":900,"emoji":""},
                 {"id":41,"nombre":"Cerveza negra 500cc","desc":"Stout artesanal de la casa","precio":1000,"emoji":""},
