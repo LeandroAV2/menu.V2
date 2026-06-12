@@ -8,8 +8,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "tumenu_secret_2025")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
-MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN", "")
-MP_PUBLIC_KEY   = os.environ.get("MP_PUBLIC_KEY", "")
+MPAT = os.environ.get("MPAT", "")
+MPPK = os.environ.get("MPPK", "")
 
 def mp_post(endpoint, body):
     """Llama a la API de MP directamente por HTTP."""
@@ -17,7 +17,7 @@ def mp_post(endpoint, body):
     if endpoint != "preference":
         url = f"https://api.mercadopago.com/{endpoint}"
     headers = {
-        "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {MPAT}",
         "Content-Type": "application/json",
         "X-Idempotency-Key": datetime.datetime.now().isoformat()
     }
@@ -25,7 +25,7 @@ def mp_post(endpoint, body):
     return r.status_code, r.json()
 
 def mp_get(endpoint):
-    headers = {"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
+    headers = {"Authorization": f"Bearer {MPAT}"}
     r = http_requests.get(f"https://api.mercadopago.com/{endpoint}", headers=headers, timeout=10)
     return r.status_code, r.json()
 
@@ -40,7 +40,7 @@ def mp_crear_preferencia(items_mp, payer_email, back_urls, external_reference, n
         "notification_url": notification_url,
     }
     headers = {
-        "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {MPAT}",
         "Content-Type": "application/json",
     }
     r = http_requests.post(
