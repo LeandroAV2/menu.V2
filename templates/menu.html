@@ -112,7 +112,7 @@
     </div>
     <div class="carrito-puntos-preview" id="carrito-puntos-preview"></div>
     <button class="btn-confirmar" onclick="confirmarPedido()">Confirmar pedido</button>
-    <p class="pedido-nota"> Tu pedido llegará a la cocina al instante</p>
+    <p class="pedido-nota">📲 Tu pedido llegará a la cocina al instante</p>
   </div>
 </div>
 
@@ -185,33 +185,40 @@
       <label class="opcion-card">
         <input type="radio" name="tipo" value="local" checked />
         <div class="opcion-inner">
-          <span class="opcion-icon"></span>
+          <span class="opcion-icon">🪑</span>
           <span class="opcion-label">Para comer aquí</span>
         </div>
       </label>
       <label class="opcion-card">
         <input type="radio" name="tipo" value="llevar" />
         <div class="opcion-inner">
-          <span class="opcion-icon"></span>
+          <span class="opcion-icon">🛍️</span>
           <span class="opcion-label">Para llevar</span>
         </div>
       </label>
     </div>
 
     <div class="pedido-opcion-titulo" style="margin-top:1.4rem">¿Cómo pagás?</div>
-    <div class="pedido-opciones">
+    <div class="pedido-opciones pago-opciones">
       <label class="opcion-card">
         <input type="radio" name="pago" value="efectivo" checked />
         <div class="opcion-inner">
-          <span class="opcion-icon"></span>
+          <span class="opcion-icon">💵</span>
           <span class="opcion-label">Efectivo</span>
         </div>
       </label>
       <label class="opcion-card">
         <input type="radio" name="pago" value="transferencia" />
         <div class="opcion-inner">
-          <span class="opcion-icon"></span>
+          <span class="opcion-icon">📲</span>
           <span class="opcion-label">Transferencia</span>
+        </div>
+      </label>
+      <label class="opcion-card opcion-mp">
+        <input type="radio" name="pago" value="mercadopago" />
+        <div class="opcion-inner">
+          <span class="opcion-icon">💳</span>
+          <span class="opcion-label">Mercado Pago</span>
         </div>
       </label>
     </div>
