@@ -33,21 +33,29 @@ def mp_api_preferencia(items_mp, payer_email, back_urls, external_reference, not
     body = {
         "items": items_mp,
         "payer": {"email": payer_email},
-        "back_urls": back_urls,
+        "back_urls": {
+            "success": back_urls.get("success",""),
+            "failure": back_urls.get("failure",""),
+            "pending": back_urls.get("pending","")
+        },
         "auto_return": "approved",
         "external_reference": external_reference,
         "statement_descriptor": "TuMenu",
-        "notification_url": notification_url,
     }
     headers = {
         "Authorization": f"Bearer {MPAT}",
         "Content-Type": "application/json",
     }
-    r = http_requests.post(
-        "https://api.mercadopago.com/checkout/preferences",
-        json=body, headers=headers, timeout=10
-    )
-    return r.status_code, r.json()
+    try:
+        r = http_requests.post(
+            "https://api.mercadopago.com/checkout/preferences",
+            json=body, headers=headers, timeout=15
+        )
+        print("MP STATUS:", r.status_code, r.text[:300])
+        return r.status_code, r.json()
+    except Exception as e:
+        print("MP EXCEPTION:", str(e))
+        return 500, {"error": str(e)}
 
 # ===== DB =====
 def get_db():
@@ -368,9 +376,14 @@ def mp_crear_preferencia():
     mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
                  "unit_price": float(i["precio"]), "currency_id": "ARS"}
                 for i in items]
+    back_urls = {
+        "success": base_url + "/mp/exito",
+        "failure": base_url + "/mp/fallo",
+        "pending": base_url + "/mp/pendiente"
+    }
     status, pref = mp_api_preferencia(
         mp_items, usuario["email"],
-        {"success": base_url+"/mp/exito", "failure": base_url+"/mp/fallo", "pending": base_url+"/mp/pendiente"},
+        back_urls,
         usuario["email"]+"|"+tipo+"|"+datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
         base_url+"/mp/webhook"
     )
