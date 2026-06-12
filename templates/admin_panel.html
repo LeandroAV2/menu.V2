@@ -433,7 +433,7 @@ async function cargarPedidos() {
     const nuevos = new Set();
     if (!primeraVez) {
       pedidos.forEach(p => { if (!pedidosConocidos.has(p.id)) nuevos.add(p.id); });
-      if (nuevos.size > 0) mostrarToast(`🔔 ${nuevos.size} nuevo${nuevos.size>1?'s':''} pedido${nuevos.size>1?'s':''}!`);
+      if (nuevos.size > 0) mostrarToast(` ${nuevos.size} nuevo${nuevos.size>1?'s':''} pedido${nuevos.size>1?'s':''}!`);
     }
     pedidos.forEach(p => pedidosConocidos.add(p.id));
     primeraVez = false;
@@ -444,12 +444,12 @@ async function cargarPedidos() {
       ).join('<br>');
 
       const tipoHtml = p.tipo === 'local'
-        ? '<span class="badge badge-local">🪑 Para comer</span>'
-        : '<span class="badge badge-llevar">🛍️ Para llevar</span>';
+        ? '<span class="badge badge-local"> Para comer</span>'
+        : '<span class="badge badge-llevar"> Para llevar</span>';
 
       const pagoHtml = p.pago === 'efectivo'
-        ? '<span class="badge badge-efectivo">💵 Efectivo</span>'
-        : '<span class="badge badge-transf">📲 Transferencia</span>';
+        ? '<span class="badge badge-efectivo"> Efectivo</span>'
+        : '<span class="badge badge-transf"> Transferencia</span>';
 
       const estadoClass = {
         pendiente: 'estado-pendiente',
@@ -476,10 +476,10 @@ async function cargarPedidos() {
           </td>
           <td>
             <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
-              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>⏳ Pendiente</option>
-              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}>🔥 En preparación</option>
-              <option value="listo"          ${p.estado==='listo'?'selected':''}>✅ Listo</option>
-              <option value="entregado"      ${p.estado==='entregado'?'selected':''}>📦 Entregado</option>
+              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}> Pendiente</option>
+              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}> En preparación</option>
+              <option value="listo"          ${p.estado==='listo'?'selected':''}> Listo</option>
+              <option value="entregado"      ${p.estado==='entregado'?'selected':''}> Entregado</option>
             </select>
           </td>
           <td><div class="hora-cell">${p.hora}</div></td>
