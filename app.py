@@ -2,22 +2,18 @@ from flask import Flask, render_template, request, redirect, session, jsonify
 import hashlib, datetime, os, json
 import psycopg
 from psycopg.rows import dict_row
+import mercadopago
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "tumenu_secret_2025")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
+MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN", "")
+MP_PUBLIC_KEY   = os.environ.get("MP_PUBLIC_KEY", "")
 
-PUNTOS_POR_PESO = 50
-
-BENEFICIOS = [
-    {"id": 1, "nombre": "Postre gratis",       "descripcion": "Cualquier postre de la carta sin cargo",      "puntos": 500,  "emoji": ""},
-    {"id": 2, "nombre": "Bebida gratis",        "descripcion": "Gaseosa, agua o cerveza rubia sin cargo",    "puntos": 300,  "emoji": ""},
-    {"id": 3, "nombre": "10% descuento",        "descripcion": "10% off en tu próximo pedido",               "puntos": 800,  "emoji": ""},
-    {"id": 4, "nombre": "Entrada gratis",       "descripcion": "Empanadas (x2) o ensalada mixta sin cargo",  "puntos": 600,  "emoji": ""},
-    {"id": 5, "nombre": "Menú del día gratis",  "descripcion": "El menú completo del día sin cargo",         "puntos": 1500, "emoji": ""},
-    {"id": 6, "nombre": "Café + postre",        "descripcion": "Café o té con postre de la carta",           "puntos": 400,  "emoji": ""},
-]
+def get_mp_sdk():
+    sdk = mercadopago.SDK(MP_ACCESS_TOKEN)
+    return sdk
 
 # ===== DB =====
 def get_db():
@@ -62,7 +58,43 @@ def init_db():
         puntos_usados INTEGER NOT NULL,
         hora TEXT NOT NULL
     )""")
-    # Admin por defecto
+    c.execute("""CREATE TABLE IF NOT EXISTS beneficios (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        descripcion TEXT NOT NULL,
+        puntos INTEGER NOT NULL,
+        emoji TEXT NOT NULL DEFAULT '🎁',
+        activo BOOLEAN NOT NULL DEFAULT TRUE
+    )""")
+    c.execute("""CREATE TABLE IF NOT EXISTS pagos_mp (
+        id SERIAL PRIMARY KEY,
+        pedido_id INTEGER,
+        preference_id TEXT,
+        payment_id TEXT,
+        estado TEXT NOT NULL DEFAULT 'pendiente',
+        tipo TEXT NOT NULL DEFAULT 'checkout',
+        total INTEGER NOT NULL,
+        usuario_email TEXT NOT NULL,
+        hora TEXT NOT NULL
+    )""")
+    c.execute("""CREATE TABLE IF NOT EXISTS config (
+        clave TEXT PRIMARY KEY,
+        valor TEXT NOT NULL
+    )""")
+    c.execute("""INSERT INTO config (clave, valor) VALUES ('puntos_por_peso', '50')
+                 ON CONFLICT (clave) DO NOTHING""")
+    beneficios_default = [
+        ('15% de descuento en tu próxima visita', '15% off en cualquier pedido', 800, '🏷️'),
+        ('Café con medialunas', '2 medialunas + café o té a elección', 400, '☕'),
+        ('Hamburguesa con guarnición y gaseosa', 'Hamburguesa clásica + papas fritas + gaseosa 500cc', 1200, '🍔'),
+        ('Postre gratis', 'Cualquier postre de la carta sin cargo', 500, '🍰'),
+        ('Bebida gratis', 'Gaseosa, agua o cerveza rubia sin cargo', 300, '🥤'),
+        ('Menú del día gratis', 'El menú completo del día sin cargo', 1500, '🍽️'),
+    ]
+    for b in beneficios_default:
+        c.execute("""INSERT INTO beneficios (nombre, descripcion, puntos, emoji)
+                     SELECT %s, %s, %s, %s WHERE NOT EXISTS (SELECT 1 FROM beneficios WHERE nombre=%s)""",
+                  (b[0], b[1], b[2], b[3], b[0]))
     c.execute("""INSERT INTO admins (nombre, email, password, creado_en)
                  VALUES (%s, %s, %s, %s)
                  ON CONFLICT (email) DO NOTHING""",
@@ -75,130 +107,102 @@ def init_db():
 
 init_db()
 
+def get_beneficios():
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM beneficios WHERE activo=TRUE ORDER BY puntos ASC")
+    rows = c.fetchall(); c.close(); conn.close()
+    return [dict(r) for r in rows]
+
+def get_puntos_por_peso():
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT valor FROM config WHERE clave='puntos_por_peso'")
+    row = c.fetchone(); c.close(); conn.close()
+    return int(row["valor"]) if row else 50
+
 # ===== MENÚ =====
 MENU = {
     "menu_del_dia": {
         "nombre": "Milanesa napolitana + guarnición + postre",
         "descripcion": "Incluye bebida sin alcohol. Disponible hasta las 15:00 hs",
-        "precio": 3800,
-        "emoji": ""
+        "precio": 3800, "emoji": "🍽️"
     },
     "categorias": {
         "comidas": {
-            "nombre": "Comidas",
-            "emoji": "",
+            "nombre": "Comidas", "emoji": "🍽️",
             "subcategorias": {
-                "pastas": {
-                    "nombre": "Pastas",
-                    "items": [
-                        {"id": 1,  "nombre": "Ñoquis",                   "desc": "Salsa de tomate fresco, albahaca y parmesano",   "precio": 2100, "emoji": ""},
-                        {"id": 2,  "nombre": "Tallarines a la bolognesa", "desc": "Carne vacuna, zanahoria, vino tinto",             "precio": 2400, "emoji": ""},
-                        {"id": 3,  "nombre": "Sorrentinos de ricotta",    "desc": "Rellenos de ricotta y espinaca, salsa blanca",   "precio": 2700, "emoji": ""},
-                    ]
-                },
-                "carnes": {
-                    "nombre": "Carnes",
-                    "items": [
-                        {"id": 10, "nombre": "Milanesa napolitana", "desc": "Con jamón, mozzarella y salsa de tomate",   "precio": 3200, "emoji": ""},
-                        {"id": 11, "nombre": "Bife de chorizo",     "desc": "A la plancha con papas fritas",             "precio": 4100, "emoji": ""},
-                        {"id": 12, "nombre": "Pollo a la plancha",  "desc": "Con ensalada mixta y papas al horno",       "precio": 2900, "emoji": ""},
-                        {"id": 13, "nombre": "Asado",               "desc": "Fuente como para 2 personas",               "precio": 3800, "emoji": ""},
-                    ]
-                },
-                "sandwiches": {
-                    "nombre": "Sandwiches",
-                    "items": [
-                        {"id": 20, "nombre": "Lomito completo",    "desc": "Lomito, jamón, queso, lechuga, tomate, huevo", "precio": 2600, "emoji": ""},
-                        {"id": 21, "nombre": "Hamburguesa clásica","desc": "200g de carne, cheddar, pepino, cebolla",      "precio": 2200, "emoji": ""},
-                        {"id": 22, "nombre": "Club sandwich",      "desc": "Pollo, panceta, lechuga, tomate, mayonesa",    "precio": 2400, "emoji": ""},
-                    ]
-                },
-                "ensaladas": {
-                    "nombre": "Ensaladas",
-                    "items": [
-                        {"id": 30, "nombre": "Ensalada César",  "desc": "Pollo grillado, lechuga romana, crutones",  "precio": 1900, "emoji": ""},
-                        {"id": 31, "nombre": "Ensalada mixta",  "desc": "Lechuga, tomate, zanahoria, choclo",        "precio": 1400, "emoji": ""},
-                    ]
-                },
+                "pastas": {"nombre": "Pastas", "items": [
+                    {"id":1,  "nombre":"Ñoquis",                  "desc":"Salsa de tomate fresco, albahaca y parmesano",    "precio":2100, "emoji":"🍝"},
+                    {"id":2,  "nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto",              "precio":2400, "emoji":"🍝"},
+                    {"id":3,  "nombre":"Sorrentinos de ricotta",   "desc":"Rellenos de ricotta y espinaca, salsa blanca",    "precio":2700, "emoji":"🫕"}
+                ]},
+                "carnes": {"nombre": "Carnes", "items": [
+                    {"id":10, "nombre":"Milanesa napolitana",      "desc":"Con jamón, mozzarella y salsa de tomate",         "precio":3200, "emoji":"🥩"},
+                    {"id":11, "nombre":"Bife de chorizo",          "desc":"A la plancha con papas fritas",                   "precio":4100, "emoji":"🥩"},
+                    {"id":12, "nombre":"Pollo a la plancha",       "desc":"Con ensalada mixta y papas al horno",             "precio":2900, "emoji":"🍗"},
+                    {"id":13, "nombre":"Asado",                    "desc":"Fuente como para 2 personas",                     "precio":3800, "emoji":"🥩"}
+                ]},
+                "sandwiches": {"nombre": "Sandwiches", "items": [
+                    {"id":20, "nombre":"Lomito completo",          "desc":"Lomito, jamón, queso, lechuga, tomate, huevo",    "precio":2600, "emoji":"🥪"},
+                    {"id":21, "nombre":"Hamburguesa clásica",      "desc":"200g de carne, cheddar, pepino, cebolla",         "precio":2200, "emoji":"🍔"},
+                    {"id":22, "nombre":"Club sandwich",            "desc":"Pollo, panceta, lechuga, tomate, mayonesa",       "precio":2400, "emoji":"🥪"}
+                ]},
+                "ensaladas": {"nombre": "Ensaladas", "items": [
+                    {"id":30, "nombre":"Ensalada César",           "desc":"Pollo grillado, lechuga romana, crutones",        "precio":1900, "emoji":"🥗"},
+                    {"id":31, "nombre":"Ensalada mixta",           "desc":"Lechuga, tomate, zanahoria, choclo",              "precio":1400, "emoji":"🥗"}
+                ]}
             }
         },
         "bebidas": {
-            "nombre": "Bebidas",
-            "emoji": "",
+            "nombre": "Bebidas", "emoji": "🍺",
             "subcategorias": {
-                "cervezas": {
-                    "nombre": "Cervezas",
-                    "items": [
-                        {"id": 40, "nombre": "Cerveza Brahma",              "desc": "Cerveza clasica",              "precio": 900,  "emoji": ""},
-                        {"id": 41, "nombre": "Cerveza Andes negra 473cc",   "desc": "Aroma y sabor tostado",        "precio": 1000, "emoji": ""},
-                    ]
-                },
-                "gaseosas": {
-                    "nombre": "Gaseosas",
-                    "items": [
-                        {"id": 50, "nombre": "Coca-Cola 500cc",    "desc": "Botella personal bien fría",   "precio": 700, "emoji": ""},
-                        {"id": 51, "nombre": "Sprite 500cc",       "desc": "Lima limón refrescante",       "precio": 700, "emoji": ""},
-                        {"id": 52, "nombre": "Fanta naranja 500cc","desc": "Sabor naranja",                "precio": 700, "emoji": ""},
-                    ]
-                },
-                "aguas": {
-                    "nombre": "Aguas",
-                    "items": [
-                        {"id": 60, "nombre": "Agua sin gas 500cc",  "desc": "Botella individual",           "precio": 100, "emoji": ""},
-                        {"id": 61, "nombre": "Agua con gas 500cc",  "desc": "Con burbujas",                 "precio": 550, "emoji": ""},
-                        {"id": 62, "nombre": "Agua saborizada",     "desc": "Pomelo, Manzana y Pera",       "precio": 650, "emoji": ""},
-                    ]
-                },
-                "vinos": {
-                    "nombre": "Vinos",
-                    "items": [
-                        {"id": 70, "nombre": "Malbec copa", "desc": "Mendoza, 150cc", "precio": 1200, "emoji": ""},
-                    ]
-                },
+                "cervezas": {"nombre": "Cervezas", "items": [
+                    {"id":40, "nombre":"Cerveza Brahma",                    "desc":"Cerveza clásica",                    "precio":900,  "emoji":"🍺"},
+                    {"id":41, "nombre":"Cerveza Andes negra lata 473cc",    "desc":"Aroma y sabor tostado",             "precio":1000, "emoji":"🍺"}
+                ]},
+                "gaseosas": {"nombre": "Gaseosas", "items": [
+                    {"id":50, "nombre":"Coca-Cola 500cc",  "desc":"Botella personal bien fría",  "precio":700, "emoji":"🥤"},
+                    {"id":51, "nombre":"Sprite 500cc",     "desc":"Lima limón refrescante",      "precio":700, "emoji":"🥤"},
+                    {"id":52, "nombre":"Fanta naranja 500cc","desc":"Sabor naranja",             "precio":700, "emoji":"🥤"}
+                ]},
+                "aguas": {"nombre": "Aguas", "items": [
+                    {"id":60, "nombre":"Agua sin gas 500cc", "desc":"Botella individual",               "precio":500, "emoji":"💧"},
+                    {"id":61, "nombre":"Agua con gas 500cc", "desc":"Con burbujas",                     "precio":550, "emoji":"💧"},
+                    {"id":62, "nombre":"Agua saborizada",    "desc":"Pomelo, Manzana y Pera",           "precio":650, "emoji":"💧"}
+                ]},
+                "vinos": {"nombre": "Vinos", "items": [
+                    {"id":70, "nombre":"Malbec copa", "desc":"Mendoza, 150cc", "precio":1200, "emoji":"🍷"}
+                ]}
             }
         },
         "postres": {
-            "nombre": "Postres",
-            "emoji": "",
+            "nombre": "Postres", "emoji": "🍰",
             "subcategorias": {
-                "helados": {
-                    "nombre": "Helados",
-                    "items": [
-                        {"id": 80, "nombre": "Helado 2 bochas", "desc": "Dulce de leche, chocolate, vainilla o frutilla", "precio": 900,  "emoji": ""},
-                        {"id": 81, "nombre": "Helado 3 bochas", "desc": "A elección con salsa o granizado",               "precio": 1200, "emoji": ""},
-                    ]
-                },
-                "tortas": {
-                    "nombre": "Tortas",
-                    "items": [
-                        {"id": 90, "nombre": "Torta de chocolate",          "desc": "Con ganache y crema batida",              "precio": 1400, "emoji": ""},
-                        {"id": 91, "nombre": "Cheesecake de frutos rojos",  "desc": "Base de galleta, queso crema, coulis",    "precio": 1500, "emoji": ""},
-                    ]
-                },
-                "otros": {
-                    "nombre": "Otros postres",
-                    "items": [
-                        {"id": 100, "nombre": "Tiramisú",                      "desc": "Receta italiana clásica con mascarpone",  "precio": 1300, "emoji": ""},
-                        {"id": 101, "nombre": "Panqueques con dulce de leche", "desc": "Con crema y nueces",                      "precio": 1100, "emoji": ""},
-                        {"id": 102, "nombre": "Flan con crema",                "desc": "Casero, con caramelo y crema batida",     "precio": 950,  "emoji": ""},
-                    ]
-                },
+                "helados": {"nombre": "Helados", "items": [
+                    {"id":80, "nombre":"Helado 2 bochas", "desc":"Dulce de leche, chocolate, vainilla o frutilla", "precio":900,  "emoji":"🍨"},
+                    {"id":81, "nombre":"Helado 3 bochas", "desc":"A elección con salsa o granizado",               "precio":1200, "emoji":"🍨"}
+                ]},
+                "tortas": {"nombre": "Tortas", "items": [
+                    {"id":90, "nombre":"Torta de chocolate",       "desc":"Con ganache y crema batida",            "precio":1400, "emoji":"🎂"},
+                    {"id":91, "nombre":"Cheesecake de frutos rojos","desc":"Base de galleta, queso crema, coulis", "precio":1500, "emoji":"🍰"}
+                ]},
+                "otros": {"nombre": "Otros postres", "items": [
+                    {"id":100,"nombre":"Tiramisú",                    "desc":"Receta italiana clásica con mascarpone","precio":1300,"emoji":"🍮"},
+                    {"id":101,"nombre":"Panqueques con dulce de leche","desc":"Con crema y nueces",                 "precio":1100,"emoji":"🥞"},
+                    {"id":102,"nombre":"Flan con crema",              "desc":"Casero, con caramelo y crema batida", "precio":950, "emoji":"🍮"}
+                ]}
             }
-        },
+        }
     }
 }
-
 
 def hashear(p): return hashlib.sha256(p.encode()).hexdigest()
 def usuario_logueado(): return session.get("usuario")
 def admin_logueado(): return session.get("admin")
 
 def get_puntos(email):
-    conn = get_db()
-    c = conn.cursor()
+    conn = get_db(); c = conn.cursor()
     c.execute("SELECT puntos FROM usuarios WHERE email=%s", (email,))
-    row = c.fetchone()
-    c.close(); conn.close()
+    row = c.fetchone(); c.close(); conn.close()
     return row["puntos"] if row else 0
 
 # ===== RUTAS CLIENTE =====
@@ -208,8 +212,10 @@ def index():
     if usuario:
         usuario["puntos"] = get_puntos(usuario["email"])
         session["usuario"] = usuario
+    beneficios = get_beneficios()
+    puntos_por_peso = get_puntos_por_peso()
     return render_template("menu.html", menu=MENU, usuario=usuario,
-                           beneficios=BENEFICIOS, puntos_por_peso=PUNTOS_POR_PESO)
+                           beneficios=beneficios, puntos_por_peso=puntos_por_peso)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -263,8 +269,7 @@ def pedido():
     pago    = datos.get("pago", "efectivo")
     usuario = session["usuario"]
     if not items: return jsonify({"error":"Carrito vacío"}), 400
-
-    puntos_ganados = total // PUNTOS_POR_PESO
+    puntos_ganados = total // get_puntos_por_peso()
     conn = get_db(); c = conn.cursor()
     c.execute("""INSERT INTO pedidos
                  (usuario_email,usuario_nombre,items,total,puntos_ganados,tipo,pago,estado,hora)
@@ -288,7 +293,9 @@ def canjear():
     datos = request.get_json()
     beneficio_id = datos.get("beneficio_id")
     usuario = session["usuario"]
-    beneficio = next((b for b in BENEFICIOS if b["id"] == beneficio_id), None)
+    conn2 = get_db(); c2 = conn2.cursor()
+    c2.execute("SELECT * FROM beneficios WHERE id=%s AND activo=TRUE", (beneficio_id,))
+    beneficio = c2.fetchone(); c2.close(); conn2.close()
     if not beneficio: return jsonify({"error":"Beneficio no encontrado"}), 404
     conn = get_db(); c = conn.cursor()
     c.execute("SELECT puntos FROM usuarios WHERE email=%s", (usuario["email"],))
@@ -309,6 +316,134 @@ def canjear():
     usuario["puntos"] = nuevos_puntos
     session["usuario"] = usuario
     return jsonify({"ok": True, "puntos_restantes": nuevos_puntos, "beneficio": beneficio["nombre"]})
+
+
+# ===== MERCADO PAGO =====
+
+@app.route("/mp/crear-preferencia", methods=["POST"])
+def mp_crear_preferencia():
+    if not usuario_logueado(): return jsonify({"error":"no_auth"}), 401
+    datos   = request.get_json()
+    items   = datos.get("items", [])
+    total   = datos.get("total", 0)
+    tipo    = datos.get("tipo", "local")
+    usuario = session["usuario"]
+    if not items: return jsonify({"error":"Carrito vacío"}), 400
+
+    sdk = get_mp_sdk()
+    base_url = request.host_url.rstrip("/")
+
+    mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
+                 "unit_price": float(i["precio"]), "currency_id": "ARS"}
+                for i in items]
+
+    preference_data = {
+        "items": mp_items,
+        "payer": {"email": usuario["email"]},
+        "back_urls": {
+            "success": base_url + "/mp/exito",
+            "failure": base_url + "/mp/fallo",
+            "pending": base_url + "/mp/pendiente"
+        },
+        "auto_return": "approved",
+        "external_reference": usuario["email"] + "|" + tipo + "|" + datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+        "statement_descriptor": "TuMenu",
+        "notification_url": base_url + "/mp/webhook",
+    }
+
+    result = sdk.preference().create(preference_data)
+    if result["status"] not in (200, 201):
+        return jsonify({"error": "Error creando preferencia MP"}), 500
+
+    pref = result["response"]
+    conn = get_db(); c = conn.cursor()
+    c.execute("""INSERT INTO pagos_mp (preference_id, estado, tipo, total, usuario_email, hora)
+                 VALUES (%s, %s, %s, %s, %s, %s)""",
+              (pref["id"], "pendiente", "checkout", total, usuario["email"],
+               datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    conn.commit(); c.close(); conn.close()
+
+    return jsonify({"init_point": pref["init_point"], "preference_id": pref["id"]})
+
+
+@app.route("/mp/exito")
+def mp_exito():
+    payment_id       = request.args.get("payment_id","")
+    status           = request.args.get("status","")
+    preference_id    = request.args.get("preference_id","")
+    external_ref     = request.args.get("external_reference","")
+
+    if status == "approved" and payment_id:
+        # Registrar pago aprobado
+        conn = get_db(); c = conn.cursor()
+        c.execute("UPDATE pagos_mp SET estado=%s, payment_id=%s WHERE preference_id=%s",
+                  ("aprobado", payment_id, preference_id))
+        conn.commit(); c.close(); conn.close()
+
+    return redirect("/?pago=exito&payment_id=" + payment_id)
+
+
+@app.route("/mp/fallo")
+def mp_fallo():
+    return redirect("/?pago=fallo")
+
+
+@app.route("/mp/pendiente")
+def mp_pendiente():
+    return redirect("/?pago=pendiente")
+
+
+@app.route("/mp/webhook", methods=["POST"])
+def mp_webhook():
+    data = request.get_json(silent=True) or {}
+    topic = data.get("type") or request.args.get("topic","")
+    resource_id = data.get("data",{}).get("id") or request.args.get("id","")
+
+    if topic == "payment" and resource_id:
+        sdk = get_mp_sdk()
+        result = sdk.payment().get(resource_id)
+        if result["status"] == 200:
+            payment = result["response"]
+            estado_mp = payment.get("status","")
+            pref_id   = payment.get("preference_id","")
+            conn = get_db(); c = conn.cursor()
+            c.execute("UPDATE pagos_mp SET estado=%s, payment_id=%s WHERE preference_id=%s",
+                      (estado_mp, str(resource_id), pref_id))
+            conn.commit(); c.close(); conn.close()
+
+    return jsonify({"ok": True}), 200
+
+
+@app.route("/mp/qr/<int:pedido_id>")
+def mp_qr(pedido_id):
+    """Genera un QR de pago presencial para un pedido específico."""
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM pedidos WHERE id=%s", (pedido_id,))
+    ped = c.fetchone(); c.close(); conn.close()
+    if not ped: return jsonify({"error":"Pedido no encontrado"}), 404
+
+    sdk = get_mp_sdk()
+    items = json.loads(ped["items"])
+    mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
+                 "unit_price": float(i["precio"]), "currency_id": "ARS"}
+                for i in items]
+
+    preference_data = {
+        "items": mp_items,
+        "external_reference": f"pedido-{pedido_id}",
+        "statement_descriptor": "TuMenu",
+    }
+    result = sdk.preference().create(preference_data)
+    if result["status"] not in (200, 201):
+        return jsonify({"error": "Error generando QR"}), 500
+
+    pref = result["response"]
+    return jsonify({
+        "preference_id": pref["id"],
+        "init_point": pref["init_point"],
+        "qr_data": pref["init_point"]  # el link que se convierte en QR en el frontend
+    })
 
 # ===== RUTAS ADMIN =====
 @app.route("/admin")
@@ -396,6 +531,75 @@ def admin_stats():
     c.close(); conn.close()
     return jsonify({"total_hoy": total_hoy, "cant_hoy": cant_hoy,
                     "pendientes": pendientes, "en_preparacion": en_prep})
+
+@app.route("/admin/api/beneficios")
+def admin_get_beneficios():
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM beneficios ORDER BY puntos ASC")
+    rows = c.fetchall(); c.close(); conn.close()
+    return jsonify([dict(r) for r in rows])
+
+@app.route("/admin/api/beneficios", methods=["POST"])
+def admin_crear_beneficio():
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    d = request.get_json()
+    nombre = d.get("nombre","").strip()
+    descripcion = d.get("descripcion","").strip()
+    puntos = int(d.get("puntos", 0))
+    emoji = d.get("emoji","🎁").strip()
+    if not nombre or not descripcion or puntos <= 0:
+        return jsonify({"error":"Datos inválidos"}), 400
+    conn = get_db(); c = conn.cursor()
+    c.execute("INSERT INTO beneficios (nombre,descripcion,puntos,emoji) VALUES (%s,%s,%s,%s) RETURNING id",
+              (nombre, descripcion, puntos, emoji))
+    new_id = c.fetchone()["id"]
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True, "id": new_id})
+
+@app.route("/admin/api/beneficios/<int:bid>", methods=["PUT"])
+def admin_editar_beneficio(bid):
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    d = request.get_json()
+    nombre = d.get("nombre","").strip()
+    descripcion = d.get("descripcion","").strip()
+    puntos = int(d.get("puntos", 0))
+    emoji = d.get("emoji","🎁").strip()
+    activo = d.get("activo", True)
+    if not nombre or not descripcion or puntos <= 0:
+        return jsonify({"error":"Datos inválidos"}), 400
+    conn = get_db(); c = conn.cursor()
+    c.execute("UPDATE beneficios SET nombre=%s,descripcion=%s,puntos=%s,emoji=%s,activo=%s WHERE id=%s",
+              (nombre, descripcion, puntos, emoji, activo, bid))
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True})
+
+@app.route("/admin/api/beneficios/<int:bid>", methods=["DELETE"])
+def admin_eliminar_beneficio(bid):
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("UPDATE beneficios SET activo=FALSE WHERE id=%s", (bid,))
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True})
+
+@app.route("/admin/api/config", methods=["GET"])
+def admin_get_config():
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM config")
+    rows = c.fetchall(); c.close(); conn.close()
+    return jsonify({r["clave"]: r["valor"] for r in rows})
+
+@app.route("/admin/api/config", methods=["POST"])
+def admin_set_config():
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    d = request.get_json()
+    conn = get_db(); c = conn.cursor()
+    for clave, valor in d.items():
+        c.execute("INSERT INTO config (clave,valor) VALUES (%s,%s) ON CONFLICT (clave) DO UPDATE SET valor=%s",
+                  (clave, str(valor), str(valor)))
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
