@@ -873,3 +873,12 @@ body {
   background: var(--rojo-suave);
 }
 .opcion-card input:checked + .opcion-inner .opcion-label { color: var(--rojo); }
+
+/* ===== MERCADO PAGO ===== */
+.pago-opciones { grid-template-columns: repeat(3, 1fr); }
+.opcion-mp .opcion-inner { border-color: #009ee3; }
+.opcion-mp input:checked + .opcion-inner {
+  border-color: #009ee3;
+  background: rgba(0,158,227,0.08);
+}
+.opcion-mp input:checked + .opcion-inner .opcion-label { color: #009ee3; }
