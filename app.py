@@ -29,7 +29,7 @@ def mp_get(endpoint):
     r = http_requests.get(f"https://api.mercadopago.com/{endpoint}", headers=headers, timeout=10)
     return r.status_code, r.json()
 
-def mp_crear_preferencia(items_mp, payer_email, back_urls, external_reference, notification_url):
+def mp_api_preferencia(items_mp, payer_email, back_urls, external_reference, notification_url):
     body = {
         "items": items_mp,
         "payer": {"email": payer_email},
@@ -368,7 +368,7 @@ def mp_crear_preferencia():
     mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
                  "unit_price": float(i["precio"]), "currency_id": "ARS"}
                 for i in items]
-    status, pref = mp_crear_preferencia(
+    status, pref = mp_api_preferencia(
         mp_items, usuario["email"],
         {"success": base_url+"/mp/exito", "failure": base_url+"/mp/fallo", "pending": base_url+"/mp/pendiente"},
         usuario["email"]+"|"+tipo+"|"+datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
@@ -446,7 +446,7 @@ def mp_qr(pedido_id):
     mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
                  "unit_price": float(i["precio"]), "currency_id": "ARS"}
                 for i in items]
-    status, pref = mp_crear_preferencia(
+    status, pref = mp_api_preferencia(
         mp_items, "cliente@tumenu.com",
         {"success": request.host_url+"mp/exito",
          "failure": request.host_url+"mp/fallo",
