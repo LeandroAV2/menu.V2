@@ -30,15 +30,17 @@ def mp_get(endpoint):
     return r.status_code, r.json()
 
 def mp_api_preferencia(items_mp, payer_email, back_urls, external_reference, notification_url):
+    def to_https(url):
+        return url.replace("http://", "https://")
+
     body = {
         "items": items_mp,
         "payer": {"email": payer_email},
         "back_urls": {
-            "success": back_urls.get("success",""),
-            "failure": back_urls.get("failure",""),
-            "pending": back_urls.get("pending","")
+            "success": to_https(back_urls.get("success","")),
+            "failure": to_https(back_urls.get("failure","")),
+            "pending": to_https(back_urls.get("pending",""))
         },
-        "auto_return": "approved",
         "external_reference": external_reference,
         "statement_descriptor": "TuMenu",
     }
