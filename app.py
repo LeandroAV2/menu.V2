@@ -117,7 +117,7 @@ def get_puntos_por_peso():
     conn = get_db(); c = conn.cursor()
     c.execute("SELECT valor FROM config WHERE clave='puntos_por_peso'")
     row = c.fetchone(); c.close(); conn.close()
-    return int(row["valor"]) if row else 50
+    return int(row["valor"]) if row else 100
 
 # ===== MENÚ =====
 MENU = {
