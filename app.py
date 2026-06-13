@@ -638,7 +638,7 @@ def admin_cambiar_estado(pid):
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     datos = request.get_json()
     nuevo_estado = datos.get("estado")
-    if nuevo_estado not in ("pendiente","en_preparacion","listo","entregado"):
+    if nuevo_estado not in ("Pendiente","en_preparacion","listo","entregado"):
         return jsonify({"error":"Estado invalido"}), 400
     conn = get_db(); c = conn.cursor()
     c.execute("UPDATE pedidos SET estado=%s WHERE id=%s", (nuevo_estado, pid))
