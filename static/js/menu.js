@@ -63,7 +63,7 @@ function agregarAlCarrito(id, catKey, subcatKey) {
   if (existente) { existente.cantidad++; }
   else { carrito.push({ ...item, cantidad: 1 }); }
   actualizarCarritoUI();
-  mostrarToast('✓ ' + item.nombre + ' agregado');
+  mostrarToast(' ' + item.nombre + ' agregado');
 }
 
 function agregarMenuDia(nombre, precio, emoji) {
@@ -71,7 +71,7 @@ function agregarMenuDia(nombre, precio, emoji) {
   if (existente) { existente.cantidad++; }
   else { carrito.push({ id: 999, nombre, precio, emoji, cantidad: 1 }); }
   actualizarCarritoUI();
-  mostrarToast('✓ Menú del día agregado');
+  mostrarToast(' Menú del día agregado');
 }
 
 function cambiarCantidad(id, delta) {
@@ -93,7 +93,7 @@ function renderCarrito() {
   if (carrito.length === 0) {
     container.innerHTML = `
       <div class="carrito-vacio">
-        <div class="vacio-icon">🛒</div>
+        <div class="vacio-icon"></div>
         <p>Tu carrito está vacío.<br>Agregá algo del menú.</p>
       </div>`;
     document.getElementById('carrito-total').textContent = '$0';
@@ -135,6 +135,7 @@ async function confirmarPedido() {
     setTimeout(() => abrirModal('login'), 400);
     return;
   }
+  // Abrir modal de opciones de pedido
   abrirModalPedido();
 }
 
@@ -155,6 +156,7 @@ async function enviarPedido() {
 
   cerrarModalPedido();
 
+  // Si elige pago con MP online → crear preferencia y redirigir
   if (pago === 'mercadopago') {
     mostrarToast('Redirigiendo a Mercado Pago...');
     try {
@@ -165,6 +167,7 @@ async function enviarPedido() {
       });
       const data = await resp.json();
       if (data.init_point) {
+        // Guardar carrito en sessionStorage para confirmarlo tras el pago
         sessionStorage.setItem('carritoMP', JSON.stringify({ items, total, tipo }));
         window.location.href = data.init_point;
       } else if (data.error === 'no_auth') {
@@ -178,6 +181,7 @@ async function enviarPedido() {
     return;
   }
 
+  // Pago en local (efectivo / transferencia)
   try {
     const resp = await fetch('/pedido', {
       method: 'POST',
@@ -188,9 +192,9 @@ async function enviarPedido() {
     if (data.ok) {
       USUARIO.puntos = data.puntos_total;
       actualizarPuntosUI();
-      const tipoLabel = tipo === 'local' ? 'Para comer aquí' : 'Para llevar';
-      const pagoLabel = pago === 'efectivo' ? 'Efectivo' : 'Transferencia';
-      alert(`¡Pedido confirmado!\n\n${items.map(i=>`${i.cantidad}x ${i.nombre}`).join('\n')}\n\n${tipoLabel} · ${pagoLabel}\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n Total acumulado: ${data.puntos_total} puntos\n\n Tu pedido fue enviado a la cocina.`);
+      const tipoLabel = tipo === 'local' ? ' Para comer aquí' : ' Para llevar';
+      const pagoLabel = pago === 'efectivo' ? ' Efectivo' : ' Transferencia';
+      alert(` ¡Pedido confirmado!\n\n${items.map(i=>`${i.cantidad}x ${i.nombre}`).join('\n')}\n\n${tipoLabel} · ${pagoLabel}\nTotal: $${total.toLocaleString('es-AR')}\n⭐ Ganaste ${data.puntos_ganados} puntos\n Total acumulado: ${data.puntos_total} puntos\n\n Tu pedido fue enviado a la cocina.`);
       carrito = [];
       actualizarCarritoUI();
       toggleCarrito();
@@ -205,11 +209,13 @@ async function enviarPedido() {
   }
 }
 
+// Verificar si volvió de MP con pago exitoso
 function verificarPagoMP() {
   const params = new URLSearchParams(window.location.search);
   const pago = params.get('pago');
   const paymentId = params.get('payment_id');
   if (pago === 'exito' && paymentId) {
+    // Confirmar pedido en el sistema
     const carritoMP = JSON.parse(sessionStorage.getItem('carritoMP') || 'null');
     if (carritoMP) {
       fetch('/pedido', {
@@ -224,13 +230,13 @@ function verificarPagoMP() {
         sessionStorage.removeItem('carritoMP');
       });
     }
-    mostrarToast('¡Pago con Mercado Pago aprobado! Tu pedido fue enviado a la cocina.');
+    mostrarToast(' ¡Pago con Mercado Pago aprobado! Tu pedido fue enviado a la cocina.');
     history.replaceState({}, '', '/');
   } else if (pago === 'fallo') {
-    mostrarToast('El pago fue rechazado. Intentá de nuevo.');
+    mostrarToast(' El pago fue rechazado. Intentá de nuevo.');
     history.replaceState({}, '', '/');
   } else if (pago === 'pendiente') {
-    mostrarToast('Pago pendiente. Te avisaremos cuando se confirme.');
+    mostrarToast('⏳ Pago pendiente. Te avisaremos cuando se confirme.');
     history.replaceState({}, '', '/');
   }
 }
@@ -262,6 +268,7 @@ function renderBeneficios() {
     const puedeX = puntos >= b.puntos;
     return `
       <div class="beneficio-card ${puedeX ? '' : 'bloqueado'}">
+        <div class="beneficio-emoji">${b.emoji}</div>
         <div class="beneficio-info">
           <div class="beneficio-nombre">${b.nombre}</div>
           <div class="beneficio-desc">${b.descripcion}</div>
@@ -290,7 +297,7 @@ async function canjear(beneficioId) {
     if (data.ok) {
       USUARIO.puntos = data.puntos_restantes;
       actualizarPuntosUI();
-      mostrarToast(`¡"${data.beneficio}" canjeado! Mostráselo al mozo.`);
+      mostrarToast(` ¡"${data.beneficio}" canjeado! Mostráselo al mozo.`);
       renderBeneficios();
     } else {
       mostrarToast(data.error || 'Error al canjear');
