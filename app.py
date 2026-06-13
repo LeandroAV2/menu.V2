@@ -128,12 +128,12 @@ def init_db():
     c.execute("""INSERT INTO config (clave, valor) VALUES ('puntos_por_peso', '50')
                  ON CONFLICT (clave) DO NOTHING""")
     beneficios_default = [
-        ('15% de descuento en tu próxima visita', '15% off en cualquier pedido', 800, '🎟️'),
-        ('Café con medialunas', '2 medialunas + café o té a elección', 400, '☕'),
-        ('Hamburguesa con guarnición y gaseosa', 'Hamburguesa clásica + papas fritas + gaseosa 500cc', 1200, '🍔'),
-        ('Postre gratis', 'Cualquier postre de la carta sin cargo', 500, '🍮'),
-        ('Bebida gratis', 'Gaseosa, agua o cerveza rubia sin cargo', 300, '🥤'),
-        ('Menú del día gratis', 'El menú completo del día sin cargo', 1500, '🍽️'),
+        ('15% de descuento en tu próxima visita', '15% off en cualquier pedido', 800, ''),
+        ('Café con medialunas', '2 medialunas + café o té a elección', 400, ''),
+        ('Hamburguesa con guarnición y gaseosa', 'Hamburguesa clásica + papas fritas + gaseosa 500cc', 1200, ''),
+        ('Postre gratis', 'Cualquier postre de la carta sin cargo', 500, ''),
+        ('Bebida gratis', 'Gaseosa, agua o cerveza rubia sin cargo', 300, ''),
+        ('Menú del día gratis', 'El menú completo del día sin cargo', 1500, ''),
     ]
     for b in beneficios_default:
         c.execute("""INSERT INTO beneficios (nombre, descripcion, puntos, emoji)
