@@ -518,7 +518,7 @@
   <div class="filters-row">
     <span class="filters-label">Filtrar:</span>
     <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
-    <button class="filter-btn" onclick="setFiltro('pendiente', this)">Pendientes</button>
+    <button class="filter-btn" onclick="setFiltro('pendiente', this)">⏳ Pendientes</button>
     <button class="filter-btn" onclick="setFiltro('en_preparacion', this)"> En preparación</button>
     <button class="filter-btn" onclick="setFiltro('listo', this)"> Listos</button>
     <button class="filter-btn" onclick="setFiltro('entregado', this)"> Entregados</button>
@@ -743,7 +743,7 @@ async function cargarPedidos() {
           <td>
             <button class="btn-qr" onclick="verQR(${p.id}, ${p.total})" title="QR Mercado Pago"> QR</button>
           <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
-              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>Pendiente</option>
+              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>⏳ Pendiente</option>
               <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}> En preparación</option>
               <option value="listo"          ${p.estado==='listo'?'selected':''}> Listo</option>
               <option value="entregado"      ${p.estado==='entregado'?'selected':''}> Entregado</option>
@@ -1095,7 +1095,6 @@ async function eliminarSubcat(id) {
 function abrirModalNuevoItem(subcatId, subcatNombre) {
   abrirModalMenu(`Nuevo plato en "${subcatNombre}"`, `
     <input type="hidden" id="m-subcat-id" value="${subcatId}"/>
-    <div class="mfield"><label>Emoji</label><input type="text" id="m-emoji" placeholder="" maxlength="4" value=""/></div>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Pizza napolitana"/></div>
     <div class="mfield"><label>Descripción</label><input type="text" id="m-desc" placeholder="Ingredientes o descripción breve"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" placeholder="1500" min="1"/></div>
@@ -1105,9 +1104,9 @@ function abrirModalNuevoItem(subcatId, subcatNombre) {
 function abrirModalEditarItem(it) {
   abrirModalMenu('Editar plato', `
     <input type="hidden" id="m-id" value="${it.id}"/>
-    <div class="mfield"><label>Emoji</label><input type="text" id="m-emoji" value="${it.emoji}" maxlength="4"/></div>
+    <input type="hidden" id="m-emoji" value="${it.emoji}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${it.nombre}"/></div>
-    <div class="mfield"><label>Descripción</label><input type="text" id="m-desc" value="${it.desc}"/></div>
+    <div class="mfield"><label>Descripción</label><input type="text" id="m-desc" value="${it.desc ?? it.descripcion ?? ''}"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" value="${it.precio}" min="1"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${it.activo?'selected':''}>Activo</option><option value="false" ${!it.activo?'selected':''}>Inactivo</option></select></div>
     <button class="btn-guardar-ben" onclick="editarItem()">Guardar</button>
@@ -1117,7 +1116,7 @@ async function crearItem() {
   const r = await fetch('/admin/api/menu/items', {method:'POST',headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       subcategoria_id: document.getElementById('m-subcat-id').value,
-      emoji:  document.getElementById('m-emoji').value,
+      emoji:  '',
       nombre: document.getElementById('m-nombre').value,
       desc:   document.getElementById('m-desc').value,
       precio: document.getElementById('m-precio').value,
