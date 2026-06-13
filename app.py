@@ -126,7 +126,7 @@ def init_db():
         id SERIAL PRIMARY KEY,
         subcategoria_id INTEGER NOT NULL,
         nombre TEXT NOT NULL,
-        desc TEXT NOT NULL DEFAULT '',
+        descripcion TEXT NOT NULL DEFAULT '',
         precio INTEGER NOT NULL,
         emoji TEXT NOT NULL DEFAULT '',
         orden INTEGER NOT NULL DEFAULT 0,
@@ -160,7 +160,7 @@ def init_db():
         items_data = [
             ("pastas","Ñoquis","Salsa de tomate fresco, albahaca y parmesano",2100,"",1),
             ("pastas","Tallarines a la bolognesa","Carne vacuna, zanahoria, vino tinto",2400,"",2),
-            ("pastas","Sorrentinos de ricotta","Rellenos de ricotta y espinaca, salsa blanca",2700,"🫕",3),
+            ("pastas","Sorrentinos de ricotta","Rellenos de ricotta y espinaca, salsa blanca",2700,"",3),
             ("carnes","Milanesa napolitana","Con jamon, mozzarella y salsa de tomate",3200,"",1),
             ("carnes","Bife de chorizo","A la plancha con papas fritas",4100,"",2),
             ("carnes","Pollo a la plancha","Con ensalada mixta y papas al horno",2900,"",3),
@@ -191,7 +191,7 @@ def init_db():
             c.execute("SELECT id FROM menu_subcategorias WHERE clave=%s", (it[0],))
             sub = c.fetchone()
             if sub:
-                c.execute("INSERT INTO menu_items (subcategoria_id,nombre,desc,precio,emoji,orden) VALUES (%s,%s,%s,%s,%s,%s)",
+                c.execute("INSERT INTO menu_items (subcategoria_id,nombre,descripcion,precio,emoji,orden) VALUES (%s,%s,%s,%s,%s,%s)",
                           (sub["id"], it[1], it[2], it[3], it[4], it[5]))
     c.execute("""INSERT INTO config (clave, valor) VALUES ('puntos_por_peso', '50')
                  ON CONFLICT (clave) DO NOTHING""")
@@ -240,7 +240,7 @@ def get_menu_db():
             items = c.fetchall()
             subcategorias[sub["clave"]] = {
                 "nombre": sub["nombre"],
-                "items": [{"id": it["id"], "nombre": it["nombre"], "desc": it["desc"],
+                "items": [{"id": it["id"], "nombre": it["nombre"], "desc": it["descripcion"],
                            "precio": it["precio"], "emoji": it["emoji"]} for it in items]
             }
         menu["categorias"][cat["clave"]] = {
@@ -276,7 +276,7 @@ MENU = {
                 "pastas": {"nombre": "Pastas", "items": [
                     {"id":1,  "nombre":"Ñoquis",                   "desc":"Salsa de tomate fresco, albahaca y parmesano", "precio":2100, "emoji":""},
                     {"id":2,  "nombre":"Tallarines a la bolognesa", "desc":"Carne vacuna, zanahoria, vino tinto",          "precio":2400, "emoji":""},
-                    {"id":3,  "nombre":"Sorrentinos de ricotta",    "desc":"Rellenos de ricotta y espinaca, salsa blanca", "precio":2700, "emoji":"🫕"}
+                    {"id":3,  "nombre":"Sorrentinos de ricotta",    "desc":"Rellenos de ricotta y espinaca, salsa blanca", "precio":2700, "emoji":""}
                 ]},
                 "carnes": {"nombre": "Carnes", "items": [
                     {"id":10, "nombre":"Milanesa napolitana", "desc":"Con jamon, mozzarella y salsa de tomate",  "precio":3200, "emoji":""},
@@ -827,7 +827,7 @@ def admin_crear_item():
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     d = request.get_json()
     nombre        = d.get("nombre","").strip()
-    desc          = d.get("desc","").strip()
+    descripcion   = d.get("desc","").strip()
     precio        = int(d.get("precio", 0))
     emoji         = d.get("emoji","").strip()
     subcategoria_id = int(d.get("subcategoria_id", 0))
@@ -836,8 +836,8 @@ def admin_crear_item():
     conn = get_db(); c = conn.cursor()
     c.execute("SELECT COALESCE(MAX(orden),0)+1 as o FROM menu_items WHERE subcategoria_id=%s", (subcategoria_id,))
     orden = c.fetchone()["o"]
-    c.execute("INSERT INTO menu_items (subcategoria_id,nombre,desc,precio,emoji,orden) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
-              (subcategoria_id, nombre, desc, precio, emoji, orden))
+    c.execute("INSERT INTO menu_items (subcategoria_id,nombre,descripcion,precio,emoji,orden) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
+              (subcategoria_id, nombre, descripcion, precio, emoji, orden))
     new_id = c.fetchone()["id"]
     conn.commit(); c.close(); conn.close()
     return jsonify({"ok": True, "id": new_id})
@@ -847,7 +847,7 @@ def admin_editar_item(iid):
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     d = request.get_json()
     conn = get_db(); c = conn.cursor()
-    c.execute("UPDATE menu_items SET nombre=%s,desc=%s,precio=%s,emoji=%s,activo=%s WHERE id=%s",
+    c.execute("UPDATE menu_items SET nombre=%s,descripcion=%s,precio=%s,emoji=%s,activo=%s WHERE id=%s",
               (d.get("nombre",""), d.get("desc",""), int(d.get("precio",0)),
                d.get("emoji",""), d.get("activo",True), iid))
     conn.commit(); c.close(); conn.close()
