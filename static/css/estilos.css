@@ -882,3 +882,83 @@ body {
   background: rgba(0,158,227,0.08);
 }
 .opcion-mp input:checked + .opcion-inner .opcion-label { color: #009ee3; }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: linear-gradient(135deg, #1a0000, #2d0a0a);
+  border-top: 1px solid rgba(192,57,43,0.3);
+  margin-top: 4rem;
+  padding: 3rem 2rem 0;
+  color: #ccc;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding-bottom: 2.5rem;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.footer-brand span { color: var(--rojo); }
+.footer-col { display: flex; flex-direction: column; gap: 0.8rem; }
+.footer-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rojo);
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.footer-social { display: flex; flex-direction: column; gap: 0.5rem; }
+.btn-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(192,57,43,0.1);
+  border: 1px solid rgba(192,57,43,0.25);
+  color: #ddd;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  width: fit-content;
+}
+.btn-social:hover {
+  background: rgba(192,57,43,0.25);
+  border-color: var(--rojo);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.footer-mail {
+  color: #bbb;
+  font-size: 0.88rem;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  transition: color 0.2s;
+}
+.footer-mail:hover { color: var(--rojo); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.75rem;
+  color: #555;
+  font-family: 'Outfit', sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .footer-inner { flex-direction: column; gap: 1.5rem; }
+}
