@@ -372,9 +372,7 @@
   }
   .ben-card:hover { border-color: #444; }
   .ben-card.inactivo { opacity: 0.45; }
-  .ben-card-top { display: flex; align-items: center; gap: 0.8rem; }
-  .ben-card-emoji { font-size: 2rem; width: 44px; text-align: center; }
-  .ben-card-nombre { font-weight: 600; font-size: 0.95rem; }
+  .ben-card-nombre { font-weight: 600; font-size: 0.95rem; padding-right: 4.5rem; }
   .ben-card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
   .ben-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem; }
   .ben-pts {
@@ -601,10 +599,6 @@
   </div>
   <div class="modal-ben-body">
     <input type="hidden" id="ben-edit-id" value="" />
-    <div class="mfield">
-      <label>Emoji</label>
-      <input type="text" id="ben-emoji" placeholder="" maxlength="4" />
-    </div>
     <div class="mfield">
       <label>Nombre</label>
       <input type="text" id="ben-nombre" placeholder="Ej: Café con medialunas" />
@@ -855,12 +849,7 @@ async function cargarBeneficios() {
   grid.innerHTML = lista.map(b => `
     <div class="ben-card ${b.activo ? '' : 'inactivo'}">
       <span class="ben-status ${b.activo ? 'activo' : 'inactivo'}">${b.activo ? 'ACTIVO' : 'INACTIVO'}</span>
-      <div class="ben-card-top">
-        <div class="ben-card-emoji">${b.emoji}</div>
-        <div>
-          <div class="ben-card-nombre">${b.nombre}</div>
-        </div>
-      </div>
+      <div class="ben-card-nombre">${b.nombre}</div>
       <div class="ben-card-desc">${b.descripcion}</div>
       <div class="ben-card-footer">
         <span class="ben-pts">⭐ ${b.puntos} pts</span>
@@ -893,7 +882,6 @@ async function guardarPPP() {
 
 function abrirModalBen(b) {
   document.getElementById('ben-edit-id').value = '';
-  document.getElementById('ben-emoji').value = '';
   document.getElementById('ben-nombre').value = '';
   document.getElementById('ben-desc').value = '';
   document.getElementById('ben-puntos').value = '';
@@ -905,7 +893,6 @@ function abrirModalBen(b) {
 
 function editarBeneficio(b) {
   document.getElementById('ben-edit-id').value = b.id;
-  document.getElementById('ben-emoji').value = b.emoji;
   document.getElementById('ben-nombre').value = b.nombre;
   document.getElementById('ben-desc').value = b.descripcion;
   document.getElementById('ben-puntos').value = b.puntos;
@@ -923,7 +910,6 @@ function cerrarModalBen() {
 async function guardarBeneficio() {
   const id = document.getElementById('ben-edit-id').value;
   const body = {
-    emoji:       document.getElementById('ben-emoji').value || '',
     nombre:      document.getElementById('ben-nombre').value.trim(),
     descripcion: document.getElementById('ben-desc').value.trim(),
     puntos:      parseInt(document.getElementById('ben-puntos').value),
