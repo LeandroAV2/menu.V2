@@ -107,7 +107,7 @@ def init_db():
         nombre TEXT NOT NULL,
         descripcion TEXT NOT NULL,
         puntos INTEGER NOT NULL,
-        emoji TEXT NOT NULL DEFAULT '',
+        emoji TEXT NOT NULL DEFAULT '🎁',
         activo BOOLEAN NOT NULL DEFAULT TRUE
     )""")
     c.execute("""CREATE TABLE IF NOT EXISTS pagos_mp (
@@ -128,12 +128,12 @@ def init_db():
     c.execute("""INSERT INTO config (clave, valor) VALUES ('puntos_por_peso', '50')
                  ON CONFLICT (clave) DO NOTHING""")
     beneficios_default = [
-        ('15% de descuento en tu próxima visita', '15% off en cualquier pedido', 800, ''),
-        ('Café con medialunas', '2 medialunas + café o té a elección', 400, ''),
-        ('Hamburguesa con guarnición y gaseosa', 'Hamburguesa clásica + papas fritas + gaseosa 500cc', 1200, ''),
-        ('Postre gratis', 'Cualquier postre de la carta sin cargo', 500, ''),
-        ('Bebida gratis', 'Gaseosa, agua o cerveza rubia sin cargo', 300, ''),
-        ('Menú del día gratis', 'El menú completo del día sin cargo', 1500, ''),
+        ('15% de descuento en tu próxima visita', '15% off en cualquier pedido', 800, '🏷️'),
+        ('Café con medialunas', '2 medialunas + café o té a elección', 400, '☕'),
+        ('Hamburguesa con guarnición y gaseosa', 'Hamburguesa clásica + papas fritas + gaseosa 500cc', 1200, '🍔'),
+        ('Postre gratis', 'Cualquier postre de la carta sin cargo', 500, '🍰'),
+        ('Bebida gratis', 'Gaseosa, agua o cerveza rubia sin cargo', 300, '🥤'),
+        ('Menú del día gratis', 'El menú completo del día sin cargo', 1500, '🍽️'),
     ]
     for b in beneficios_default:
         c.execute("""INSERT INTO beneficios (nombre, descripcion, puntos, emoji)
@@ -168,71 +168,71 @@ MENU = {
     "menu_del_dia": {
         "nombre": "Milanesa napolitana + guarnición + postre",
         "descripcion": "Incluye bebida sin alcohol. Disponible hasta las 15:00 hs",
-        "precio": 3800, "emoji": ""
+        "precio": 3800, "emoji": "🍽️"
     },
     "categorias": {
         "comidas": {
-            "nombre": "Comidas", "emoji": "",
+            "nombre": "Comidas", "emoji": "🍽️",
             "subcategorias": {
                 "pastas": {"nombre": "Pastas", "items": [
-                    {"id":1,  "nombre":"Ñoquis",                  "desc":"Salsa de tomate fresco, albahaca y parmesano",    "precio":2100, "emoji":""},
-                    {"id":2,  "nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto",              "precio":2400, "emoji":""},
-                    {"id":3,  "nombre":"Sorrentinos de ricotta",   "desc":"Rellenos de ricotta y espinaca, salsa blanca",    "precio":2700, "emoji":""}
+                    {"id":1,  "nombre":"Ñoquis",                  "desc":"Salsa de tomate fresco, albahaca y parmesano",    "precio":2100, "emoji":"🍝"},
+                    {"id":2,  "nombre":"Tallarines a la bolognesa","desc":"Carne vacuna, zanahoria, vino tinto",              "precio":2400, "emoji":"🍝"},
+                    {"id":3,  "nombre":"Sorrentinos de ricotta",   "desc":"Rellenos de ricotta y espinaca, salsa blanca",    "precio":2700, "emoji":"🫕"}
                 ]},
                 "carnes": {"nombre": "Carnes", "items": [
-                    {"id":10, "nombre":"Milanesa napolitana",      "desc":"Con jamón, mozzarella y salsa de tomate",         "precio":3200, "emoji":""},
-                    {"id":11, "nombre":"Bife de chorizo",          "desc":"A la plancha con papas fritas",                   "precio":4100, "emoji":""},
-                    {"id":12, "nombre":"Pollo a la plancha",       "desc":"Con ensalada mixta y papas al horno",             "precio":2900, "emoji":""},
-                    {"id":13, "nombre":"Asado",                    "desc":"Fuente como para 2 personas",                     "precio":3800, "emoji":""}
+                    {"id":10, "nombre":"Milanesa napolitana",      "desc":"Con jamón, mozzarella y salsa de tomate",         "precio":3200, "emoji":"🥩"},
+                    {"id":11, "nombre":"Bife de chorizo",          "desc":"A la plancha con papas fritas",                   "precio":4100, "emoji":"🥩"},
+                    {"id":12, "nombre":"Pollo a la plancha",       "desc":"Con ensalada mixta y papas al horno",             "precio":2900, "emoji":"🍗"},
+                    {"id":13, "nombre":"Asado",                    "desc":"Fuente como para 2 personas",                     "precio":3800, "emoji":"🥩"}
                 ]},
                 "sandwiches": {"nombre": "Sandwiches", "items": [
-                    {"id":20, "nombre":"Lomito completo",          "desc":"Lomito, jamón, queso, lechuga, tomate, huevo",    "precio":2600, "emoji":""},
-                    {"id":21, "nombre":"Hamburguesa clásica",      "desc":"200g de carne, cheddar, pepino, cebolla",         "precio":2200, "emoji":""},
-                    {"id":22, "nombre":"Club sandwich",            "desc":"Pollo, panceta, lechuga, tomate, mayonesa",       "precio":2400, "emoji":""}
+                    {"id":20, "nombre":"Lomito completo",          "desc":"Lomito, jamón, queso, lechuga, tomate, huevo",    "precio":2600, "emoji":"🥪"},
+                    {"id":21, "nombre":"Hamburguesa clásica",      "desc":"200g de carne, cheddar, pepino, cebolla",         "precio":2200, "emoji":"🍔"},
+                    {"id":22, "nombre":"Club sandwich",            "desc":"Pollo, panceta, lechuga, tomate, mayonesa",       "precio":2400, "emoji":"🥪"}
                 ]},
                 "ensaladas": {"nombre": "Ensaladas", "items": [
-                    {"id":30, "nombre":"Ensalada César",           "desc":"Pollo grillado, lechuga romana, crutones",        "precio":1900, "emoji":""},
-                    {"id":31, "nombre":"Ensalada mixta",           "desc":"Lechuga, tomate, zanahoria, choclo",              "precio":1400, "emoji":""}
+                    {"id":30, "nombre":"Ensalada César",           "desc":"Pollo grillado, lechuga romana, crutones",        "precio":1900, "emoji":"🥗"},
+                    {"id":31, "nombre":"Ensalada mixta",           "desc":"Lechuga, tomate, zanahoria, choclo",              "precio":1400, "emoji":"🥗"}
                 ]}
             }
         },
         "bebidas": {
-            "nombre": "Bebidas", "emoji": "",
+            "nombre": "Bebidas", "emoji": "🍺",
             "subcategorias": {
                 "cervezas": {"nombre": "Cervezas", "items": [
-                    {"id":40, "nombre":"Cerveza Brahma",                    "desc":"Cerveza clásica",                    "precio":900,  "emoji":""},
-                    {"id":41, "nombre":"Cerveza Andes negra lata 473cc",    "desc":"Aroma y sabor tostado",             "precio":1000, "emoji":""}
+                    {"id":40, "nombre":"Cerveza Brahma",                    "desc":"Cerveza clásica",                    "precio":900,  "emoji":"🍺"},
+                    {"id":41, "nombre":"Cerveza Andes negra lata 473cc",    "desc":"Aroma y sabor tostado",             "precio":1000, "emoji":"🍺"}
                 ]},
                 "gaseosas": {"nombre": "Gaseosas", "items": [
-                    {"id":50, "nombre":"Coca-Cola 500cc",  "desc":"Botella personal bien fría",  "precio":700, "emoji":""},
-                    {"id":51, "nombre":"Sprite 500cc",     "desc":"Lima limón refrescante",      "precio":700, "emoji":""},
-                    {"id":52, "nombre":"Fanta naranja 500cc","desc":"Sabor naranja",             "precio":700, "emoji":""}
+                    {"id":50, "nombre":"Coca-Cola 500cc",  "desc":"Botella personal bien fría",  "precio":700, "emoji":"🥤"},
+                    {"id":51, "nombre":"Sprite 500cc",     "desc":"Lima limón refrescante",      "precio":700, "emoji":"🥤"},
+                    {"id":52, "nombre":"Fanta naranja 500cc","desc":"Sabor naranja",             "precio":700, "emoji":"🥤"}
                 ]},
                 "aguas": {"nombre": "Aguas", "items": [
-                    {"id":60, "nombre":"Agua sin gas 500cc", "desc":"Botella individual",               "precio":100, "emoji":""},
-                    {"id":61, "nombre":"Agua con gas 500cc", "desc":"Con burbujas",                     "precio":550, "emoji":""},
-                    {"id":62, "nombre":"Agua saborizada",    "desc":"Pomelo, Manzana y Pera",           "precio":650, "emoji":""}
+                    {"id":60, "nombre":"Agua sin gas 500cc", "desc":"Botella individual",               "precio":500, "emoji":"💧"},
+                    {"id":61, "nombre":"Agua con gas 500cc", "desc":"Con burbujas",                     "precio":550, "emoji":"💧"},
+                    {"id":62, "nombre":"Agua saborizada",    "desc":"Pomelo, Manzana y Pera",           "precio":650, "emoji":"💧"}
                 ]},
                 "vinos": {"nombre": "Vinos", "items": [
-                    {"id":70, "nombre":"Malbec copa", "desc":"Mendoza, 150cc", "precio":1200, "emoji":""}
+                    {"id":70, "nombre":"Malbec copa", "desc":"Mendoza, 150cc", "precio":1200, "emoji":"🍷"}
                 ]}
             }
         },
         "postres": {
-            "nombre": "Postres", "emoji": "",
+            "nombre": "Postres", "emoji": "🍰",
             "subcategorias": {
                 "helados": {"nombre": "Helados", "items": [
-                    {"id":80, "nombre":"Helado 2 bochas", "desc":"Dulce de leche, chocolate, vainilla o frutilla", "precio":900,  "emoji":""},
-                    {"id":81, "nombre":"Helado 3 bochas", "desc":"A elección con salsa o granizado",               "precio":1200, "emoji":""}
+                    {"id":80, "nombre":"Helado 2 bochas", "desc":"Dulce de leche, chocolate, vainilla o frutilla", "precio":900,  "emoji":"🍨"},
+                    {"id":81, "nombre":"Helado 3 bochas", "desc":"A elección con salsa o granizado",               "precio":1200, "emoji":"🍨"}
                 ]},
                 "tortas": {"nombre": "Tortas", "items": [
-                    {"id":90, "nombre":"Torta de chocolate",       "desc":"Con ganache y crema batida",            "precio":1400, "emoji":""},
-                    {"id":91, "nombre":"Cheesecake de frutos rojos","desc":"Base de galleta, queso crema, coulis", "precio":1500, "emoji":""}
+                    {"id":90, "nombre":"Torta de chocolate",       "desc":"Con ganache y crema batida",            "precio":1400, "emoji":"🎂"},
+                    {"id":91, "nombre":"Cheesecake de frutos rojos","desc":"Base de galleta, queso crema, coulis", "precio":1500, "emoji":"🍰"}
                 ]},
                 "otros": {"nombre": "Otros postres", "items": [
-                    {"id":100,"nombre":"Tiramisú",                    "desc":"Receta italiana clásica con mascarpone","precio":1300,"emoji":""},
-                    {"id":101,"nombre":"Panqueques con dulce de leche","desc":"Con crema y nueces",                 "precio":1100,"emoji":""},
-                    {"id":102,"nombre":"Flan con crema",              "desc":"Casero, con caramelo y crema batida", "precio":950, "emoji":""}
+                    {"id":100,"nombre":"Tiramisú",                    "desc":"Receta italiana clásica con mascarpone","precio":1300,"emoji":"🍮"},
+                    {"id":101,"nombre":"Panqueques con dulce de leche","desc":"Con crema y nueces",                 "precio":1100,"emoji":"🥞"},
+                    {"id":102,"nombre":"Flan con crema",              "desc":"Casero, con caramelo y crema batida", "precio":950, "emoji":"🍮"}
                 ]}
             }
         }
@@ -438,11 +438,38 @@ def mp_webhook():
     if topic == "payment" and resource_id:
         status, payment = mp_get(f"v1/payments/{resource_id}")
         if status == 200:
-            estado_mp = payment.get("status","")
-            pref_id   = payment.get("preference_id","")
+            estado_mp   = payment.get("status","")
+            pref_id     = payment.get("preference_id","")
+            total       = int(payment.get("transaction_amount", 0))
+            payer_email = payment.get("payer",{}).get("email","")
+            ext_ref     = payment.get("external_reference","") or ""
+
             conn = get_db(); c = conn.cursor()
             c.execute("UPDATE pagos_mp SET estado=%s, payment_id=%s WHERE preference_id=%s",
                       (estado_mp, str(resource_id), pref_id))
+
+            if estado_mp == "approved":
+                c.execute(
+                    "SELECT id FROM pedidos WHERE pago=%s AND usuario_email=%s AND total=%s",
+                    ("mercadopago", payer_email, total)
+                )
+                existe = c.fetchone()
+                if not existe:
+                    tipo = "local"
+                    if ext_ref and "|" in ext_ref:
+                        partes = ext_ref.split("|")
+                        if len(partes) >= 2:
+                            tipo = partes[1]
+                    items_json = json.dumps([{"nombre":"Pago Mercado Pago","cantidad":1,"precio":total}])
+                    puntos_ganados = total // get_puntos_por_peso()
+                    hora = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    c.execute(
+                        "INSERT INTO pedidos (usuario_email,usuario_nombre,items,total,puntos_ganados,tipo,pago,estado,hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                        (payer_email, payer_email, items_json, total, puntos_ganados, tipo, "mercadopago", "pendiente", hora)
+                    )
+                    c.execute("UPDATE usuarios SET puntos = puntos + %s WHERE email = %s",
+                              (puntos_ganados, payer_email))
+
             conn.commit(); c.close(); conn.close()
 
     return jsonify({"ok": True}), 200
@@ -579,7 +606,7 @@ def admin_crear_beneficio():
     nombre = d.get("nombre","").strip()
     descripcion = d.get("descripcion","").strip()
     puntos = int(d.get("puntos", 0))
-    emoji = d.get("emoji","").strip()
+    emoji = d.get("emoji","🎁").strip()
     if not nombre or not descripcion or puntos <= 0:
         return jsonify({"error":"Datos inválidos"}), 400
     conn = get_db(); c = conn.cursor()
@@ -596,7 +623,7 @@ def admin_editar_beneficio(bid):
     nombre = d.get("nombre","").strip()
     descripcion = d.get("descripcion","").strip()
     puntos = int(d.get("puntos", 0))
-    emoji = d.get("emoji","").strip()
+    emoji = d.get("emoji","🎁").strip()
     activo = d.get("activo", True)
     if not nombre or not descripcion or puntos <= 0:
         return jsonify({"error":"Datos inválidos"}), 400
