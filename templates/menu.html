@@ -42,7 +42,7 @@
       </div>
       <button class="btn-hero-agregar"
         onclick="agregarMenuDia('{{ menu.menu_del_dia.nombre }}', {{ menu.menu_del_dia.precio }}, '{{ menu.menu_del_dia.emoji }}')">
-        🛒 Agregar al pedido
+         Agregar al pedido
       </button>
       <button class="btn-hero-ver" onclick="document.querySelector('.menu-content').scrollIntoView({behavior:'smooth'})">
         Ver menú completo ↓
@@ -97,11 +97,11 @@
 <div class="carrito-panel" id="carrito-panel">
   <div class="carrito-header">
     <h3>Tu pedido</h3>
-    <button class="btn-close-carrito" onclick="toggleCarrito()">✕</button>
+    <button class="btn-close-carrito" onclick="toggleCarrito()"></button>
   </div>
   <div class="carrito-items" id="carrito-items">
     <div class="carrito-vacio">
-      <div class="vacio-icon">🛒</div>
+      <div class="vacio-icon"></div>
       <p>Tu carrito está vacío.<br>Agregá algo del menú.</p>
     </div>
   </div>
@@ -112,14 +112,14 @@
     </div>
     <div class="carrito-puntos-preview" id="carrito-puntos-preview"></div>
     <button class="btn-confirmar" onclick="confirmarPedido()">Confirmar pedido</button>
-    <p class="pedido-nota">Tu pedido llegará a la cocina al instante</p>
+    <p class="pedido-nota"> Tu pedido llegará a la cocina al instante</p>
   </div>
 </div>
 
 <!-- ===== MODAL AUTH ===== -->
 <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal()"></div>
 <div class="modal" id="modal-auth">
-  <button class="modal-close" onclick="cerrarModal()">✕</button>
+  <button class="modal-close" onclick="cerrarModal()"></button>
   <div class="modal-logo">Tu<span>Menú</span></div>
   <div class="modal-body">
     <div class="auth-tabs">
@@ -163,7 +163,7 @@
 <!-- ===== MODAL BENEFICIOS ===== -->
 <div class="modal-overlay" id="modal-beneficios-overlay" onclick="cerrarBeneficios()"></div>
 <div class="modal modal-beneficios" id="modal-beneficios">
-  <button class="modal-close" onclick="cerrarBeneficios()">✕</button>
+  <button class="modal-close" onclick="cerrarBeneficios()"></button>
   <div class="modal-logo">
     <span style="position:relative">Tu<span style="color:var(--rojo)">Menú</span> · Beneficios</span>
   </div>
@@ -177,7 +177,7 @@
 <!-- ===== MODAL PEDIDO (tipo + pago) ===== -->
 <div class="modal-overlay" id="modal-pedido-overlay" onclick="cerrarModalPedido()"></div>
 <div class="modal modal-pedido" id="modal-pedido">
-  <button class="modal-close" onclick="cerrarModalPedido()">✕</button>
+  <button class="modal-close" onclick="cerrarModalPedido()"></button>
   <div class="modal-logo"><span style="position:relative">Confirmar pedido</span></div>
   <div class="modal-body">
     <div class="pedido-opcion-titulo">¿Para comer acá o para llevar?</div>
@@ -223,7 +223,7 @@
       </label>
     </div>
 
-    <button class="btn-primary" style="margin-top:1.8rem" onclick="enviarPedido()">Confirmar pedido ✓</button>
+    <button class="btn-primary" style="margin-top:1.8rem" onclick="enviarPedido()">Confirmar pedido </button>
   </div>
 </div>
 
