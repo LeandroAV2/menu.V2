@@ -959,7 +959,7 @@ function renderMenuAdmin() {
     <div class="menu-cat-block">
       <div class="menu-cat-header" onclick="toggleCat('cat-${cat.id}')">
         <div class="menu-cat-title">
-          <span>${cat.emoji}</span> ${cat.nombre}
+          ${cat.nombre}
           ${!cat.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactiva)</span>' : ''}
         </div>
         <div class="menu-cat-actions" onclick="event.stopPropagation()">
@@ -982,7 +982,6 @@ function renderMenuAdmin() {
               ${sub.items.map(it => `
                 <div class="menu-item-row">
                   <div class="menu-item-info">
-                    <span>${it.emoji}</span>
                     <span>${it.nombre}</span>
                     <span class="menu-item-precio">$${it.precio.toLocaleString('es-AR')}</span>
                     ${!it.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactivo)</span>' : ''}
@@ -1021,7 +1020,7 @@ function abrirModalMenu(titulo, bodyHtml) {
 // CATEGORIAS
 function abrirModalNuevaCat() {
   abrirModalMenu('Nueva categoría', `
-    <div class="mfield"><label>Emoji</label><input type="text" id="m-emoji" placeholder="" maxlength="4" value=""/></div>
+    <input type="hidden" id="m-emoji" value=""/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Entradas"/></div>
     <button class="btn-guardar-ben" onclick="crearCat()">Crear categoría</button>
   `);
@@ -1029,7 +1028,7 @@ function abrirModalNuevaCat() {
 function abrirModalEditarCat(cat) {
   abrirModalMenu('Editar categoría', `
     <input type="hidden" id="m-id" value="${cat.id}"/>
-    <div class="mfield"><label>Emoji</label><input type="text" id="m-emoji" value="${cat.emoji}" maxlength="4"/></div>
+    <input type="hidden" id="m-emoji" value="${cat.emoji}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${cat.nombre}"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${cat.activo?'selected':''}>Activa</option><option value="false" ${!cat.activo?'selected':''}>Inactiva</option></select></div>
     <button class="btn-guardar-ben" onclick="editarCat()">Guardar</button>
