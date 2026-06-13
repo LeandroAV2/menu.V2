@@ -518,7 +518,7 @@
   <div class="filters-row">
     <span class="filters-label">Filtrar:</span>
     <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
-    <button class="filter-btn" onclick="setFiltro('pendiente', this)">⏳ Pendientes</button>
+    <button class="filter-btn" onclick="setFiltro('pendiente', this)">Pendientes</button>
     <button class="filter-btn" onclick="setFiltro('en_preparacion', this)"> En preparación</button>
     <button class="filter-btn" onclick="setFiltro('listo', this)"> Listos</button>
     <button class="filter-btn" onclick="setFiltro('entregado', this)"> Entregados</button>
@@ -743,7 +743,7 @@ async function cargarPedidos() {
           <td>
             <button class="btn-qr" onclick="verQR(${p.id}, ${p.total})" title="QR Mercado Pago"> QR</button>
           <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
-              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>⏳ Pendiente</option>
+              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>pendiente</option>
               <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}> En preparación</option>
               <option value="listo"          ${p.estado==='listo'?'selected':''}> Listo</option>
               <option value="entregado"      ${p.estado==='entregado'?'selected':''}> Entregado</option>
