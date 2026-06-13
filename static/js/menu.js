@@ -135,7 +135,6 @@ async function confirmarPedido() {
     setTimeout(() => abrirModal('login'), 400);
     return;
   }
-  // Abrir modal de opciones de pedido
   abrirModalPedido();
 }
 
@@ -156,7 +155,6 @@ async function enviarPedido() {
 
   cerrarModalPedido();
 
-  // Si elige pago con MP online → crear preferencia y redirigir
   if (pago === 'mercadopago') {
     mostrarToast('Redirigiendo a Mercado Pago...');
     try {
@@ -167,7 +165,6 @@ async function enviarPedido() {
       });
       const data = await resp.json();
       if (data.init_point) {
-        // Guardar carrito en sessionStorage para confirmarlo tras el pago
         sessionStorage.setItem('carritoMP', JSON.stringify({ items, total, tipo }));
         window.location.href = data.init_point;
       } else if (data.error === 'no_auth') {
@@ -181,7 +178,6 @@ async function enviarPedido() {
     return;
   }
 
-  // Pago en local (efectivo / transferencia)
   try {
     const resp = await fetch('/pedido', {
       method: 'POST',
@@ -209,13 +205,11 @@ async function enviarPedido() {
   }
 }
 
-// Verificar si volvió de MP con pago exitoso
 function verificarPagoMP() {
   const params = new URLSearchParams(window.location.search);
   const pago = params.get('pago');
   const paymentId = params.get('payment_id');
   if (pago === 'exito' && paymentId) {
-    // Confirmar pedido en el sistema
     const carritoMP = JSON.parse(sessionStorage.getItem('carritoMP') || 'null');
     if (carritoMP) {
       fetch('/pedido', {
@@ -268,7 +262,6 @@ function renderBeneficios() {
     const puedeX = puntos >= b.puntos;
     return `
       <div class="beneficio-card ${puedeX ? '' : 'bloqueado'}">
-        <div class="beneficio-emoji">${b.emoji}</div>
         <div class="beneficio-info">
           <div class="beneficio-nombre">${b.nombre}</div>
           <div class="beneficio-desc">${b.descripcion}</div>
