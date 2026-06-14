@@ -132,7 +132,6 @@ def init_db():
         orden INTEGER NOT NULL DEFAULT 0,
         activo BOOLEAN NOT NULL DEFAULT TRUE
     )""")
-    # Poblar menu inicial si esta vacio
     c.execute("SELECT COUNT(*) as cnt FROM menu_categorias")
     if c.fetchone()["cnt"] == 0:
         cats = [
@@ -220,7 +219,6 @@ def init_db():
 init_db()
 
 def get_menu_db():
-    """Construye el MENU desde la base de datos."""
     conn = get_db(); c = conn.cursor()
     c.execute("SELECT * FROM menu_categorias WHERE activo=TRUE ORDER BY orden")
     cats = c.fetchall()
@@ -261,82 +259,6 @@ def get_puntos_por_peso():
     c.execute("SELECT valor FROM config WHERE clave='puntos_por_peso'")
     row = c.fetchone(); c.close(); conn.close()
     return int(row["valor"]) if row else 50
-
-# ===== MENÚ =====
-MENU = {
-    "menu_del_dia": {
-        "nombre": "Milanesa napolitana + guarnicion + postre",
-        "descripcion": "Incluye bebida sin alcohol. Disponible hasta las 15:00 hs",
-        "precio": 3800, "emoji": ""
-    },
-    "categorias": {
-        "comidas": {
-            "nombre": "Comidas", "emoji": "",
-            "subcategorias": {
-                "pastas": {"nombre": "Pastas", "items": [
-                    {"id":1,  "nombre":"Ñoquis",                   "desc":"Salsa de tomate fresco, albahaca y parmesano", "precio":2100, "emoji":""},
-                    {"id":2,  "nombre":"Tallarines a la bolognesa", "desc":"Carne vacuna, zanahoria, vino tinto",          "precio":2400, "emoji":""},
-                    {"id":3,  "nombre":"Sorrentinos de ricotta",    "desc":"Rellenos de ricotta y espinaca, salsa blanca", "precio":2700, "emoji":""}
-                ]},
-                "carnes": {"nombre": "Carnes", "items": [
-                    {"id":10, "nombre":"Milanesa napolitana", "desc":"Con jamon, mozzarella y salsa de tomate",  "precio":3200, "emoji":""},
-                    {"id":11, "nombre":"Bife de chorizo",     "desc":"A la plancha con papas fritas",            "precio":4100, "emoji":""},
-                    {"id":12, "nombre":"Pollo a la plancha",  "desc":"Con ensalada mixta y papas al horno",      "precio":2900, "emoji":""},
-                    {"id":13, "nombre":"Asado",               "desc":"Fuente como para 2 personas",              "precio":3800, "emoji":""}
-                ]},
-                "sandwiches": {"nombre": "Sandwiches", "items": [
-                    {"id":20, "nombre":"Lomito completo",     "desc":"Lomito, jamon, queso, lechuga, tomate, huevo", "precio":2600, "emoji":""},
-                    {"id":21, "nombre":"Hamburguesa clasica", "desc":"200g de carne, cheddar, pepino, cebolla",      "precio":2200, "emoji":""},
-                    {"id":22, "nombre":"Club sandwich",       "desc":"Pollo, panceta, lechuga, tomate, mayonesa",    "precio":2400, "emoji":""}
-                ]},
-                "ensaladas": {"nombre": "Ensaladas", "items": [
-                    {"id":30, "nombre":"Ensalada Cesar",  "desc":"Pollo grillado, lechuga romana, crutones", "precio":1900, "emoji":""},
-                    {"id":31, "nombre":"Ensalada mixta",  "desc":"Lechuga, tomate, zanahoria, choclo",       "precio":1400, "emoji":""}
-                ]}
-            }
-        },
-        "bebidas": {
-            "nombre": "Bebidas", "emoji": "",
-            "subcategorias": {
-                "cervezas": {"nombre": "Cervezas", "items": [
-                    {"id":40, "nombre":"Cerveza Brahma",             "desc":"Cerveza clasica",       "precio":900,  "emoji":""},
-                    {"id":41, "nombre":"Cerveza Andes negra 473cc",  "desc":"Aroma y sabor tostado", "precio":1000, "emoji":""}
-                ]},
-                "gaseosas": {"nombre": "Gaseosas", "items": [
-                    {"id":50, "nombre":"Coca-Cola 500cc",    "desc":"Botella personal bien fria", "precio":700, "emoji":""},
-                    {"id":51, "nombre":"Sprite 500cc",       "desc":"Lima limon refrescante",     "precio":700, "emoji":""},
-                    {"id":52, "nombre":"Fanta naranja 500cc","desc":"Sabor naranja",              "precio":700, "emoji":""}
-                ]},
-                "aguas": {"nombre": "Aguas", "items": [
-                    {"id":60, "nombre":"Agua sin gas 500cc", "desc":"Botella individual",      "precio":500, "emoji":""},
-                    {"id":61, "nombre":"Agua con gas 500cc", "desc":"Con burbujas",            "precio":550, "emoji":""},
-                    {"id":62, "nombre":"Agua saborizada",    "desc":"Pomelo, Manzana y Pera",  "precio":650, "emoji":""}
-                ]},
-                "vinos": {"nombre": "Vinos", "items": [
-                    {"id":70, "nombre":"Malbec copa", "desc":"Mendoza, 150cc", "precio":1200, "emoji":""}
-                ]}
-            }
-        },
-        "postres": {
-            "nombre": "Postres", "emoji": "",
-            "subcategorias": {
-                "helados": {"nombre": "Helados", "items": [
-                    {"id":80, "nombre":"Helado 2 bochas", "desc":"Dulce de leche, chocolate, vainilla o frutilla", "precio":900,  "emoji":""},
-                    {"id":81, "nombre":"Helado 3 bochas", "desc":"A eleccion con salsa o granizado",               "precio":1200, "emoji":""}
-                ]},
-                "tortas": {"nombre": "Tortas", "items": [
-                    {"id":90, "nombre":"Torta de chocolate",        "desc":"Con ganache y crema batida",            "precio":1400, "emoji":""},
-                    {"id":91, "nombre":"Cheesecake de frutos rojos", "desc":"Base de galleta, queso crema, coulis", "precio":1500, "emoji":""}
-                ]},
-                "otros": {"nombre": "Otros postres", "items": [
-                    {"id":100, "nombre":"Tiramisu",                     "desc":"Receta italiana clasica con mascarpone", "precio":1300, "emoji":""},
-                    {"id":101, "nombre":"Panqueques con dulce de leche", "desc":"Con crema y nueces",                   "precio":1100, "emoji":""},
-                    {"id":102, "nombre":"Flan con crema",               "desc":"Casero, con caramelo y crema batida",   "precio":950,  "emoji":""}
-                ]}
-            }
-        }
-    }
-}
 
 def hashear(p): return hashlib.sha256(p.encode()).hexdigest()
 def usuario_logueado(): return session.get("usuario")
@@ -553,28 +475,6 @@ def mp_webhook():
             conn.commit(); c.close(); conn.close()
     return jsonify({"ok": True}), 200
 
-@app.route("/mp/qr/<int:pedido_id>")
-def mp_qr(pedido_id):
-    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
-    conn = get_db(); c = conn.cursor()
-    c.execute("SELECT * FROM pedidos WHERE id=%s", (pedido_id,))
-    ped = c.fetchone(); c.close(); conn.close()
-    if not ped: return jsonify({"error":"Pedido no encontrado"}), 404
-    items = json.loads(ped["items"])
-    mp_items = [{"title": i["nombre"], "quantity": i["cantidad"],
-                 "unit_price": float(i["precio"]), "currency_id": "ARS"}
-                for i in items]
-    status, pref = mp_api_preferencia(
-        mp_items, "cliente@tumenu.com",
-        {"success": request.host_url+"mp/exito",
-         "failure": request.host_url+"mp/fallo",
-         "pending": request.host_url+"mp/pendiente"},
-        f"pedido-{pedido_id}", request.host_url+"mp/webhook"
-    )
-    if status not in (200, 201):
-        return jsonify({"error": "Error generando QR"}), 500
-    return jsonify({"preference_id": pref["id"], "init_point": pref["init_point"], "qr_data": pref["init_point"]})
-
 # ===== RUTAS ADMIN =====
 @app.route("/admin")
 def admin_redirect():
@@ -638,7 +538,7 @@ def admin_cambiar_estado(pid):
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     datos = request.get_json()
     nuevo_estado = datos.get("estado")
-    if nuevo_estado not in ("Pendiente","en_preparacion","listo","entregado"):
+    if nuevo_estado not in ("pendiente", "en_preparacion", "listo", "entregado"):
         return jsonify({"error":"Estado invalido"}), 400
     conn = get_db(); c = conn.cursor()
     c.execute("UPDATE pedidos SET estado=%s WHERE id=%s", (nuevo_estado, pid))
@@ -661,6 +561,23 @@ def admin_stats():
     c.close(); conn.close()
     return jsonify({"total_hoy": total_hoy, "cant_hoy": cant_hoy,
                     "pendientes": pendientes, "en_preparacion": en_prep})
+
+@app.route("/admin/api/usuarios")
+def admin_api_usuarios():
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("""
+        SELECT
+            u.id, u.nombre, u.email, u.creado_en, u.puntos,
+            COUNT(p.id) AS cantidad_pedidos,
+            COALESCE(SUM(p.total), 0) AS total_gastado
+        FROM usuarios u
+        LEFT JOIN pedidos p ON p.usuario_email = u.email
+        GROUP BY u.id, u.nombre, u.email, u.creado_en, u.puntos
+        ORDER BY u.id DESC
+    """)
+    rows = c.fetchall(); c.close(); conn.close()
+    return jsonify([dict(r) for r in rows])
 
 @app.route("/admin/api/beneficios")
 def admin_get_beneficios():
@@ -731,8 +648,7 @@ def admin_set_config():
     conn.commit(); c.close(); conn.close()
     return jsonify({"ok": True})
 
-
-# ===== ADMIN — MENU =====
+# ===== ADMIN MENU =====
 @app.route("/admin/api/menu")
 def admin_get_menu():
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
@@ -791,7 +707,7 @@ def admin_eliminar_categoria(cid):
 def admin_crear_subcategoria():
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     d = request.get_json()
-    nombre         = d.get("nombre","").strip()
+    nombre          = d.get("nombre","").strip()
     categoria_clave = d.get("categoria_clave","").strip()
     if not nombre or not categoria_clave: return jsonify({"error":"Datos requeridos"}), 400
     clave = nombre.lower().replace(" ","_").replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
@@ -826,10 +742,10 @@ def admin_eliminar_subcategoria(sid):
 def admin_crear_item():
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
     d = request.get_json()
-    nombre        = d.get("nombre","").strip()
-    descripcion   = d.get("desc","").strip()
-    precio        = int(d.get("precio", 0))
-    emoji         = d.get("emoji","").strip()
+    nombre          = d.get("nombre","").strip()
+    descripcion     = d.get("desc","").strip()
+    precio          = int(d.get("precio", 0))
+    emoji           = d.get("emoji","").strip()
     subcategoria_id = int(d.get("subcategoria_id", 0))
     if not nombre or precio <= 0 or not subcategoria_id:
         return jsonify({"error":"Datos invalidos"}), 400
