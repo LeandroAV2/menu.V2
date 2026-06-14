@@ -22,416 +22,145 @@
     --orange: #f97316;
   }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* ===== TOPBAR ===== */
   .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 2rem; height: 60px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100;
   }
   .topbar-left { display: flex; align-items: center; gap: 1.5rem; }
-  .brand {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text);
-  }
+  .brand { font-size: 1.1rem; font-weight: 600; color: var(--text); }
   .brand span { color: var(--accent); }
   .badge-panel {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 4px; padding: 2px 8px;
   }
   .topbar-right { display: flex; align-items: center; gap: 1rem; }
   .admin-name { font-size: 0.85rem; color: var(--muted); }
   .btn-logout {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 6px;
-    padding: 0.35rem 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 6px; padding: 0.35rem 0.9rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; cursor: pointer; text-decoration: none; transition: all 0.2s;
   }
   .btn-logout:hover { border-color: var(--accent); color: var(--text); }
 
-  .live-dot {
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem; color: var(--green);
-  }
-  .live-dot::before {
-    content: '';
-    width: 7px; height: 7px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
-  }
+  .live-dot { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--green); }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-  /* ===== LAYOUT ===== */
   .main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
 
-  /* ===== STATS ===== */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.2rem 1.4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .stat-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
+  .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
   .stat-card.rojo::after  { background: var(--accent); }
   .stat-card.verde::after { background: var(--green); }
   .stat-card.azul::after  { background: var(--blue); }
   .stat-card.naranja::after { background: var(--orange); }
-  .stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 0.6rem;
-  }
-  .stat-value {
-    font-size: 1.8rem;
-    font-weight: 600;
-    line-height: 1;
-  }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .stat-value { font-size: 1.8rem; font-weight: 600; line-height: 1; }
   .stat-card.rojo .stat-value   { color: #f87171; }
   .stat-card.verde .stat-value  { color: var(--green); }
   .stat-card.azul .stat-value   { color: #60a5fa; }
   .stat-card.naranja .stat-value { color: #fb923c; }
 
-  /* ===== FILTROS ===== */
-  .filters-row {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .filters-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-right: 0.4rem;
-  }
-  .filter-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 6px;
-    padding: 0.4rem 1rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+  .filters-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .filters-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 1px; margin-right: 0.4rem; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.4rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; }
   .filter-btn:hover { border-color: #444; color: var(--text); }
   .filter-btn.active { border-color: var(--accent); color: var(--text); background: rgba(192,57,43,0.1); }
 
-  /* ===== TABLA ===== */
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  .table-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .table-title {
-    font-size: 0.92rem;
-    font-weight: 600;
-  }
-  .table-count {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  thead th {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 0.75rem 1.2rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .table-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .table-title { font-size: 0.92rem; font-weight: 600; }
+  .table-count { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 0.75rem 1.2rem; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
-  td {
-    padding: 1rem 1.2rem;
-    font-size: 0.88rem;
-    vertical-align: middle;
-  }
+  td { padding: 1rem 1.2rem; font-size: 0.88rem; vertical-align: middle; }
 
-  .pedido-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
+  .pedido-num { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--muted); }
   .cliente-nombre { font-weight: 500; }
   .cliente-email  { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
-
-  /* Items lista */
   .items-list { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
   .items-list strong { color: var(--text); }
 
-  /* Badges tipo */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    border-radius: 5px;
-    padding: 3px 9px;
-    font-size: 0.74rem;
-    font-weight: 500;
-    white-space: nowrap;
-  }
+  .badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 5px; padding: 3px 9px; font-size: 0.74rem; font-weight: 500; white-space: nowrap; }
   .badge-local     { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
   .badge-llevar    { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
   .badge-efectivo  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
   .badge-transf    { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
 
-  /* Total */
-  .total-cell {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--text);
-    white-space: nowrap;
-  }
-  .pts-cell {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--gold);
-  }
+  .total-cell { font-family: 'DM Mono', monospace; font-size: 0.95rem; font-weight: 500; color: var(--text); white-space: nowrap; }
+  .pts-cell   { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--gold); }
 
-  /* Estado selector */
-  .estado-select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 6px;
-    padding: 0.35rem 0.6rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.15s;
-  }
+  .estado-select { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 0.35rem 0.6rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; outline: none; transition: border-color 0.15s; }
   .estado-select:focus { border-color: var(--accent); }
   .estado-pendiente   { border-color: #f59e0b; color: #fbbf24; }
   .estado-preparacion { border-color: var(--blue); color: #60a5fa; }
   .estado-listo       { border-color: var(--green); color: #34d399; }
   .estado-entregado   { border-color: #444; color: var(--muted); }
 
-  /* Hora */
-  .hora-cell {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.76rem;
-    color: var(--muted);
-  }
+  .hora-cell { font-family: 'DM Mono', monospace; font-size: 0.76rem; color: var(--muted); }
 
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--muted);
-  }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
   .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.4; }
   .empty-state p { font-size: 0.88rem; }
-
-  /* Loader */
   .loading { text-align: center; padding: 3rem; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; }
 
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 2rem; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 500;
-    border-left: 3px solid var(--green);
-  }
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 0.85rem; opacity: 0; transition: all 0.3s; z-index: 500; border-left: 3px solid var(--green); }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.error { border-left-color: var(--accent); }
 
-  /* Nuevos pedidos highlight */
-  @keyframes newRow {
-    from { background: rgba(192,57,43,0.15); }
-    to   { background: transparent; }
-  }
+  @keyframes newRow { from { background: rgba(192,57,43,0.15); } to { background: transparent; } }
   .nuevo { animation: newRow 2s ease forwards; }
 
-  /* ===== PANEL NAV ===== */
   .panel-nav { display:flex; gap:0.3rem; margin-left:1rem; }
-  .panel-nav-btn {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); border-radius: 6px; padding: 0.35rem 1rem;
-    font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer;
-    transition: all 0.15s;
-  }
+  .panel-nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; }
   .panel-nav-btn:hover { color: var(--text); border-color: #444; }
   .panel-nav-btn.active { background: rgba(192,57,43,0.15); border-color: var(--accent); color: var(--text); }
 
-  /* ===== BENEFICIOS TAB ===== */
-  .ben-header {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
-  }
+  .ben-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
   .ben-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; }
   .ben-sub { font-size: 0.82rem; color: var(--muted); }
-  .config-ppp {
-    display: flex; align-items: center; gap: 0.6rem;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 0.5rem 1rem;
-    font-size: 0.82rem; color: var(--muted);
-  }
-  .config-ppp input {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
-    color: var(--text); padding: 0.2rem 0.4rem; font-size: 0.82rem;
-    text-align: center; outline: none;
-  }
-  .btn-save-ppp {
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-    border-radius: 5px; padding: 0.25rem 0.7rem; font-size: 0.78rem; cursor: pointer;
-    transition: all 0.15s;
-  }
+  .config-ppp { display: flex; align-items: center; gap: 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.82rem; color: var(--muted); }
+  .config-ppp input { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.2rem 0.4rem; font-size: 0.82rem; text-align: center; outline: none; }
+  .btn-save-ppp { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 5px; padding: 0.25rem 0.7rem; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
   .btn-save-ppp:hover { border-color: var(--accent); }
-  .btn-nuevo-ben {
-    background: var(--accent); color: #fff; border: none; border-radius: 8px;
-    padding: 0.6rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
-    font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap;
-  }
+  .btn-nuevo-ben { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
   .btn-nuevo-ben:hover { background: var(--accent2); }
-  .ben-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;
-  }
-  .ben-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem;
-    transition: border-color 0.2s; position: relative;
-  }
+  .ben-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .ben-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 0.2s; position: relative; }
   .ben-card:hover { border-color: #444; }
   .ben-card.inactivo { opacity: 0.45; }
   .ben-card-nombre { font-weight: 600; font-size: 0.95rem; padding-right: 4.5rem; }
   .ben-card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
   .ben-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem; }
-  .ben-pts {
-    background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
-    color: var(--gold); border-radius: 50px; padding: 3px 10px;
-    font-size: 0.78rem; font-weight: 700;
-  }
+  .ben-pts { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: var(--gold); border-radius: 50px; padding: 3px 10px; font-size: 0.78rem; font-weight: 700; }
   .ben-actions { display: flex; gap: 0.4rem; }
-  .btn-ben-edit, .btn-ben-del {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-    padding: 0.3rem 0.7rem; font-size: 0.76rem; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; color: var(--muted); transition: all 0.15s;
-  }
+  .btn-ben-edit, .btn-ben-del { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.7rem; font-size: 0.76rem; cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--muted); transition: all 0.15s; }
   .btn-ben-edit:hover { border-color: var(--blue); color: #60a5fa; }
-  .btn-ben-del:hover { border-color: var(--accent); color: #f87171; }
-  .ben-status {
-    position: absolute; top: 0.8rem; right: 0.8rem;
-    font-size: 0.68rem; font-family: 'DM Mono', monospace;
-    padding: 2px 7px; border-radius: 4px;
-  }
-  .ben-status.activo { background: rgba(16,185,129,0.1); color: var(--green); }
+  .btn-ben-del:hover  { border-color: var(--accent); color: #f87171; }
+  .ben-status { position: absolute; top: 0.8rem; right: 0.8rem; font-size: 0.68rem; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 4px; }
+  .ben-status.activo   { background: rgba(16,185,129,0.1); color: var(--green); }
   .ben-status.inactivo { background: rgba(239,68,68,0.1); color: #f87171; }
 
-  /* MODAL BEN */
-  .modal-ben-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7); z-index: 200;
-  }
+  .modal-ben-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; }
   .modal-ben-overlay.open { display: block; }
-  .modal-ben {
-    display: none; position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 1.5rem; width: 100%; max-width: 420px;
-    z-index: 201;
-  }
+  .modal-ben { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; width: 100%; max-width: 420px; z-index: 201; }
   .modal-ben.open { display: block; }
-  .modal-ben-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 1.2rem;
-  }
+  .modal-ben-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
   .modal-ben-header h3 { font-size: 1rem; font-weight: 600; }
   .modal-ben-body { display: flex; flex-direction: column; gap: 0.9rem; }
   .mfield { display: flex; flex-direction: column; gap: 0.3rem; }
-  .mfield label {
-    font-family: 'DM Mono', monospace; font-size: 0.65rem;
-    letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
-  }
-  .mfield input, .mfield select {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 0.65rem 0.9rem; font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem; color: var(--text); outline: none; transition: border-color 0.2s;
-  }
+  .mfield label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .mfield input, .mfield select { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; transition: border-color 0.2s; }
   .mfield input:focus, .mfield select:focus { border-color: var(--accent); }
-  .btn-guardar-ben {
-    background: var(--accent); color: #fff; border: none; border-radius: 8px;
-    padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
-    font-weight: 600; cursor: pointer; margin-top: 0.3rem; transition: background 0.2s;
-  }
+  .btn-guardar-ben { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 600; cursor: pointer; margin-top: 0.3rem; transition: background 0.2s; }
   .btn-guardar-ben:hover { background: var(--accent2); }
 
   .menu-cat-block { margin-bottom:1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
@@ -450,20 +179,8 @@
   .btn-sm:hover { border-color:#444; color:var(--text); }
   .btn-sm.danger:hover { border-color:var(--accent); color:#f87171; }
   .btn-sm.primary { background:rgba(59,130,246,0.12); border-color:rgba(59,130,246,0.3); color:#60a5fa; }
-  .add-subcat-btn { margin-top:0.5rem; width:100%; background:transparent; border:1px dashed var(--border); color:var(--muted); border-radius:8px; padding:0.4rem; font-size:0.78rem; cursor:pointer; transition:all 0.15s; }
-  .add-subcat-btn:hover { border-color:#555; color:var(--text); }
   .add-item-btn { margin-top:0.4rem; width:100%; background:transparent; border:1px dashed var(--border); color:var(--muted); border-radius:6px; padding:0.3rem; font-size:0.75rem; cursor:pointer; transition:all 0.15s; }
   .add-item-btn:hover { border-color:#555; color:var(--text); }
-  .mfield select { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:0.65rem 0.9rem; font-family:'DM Sans',sans-serif; font-size:0.9rem; color:var(--text); outline:none; }
-
-  .btn-qr {
-    background: rgba(0,158,227,0.12); border: 1px solid rgba(0,158,227,0.3);
-    color: #38bdf8; border-radius: 6px; padding: 0.3rem 0.7rem;
-    font-size: 0.76rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s; margin-bottom: 0.4rem; display: block; width: 100%;
-    white-space: nowrap;
-  }
-  .btn-qr:hover { background: rgba(0,158,227,0.2); }
 
   @media (max-width: 900px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -481,9 +198,9 @@
     <div class="badge-panel">Panel vendedor</div>
     <div class="live-dot">EN VIVO</div>
     <nav class="panel-nav">
-      <button class="panel-nav-btn active" onclick="showTab('pedidos', this)"> Pedidos</button>
-      <button class="panel-nav-btn" onclick="showTab('beneficios', this)"> Beneficios</button>
-      <button class="panel-nav-btn" onclick="showTab('menu', this)"> Menú</button>
+      <button class="panel-nav-btn active" onclick="showTab('pedidos', this)">Pedidos</button>
+      <button class="panel-nav-btn" onclick="showTab('beneficios', this)">Beneficios</button>
+      <button class="panel-nav-btn" onclick="showTab('menu', this)">Menu</button>
     </nav>
   </div>
   <div class="topbar-right">
@@ -493,38 +210,22 @@
 </div>
 
 <div class="main">
-
-  <!-- STATS -->
   <div class="stats-row">
-    <div class="stat-card rojo">
-      <div class="stat-label">Recaudado hoy</div>
-      <div class="stat-value" id="stat-total">—</div>
-    </div>
-    <div class="stat-card verde">
-      <div class="stat-label">Pedidos hoy</div>
-      <div class="stat-value" id="stat-cant">—</div>
-    </div>
-    <div class="stat-card naranja">
-      <div class="stat-label">Pendientes</div>
-      <div class="stat-value" id="stat-pendientes">—</div>
-    </div>
-    <div class="stat-card azul">
-      <div class="stat-label">En preparación</div>
-      <div class="stat-value" id="stat-prep">—</div>
-    </div>
+    <div class="stat-card rojo"><div class="stat-label">Recaudado hoy</div><div class="stat-value" id="stat-total">—</div></div>
+    <div class="stat-card verde"><div class="stat-label">Pedidos hoy</div><div class="stat-value" id="stat-cant">—</div></div>
+    <div class="stat-card naranja"><div class="stat-label">Pendientes</div><div class="stat-value" id="stat-pendientes">—</div></div>
+    <div class="stat-card azul"><div class="stat-label">En preparacion</div><div class="stat-value" id="stat-prep">—</div></div>
   </div>
 
-  <!-- FILTROS -->
   <div class="filters-row">
     <span class="filters-label">Filtrar:</span>
     <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
     <button class="filter-btn" onclick="setFiltro('pendiente', this)">Pendientes</button>
-    <button class="filter-btn" onclick="setFiltro('en_preparacion', this)"> En preparación</button>
-    <button class="filter-btn" onclick="setFiltro('listo', this)"> Listos</button>
-    <button class="filter-btn" onclick="setFiltro('entregado', this)"> Entregados</button>
+    <button class="filter-btn" onclick="setFiltro('en_preparacion', this)">En preparacion</button>
+    <button class="filter-btn" onclick="setFiltro('listo', this)">Listos</button>
+    <button class="filter-btn" onclick="setFiltro('entregado', this)">Entregados</button>
   </div>
 
-  <!-- TABLA -->
   <div class="table-wrap">
     <div class="table-header">
       <div class="table-title">Pedidos</div>
@@ -534,78 +235,74 @@
       <div class="loading">Cargando pedidos...</div>
     </div>
   </div>
-
 </div>
 
-<!-- ===== PESTAÑA BENEFICIOS ===== -->
+<!-- BENEFICIOS TAB -->
 <div id="tab-beneficios" style="display:none">
 <div class="main">
-
   <div class="ben-header">
     <div>
-      <h2 class="ben-title">Gestión de Beneficios</h2>
+      <h2 class="ben-title">Gestion de Beneficios</h2>
       <p class="ben-sub">Los clientes canjean sus puntos por estos premios.</p>
     </div>
     <div style="display:flex;gap:1rem;align-items:center">
       <div class="config-ppp">
-        <label>⭐ Puntos por cada $<input type="number" id="ppp-valor" min="1" style="width:70px"> gastados</label>
+        <label>Puntos por cada $<input type="number" id="ppp-valor" min="1" style="width:70px"> gastados</label>
         <button class="btn-save-ppp" onclick="guardarPPP()">Guardar</button>
       </div>
       <button class="btn-nuevo-ben" onclick="abrirModalBen()">+ Nuevo beneficio</button>
     </div>
   </div>
-
   <div class="ben-grid" id="ben-grid">
     <div class="loading">Cargando beneficios...</div>
   </div>
-
 </div>
 </div>
 
-<!-- ===== PESTAÑA MENU ===== -->
+<!-- MENU TAB -->
 <div id="tab-menu" style="display:none">
 <div class="main">
   <div class="ben-header">
     <div>
-      <h2 class="ben-title">Gestión del Menú</h2>
-      <p class="ben-sub">Agregá, editá o eliminá categorías, secciones y platos.</p>
+      <h2 class="ben-title">Gestion del Menu</h2>
+      <p class="ben-sub">Agrega, edita o elimina categorias, secciones y platos.</p>
     </div>
     <div style="display:flex;gap:0.6rem">
-      <button class="btn-nuevo-ben" style="background:#3b82f6" onclick="abrirModalNuevaCat()">+ Nueva categoría</button>
+      <button class="btn-nuevo-ben" style="background:#3b82f6" onclick="abrirModalNuevaCat()">+ Nueva categoria</button>
     </div>
   </div>
   <div id="menu-admin-content">
-    <div class="loading">Cargando menú...</div>
+    <div class="loading">Cargando menu...</div>
   </div>
 </div>
 </div>
 
-<!-- MODAL ITEM/SUBCAT/CAT -->
+<!-- MODAL MENU -->
 <div class="modal-ben-overlay" id="modal-menu-overlay" onclick="cerrarModalMenu()"></div>
 <div class="modal-ben" id="modal-menu">
   <div class="modal-ben-header">
     <h3 id="modal-menu-titulo">Nuevo plato</h3>
-    <button onclick="cerrarModalMenu()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"></button>
+    <button onclick="cerrarModalMenu()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">x</button>
   </div>
   <div class="modal-ben-body" id="modal-menu-body"></div>
 </div>
 
-<!-- MODAL NUEVO/EDITAR BENEFICIO -->
+<!-- MODAL BENEFICIO -->
 <div class="modal-ben-overlay" id="modal-ben-overlay" onclick="cerrarModalBen()"></div>
 <div class="modal-ben" id="modal-ben">
   <div class="modal-ben-header">
     <h3 id="modal-ben-titulo">Nuevo beneficio</h3>
-    <button onclick="cerrarModalBen()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"></button>
+    <button onclick="cerrarModalBen()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">x</button>
   </div>
   <div class="modal-ben-body">
     <input type="hidden" id="ben-edit-id" value="" />
     <div class="mfield">
       <label>Nombre</label>
-      <input type="text" id="ben-nombre" placeholder="Ej: Café con medialunas" />
+      <input type="text" id="ben-nombre" placeholder="Ej: Cafe con medialunas" />
     </div>
     <div class="mfield">
-      <label>Descripción</label>
-      <input type="text" id="ben-desc" placeholder="Ej: 2 medialunas + café a elección" />
+      <label>Descripcion</label>
+      <input type="text" id="ben-desc" placeholder="Ej: 2 medialunas + cafe a eleccion" />
     </div>
     <div class="mfield">
       <label>Puntos necesarios</label>
@@ -614,49 +311,32 @@
     <div class="mfield">
       <label>Estado</label>
       <select id="ben-activo">
-        <option value="true"> Activo</option>
-        <option value="false"> Inactivo</option>
+        <option value="true">Activo</option>
+        <option value="false">Inactivo</option>
       </select>
     </div>
     <button class="btn-guardar-ben" onclick="guardarBeneficio()">Guardar</button>
   </div>
 </div>
 
-<!-- MODAL QR MP -->
-<div class="modal-ben-overlay" id="modal-qr-overlay" onclick="cerrarQR()"></div>
-<div class="modal-ben" id="modal-qr" style="text-align:center">
-  <div class="modal-ben-header">
-    <h3> Pago con Mercado Pago</h3>
-    <button onclick="cerrarQR()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"></button>
-  </div>
-  <div class="modal-ben-body" style="align-items:center">
-    <p style="color:var(--muted);font-size:0.85rem">Mostrá este QR al cliente para que pague con MP</p>
-    <div id="qr-container" style="margin:1rem 0"></div>
-    <div id="qr-total" style="font-size:1.2rem;font-weight:700;color:var(--gold)"></div>
-    <a id="qr-link" href="#" target="_blank" class="btn-guardar-ben" style="text-decoration:none;display:block;margin-top:0.5rem">
-      Abrir link de pago
-    </a>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== TABS =====
+// TABS
 function showTab(tab, btn) {
   document.querySelectorAll('.panel-nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-beneficios').style.display = tab === 'beneficios' ? 'block' : 'none';
   document.getElementById('tab-menu').style.display = tab === 'menu' ? 'block' : 'none';
-  // show/hide main pedidos content
   document.querySelectorAll('.main').forEach(el => {
-    if (!el.closest('#tab-beneficios') && !el.closest('#tab-menu')) el.style.display = tab === 'pedidos' ? '' : 'none';
+    if (!el.closest('#tab-beneficios') && !el.closest('#tab-menu'))
+      el.style.display = tab === 'pedidos' ? '' : 'none';
   });
   if (tab === 'beneficios') { cargarBeneficios(); cargarConfig(); }
   if (tab === 'menu') { cargarMenuAdmin(); }
 }
 
-// ===== PEDIDOS =====
+// PEDIDOS
 let filtroActual = 'todos';
 let pedidosConocidos = new Set();
 let primeraVez = true;
@@ -683,70 +363,43 @@ async function cargarPedidos() {
   try {
     const r = await fetch('/admin/api/pedidos?estado=' + filtroActual);
     const pedidos = await r.json();
-
     document.getElementById('table-count').textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
-
     if (pedidos.length === 0) {
-      document.getElementById('table-body-wrap').innerHTML = `
-        <div class="empty-state">
-          <div class="icon"></div>
-          <p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p>
-        </div>`;
+      document.getElementById('table-body-wrap').innerHTML = `<div class="empty-state"><div class="icon"></div><p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p></div>`;
       return;
     }
-
-    // Detectar nuevos pedidos
     const nuevos = new Set();
     if (!primeraVez) {
       pedidos.forEach(p => { if (!pedidosConocidos.has(p.id)) nuevos.add(p.id); });
-      if (nuevos.size > 0) mostrarToast(` ${nuevos.size} nuevo${nuevos.size>1?'s':''} pedido${nuevos.size>1?'s':''}!`);
+      if (nuevos.size > 0) mostrarToast(`${nuevos.size} nuevo${nuevos.size>1?'s':''} pedido${nuevos.size>1?'s':''}!`);
     }
     pedidos.forEach(p => pedidosConocidos.add(p.id));
     primeraVez = false;
 
     const rows = pedidos.map(p => {
-      const itemsHtml = p.items.map(i =>
-        `<span><strong>${i.cantidad}x</strong> ${i.nombre}</span>`
-      ).join('<br>');
-
+      const itemsHtml = p.items.map(i => `<span><strong>${i.cantidad}x</strong> ${i.nombre}</span>`).join('<br>');
       const tipoHtml = p.tipo === 'local'
-        ? '<span class="badge badge-local"> Para comer</span>'
-        : '<span class="badge badge-llevar"> Para llevar</span>';
-
+        ? '<span class="badge badge-local">Para comer</span>'
+        : '<span class="badge badge-llevar">Para llevar</span>';
       const pagoHtml = p.pago === 'efectivo'
-        ? '<span class="badge badge-efectivo"> Efectivo</span>'
-        : '<span class="badge badge-transf"> Transferencia</span>';
-
-      const estadoClass = {
-        pendiente: 'estado-pendiente',
-        en_preparacion: 'estado-preparacion',
-        listo: 'estado-listo',
-        entregado: 'estado-entregado'
-      }[p.estado] || '';
-
+        ? '<span class="badge badge-efectivo">Efectivo</span>'
+        : '<span class="badge badge-transf">Transferencia</span>';
+      const estadoClass = {pendiente:'estado-pendiente',en_preparacion:'estado-preparacion',listo:'estado-listo',entregado:'estado-entregado'}[p.estado] || '';
       const esNuevo = nuevos.has(p.id) ? 'nuevo' : '';
-
       return `
         <tr class="${esNuevo}" id="row-${p.id}">
           <td><div class="pedido-num">#${String(p.id).padStart(4,'0')}</div></td>
-          <td>
-            <div class="cliente-nombre">${p.usuario_nombre}</div>
-            <div class="cliente-email">${p.usuario_email}</div>
-          </td>
+          <td><div class="cliente-nombre">${p.usuario_nombre}</div><div class="cliente-email">${p.usuario_email}</div></td>
           <td><div class="items-list">${itemsHtml}</div></td>
           <td>${tipoHtml}</td>
           <td>${pagoHtml}</td>
+          <td><div class="total-cell">$${p.total.toLocaleString('es-AR')}</div><div class="pts-cell">+${p.puntos_ganados} pts</div></td>
           <td>
-            <div class="total-cell">$${p.total.toLocaleString('es-AR')}</div>
-            <div class="pts-cell">+${p.puntos_ganados} pts</div>
-          </td>
-          <td>
-            <button class="btn-qr" onclick="verQR(${p.id}, ${p.total})" title="QR Mercado Pago"> QR</button>
-          <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
-              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>pendiente</option>
-              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}> En preparación</option>
-              <option value="listo"          ${p.estado==='listo'?'selected':''}> Listo</option>
-              <option value="entregado"      ${p.estado==='entregado'?'selected':''}> Entregado</option>
+            <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
+              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>Pendiente</option>
+              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}>En preparacion</option>
+              <option value="listo"          ${p.estado==='listo'?'selected':''}>Listo</option>
+              <option value="entregado"      ${p.estado==='entregado'?'selected':''}>Entregado</option>
             </select>
           </td>
           <td><div class="hora-cell">${p.hora}</div></td>
@@ -755,41 +408,23 @@ async function cargarPedidos() {
 
     document.getElementById('table-body-wrap').innerHTML = `
       <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Cliente</th>
-            <th>Items</th>
-            <th>Tipo</th>
-            <th>Pago</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Hora</th>
-          </tr>
-        </thead>
+        <thead><tr><th>#</th><th>Cliente</th><th>Items</th><th>Tipo</th><th>Pago</th><th>Total</th><th>Estado</th><th>Hora</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    document.getElementById('table-body-wrap').innerHTML =
-      '<div class="empty-state"><p>Error al cargar pedidos. Reintentando...</p></div>';
+    document.getElementById('table-body-wrap').innerHTML = '<div class="empty-state"><p>Error al cargar pedidos. Reintentando...</p></div>';
   }
 }
 
 async function cambiarEstado(id, select) {
   const nuevoEstado = select.value;
-  select.className = 'estado-select estado-' + {
-    pendiente:'pendiente', en_preparacion:'preparacion', listo:'listo', entregado:'entregado'
-  }[nuevoEstado];
+  select.className = 'estado-select estado-' + {pendiente:'pendiente',en_preparacion:'preparacion',listo:'listo',entregado:'entregado'}[nuevoEstado];
   try {
-    const r = await fetch(`/admin/api/pedidos/${id}/estado`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({estado: nuevoEstado})
-    });
+    const r = await fetch(`/admin/api/pedidos/${id}/estado`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({estado:nuevoEstado})});
     const d = await r.json();
-    if (d.ok) mostrarToast(`Pedido #${String(id).padStart(4,'0')} → ${nuevoEstado.replace('_',' ')}`);
+    if (d.ok) mostrarToast(`Pedido #${String(id).padStart(4,'0')} -> ${nuevoEstado.replace('_',' ')}`);
     else mostrarToast('Error al actualizar', true);
-  } catch(e) { mostrarToast('Error de conexión', true); }
+  } catch(e) { mostrarToast('Error de conexion', true); }
 }
 
 function mostrarToast(msg, error=false) {
@@ -799,52 +434,17 @@ function mostrarToast(msg, error=false) {
   setTimeout(() => t.className = 'toast', 3000);
 }
 
-// ===== QR MERCADO PAGO =====
-function verQR(pedidoId, total) {
-  document.getElementById('qr-container').innerHTML = '<p style="color:var(--muted)">Generando QR...</p>';
-  document.getElementById('qr-total').textContent = '$' + total.toLocaleString('es-AR');
-  document.getElementById('modal-qr-overlay').classList.add('open');
-  document.getElementById('modal-qr').classList.add('open');
-
-  fetch('/mp/qr/' + pedidoId)
-    .then(r => r.json())
-    .then(data => {
-      if (data.init_point) {
-        document.getElementById('qr-link').href = data.init_point;
-        // Generar QR con API pública
-        const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(data.init_point);
-        document.getElementById('qr-container').innerHTML =
-          `<img src="${qrUrl}" style="border-radius:12px;border:4px solid #1e1e1e" />`;
-      } else {
-        document.getElementById('qr-container').innerHTML = '<p style="color:#f87171">Error al generar QR</p>';
-      }
-    })
-    .catch(() => {
-      document.getElementById('qr-container').innerHTML = '<p style="color:#f87171">Error de conexión</p>';
-    });
-}
-
-function cerrarQR() {
-  document.getElementById('modal-qr-overlay').classList.remove('open');
-  document.getElementById('modal-qr').classList.remove('open');
-}
-
-// ===== ACTUALIZACIÓN AUTOMÁTICA =====
-// Actualización automática cada 8 segundos
-function tick() {
-  cargarStats();
-  cargarPedidos();
-}
+function tick() { cargarStats(); cargarPedidos(); }
 tick();
 setInterval(tick, 8000);
 
-// ===== BENEFICIOS =====
+// BENEFICIOS
 async function cargarBeneficios() {
   const r = await fetch('/admin/api/beneficios');
   const lista = await r.json();
   const grid = document.getElementById('ben-grid');
   if (!lista.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay beneficios todavía.</p></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay beneficios todavia.</p></div>';
     return;
   }
   grid.innerHTML = lista.map(b => `
@@ -853,7 +453,7 @@ async function cargarBeneficios() {
       <div class="ben-card-nombre">${b.nombre}</div>
       <div class="ben-card-desc">${b.descripcion}</div>
       <div class="ben-card-footer">
-        <span class="ben-pts">⭐ ${b.puntos} pts</span>
+        <span class="ben-pts">${b.puntos} pts</span>
         <div class="ben-actions">
           <button class="btn-ben-edit" onclick='editarBeneficio(${JSON.stringify(b)})'>Editar</button>
           <button class="btn-ben-del" onclick="eliminarBeneficio(${b.id}, '${b.nombre.replace(/'/g,"\'")}')">Eliminar</button>
@@ -871,17 +471,14 @@ async function cargarConfig() {
 
 async function guardarPPP() {
   const val = parseInt(document.getElementById('ppp-valor').value);
-  if (!val || val < 1) { mostrarToast('Valor inválido', true); return; }
-  const r = await fetch('/admin/api/config', {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({puntos_por_peso: val})
-  });
+  if (!val || val < 1) { mostrarToast('Valor invalido', true); return; }
+  const r = await fetch('/admin/api/config', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({puntos_por_peso:val})});
   const d = await r.json();
-  if (d.ok) mostrarToast(` Ahora $${val} = 1 punto`);
+  if (d.ok) mostrarToast(`Ahora $${val} = 1 punto`);
   else mostrarToast('Error al guardar', true);
 }
 
-function abrirModalBen(b) {
+function abrirModalBen() {
   document.getElementById('ben-edit-id').value = '';
   document.getElementById('ben-nombre').value = '';
   document.getElementById('ben-desc').value = '';
@@ -911,36 +508,30 @@ function cerrarModalBen() {
 async function guardarBeneficio() {
   const id = document.getElementById('ben-edit-id').value;
   const body = {
+    emoji: '',
     nombre:      document.getElementById('ben-nombre').value.trim(),
     descripcion: document.getElementById('ben-desc').value.trim(),
     puntos:      parseInt(document.getElementById('ben-puntos').value),
     activo:      document.getElementById('ben-activo').value === 'true',
   };
-  if (!body.nombre || !body.descripcion || !body.puntos) {
-    mostrarToast('Completá todos los campos', true); return;
-  }
+  if (!body.nombre || !body.descripcion || !body.puntos) { mostrarToast('Completa todos los campos', true); return; }
   const url = id ? `/admin/api/beneficios/${id}` : '/admin/api/beneficios';
   const method = id ? 'PUT' : 'POST';
-  const r = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const r = await fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
   const d = await r.json();
-  if (d.ok || d.id) {
-    cerrarModalBen();
-    cargarBeneficios();
-    mostrarToast(id ? ' Beneficio actualizado' : ' Beneficio creado');
-  } else {
-    mostrarToast(d.error || 'Error', true);
-  }
+  if (d.ok || d.id) { cerrarModalBen(); cargarBeneficios(); mostrarToast(id ? 'Beneficio actualizado' : 'Beneficio creado'); }
+  else mostrarToast(d.error || 'Error', true);
 }
 
 async function eliminarBeneficio(id, nombre) {
-  if (!confirm(`¿Desactivar "${nombre}"?`)) return;
-  const r = await fetch(`/admin/api/beneficios/${id}`, { method: 'DELETE' });
+  if (!confirm(`Desactivar "${nombre}"?`)) return;
+  const r = await fetch(`/admin/api/beneficios/${id}`, {method:'DELETE'});
   const d = await r.json();
   if (d.ok) { cargarBeneficios(); mostrarToast('Beneficio desactivado'); }
   else mostrarToast('Error', true);
 }
 
-// ===== ADMIN MENU =====
+// MENU ADMIN
 let menuAdminData = [];
 
 async function cargarMenuAdmin() {
@@ -952,7 +543,7 @@ async function cargarMenuAdmin() {
 function renderMenuAdmin() {
   const cont = document.getElementById('menu-admin-content');
   if (!menuAdminData.length) {
-    cont.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay categorías todavía.</p></div>';
+    cont.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay categorias todavia.</p></div>';
     return;
   }
   cont.innerHTML = menuAdminData.map(cat => `
@@ -963,7 +554,7 @@ function renderMenuAdmin() {
           ${!cat.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactiva)</span>' : ''}
         </div>
         <div class="menu-cat-actions" onclick="event.stopPropagation()">
-          <button class="btn-sm primary" onclick="abrirModalNuevaSubcat('${cat.clave}', '${cat.nombre}')">+ Sección</button>
+          <button class="btn-sm primary" onclick="abrirModalNuevaSubcat('${cat.clave}', '${cat.nombre}')">+ Seccion</button>
           <button class="btn-sm" onclick="abrirModalEditarCat(${JSON.stringify(cat).replace(/"/g,'&quot;')})">Editar</button>
           <button class="btn-sm danger" onclick="eliminarCat(${cat.id})">Eliminar</button>
         </div>
@@ -1017,16 +608,15 @@ function abrirModalMenu(titulo, bodyHtml) {
   document.getElementById('modal-menu').classList.add('open');
 }
 
-// CATEGORIAS
 function abrirModalNuevaCat() {
-  abrirModalMenu('Nueva categoría', `
+  abrirModalMenu('Nueva categoria', `
     <input type="hidden" id="m-emoji" value=""/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Entradas"/></div>
-    <button class="btn-guardar-ben" onclick="crearCat()">Crear categoría</button>
+    <button class="btn-guardar-ben" onclick="crearCat()">Crear categoria</button>
   `);
 }
 function abrirModalEditarCat(cat) {
-  abrirModalMenu('Editar categoría', `
+  abrirModalMenu('Editar categoria', `
     <input type="hidden" id="m-id" value="${cat.id}"/>
     <input type="hidden" id="m-emoji" value="${cat.emoji}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${cat.nombre}"/></div>
@@ -1035,35 +625,32 @@ function abrirModalEditarCat(cat) {
   `);
 }
 async function crearCat() {
-  const r = await fetch('/admin/api/menu/categorias', {method:'POST',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({nombre: document.getElementById('m-nombre').value, emoji: document.getElementById('m-emoji').value})});
+  const r = await fetch('/admin/api/menu/categorias', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,emoji:document.getElementById('m-emoji').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Categoría creada'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Categoria creada'); }
   else mostrarToast(d.error || 'Error', true);
 }
 async function editarCat() {
   const id = document.getElementById('m-id').value;
-  const r = await fetch(`/admin/api/menu/categorias/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({nombre: document.getElementById('m-nombre').value, emoji: document.getElementById('m-emoji').value, activo: document.getElementById('m-activo').value === 'true'})});
+  const r = await fetch(`/admin/api/menu/categorias/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,emoji:document.getElementById('m-emoji').value,activo:document.getElementById('m-activo').value==='true'})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Categoría actualizada'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Categoria actualizada'); }
 }
 async function eliminarCat(id) {
-  if (!confirm('¿Desactivar esta categoría y todas sus secciones?')) return;
+  if (!confirm('Desactivar esta categoria y todas sus secciones?')) return;
   await fetch(`/admin/api/menu/categorias/${id}`, {method:'DELETE'});
-  cargarMenuAdmin(); mostrarToast('Categoría desactivada');
+  cargarMenuAdmin(); mostrarToast('Categoria desactivada');
 }
 
-// SUBCATEGORIAS
 function abrirModalNuevaSubcat(catClave, catNombre) {
-  abrirModalMenu(`Nueva sección en "${catNombre}"`, `
+  abrirModalMenu(`Nueva seccion en "${catNombre}"`, `
     <input type="hidden" id="m-cat-clave" value="${catClave}"/>
-    <div class="mfield"><label>Nombre de la sección</label><input type="text" id="m-nombre" placeholder="Ej: Pizzas"/></div>
-    <button class="btn-guardar-ben" onclick="crearSubcat()">Crear sección</button>
+    <div class="mfield"><label>Nombre de la seccion</label><input type="text" id="m-nombre" placeholder="Ej: Pizzas"/></div>
+    <button class="btn-guardar-ben" onclick="crearSubcat()">Crear seccion</button>
   `);
 }
 function abrirModalEditarSubcat(id, nombre, activo) {
-  abrirModalMenu('Editar sección', `
+  abrirModalMenu('Editar seccion', `
     <input type="hidden" id="m-id" value="${id}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${nombre}"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${activo?'selected':''}>Activa</option><option value="false" ${!activo?'selected':''}>Inactiva</option></select></div>
@@ -1071,31 +658,28 @@ function abrirModalEditarSubcat(id, nombre, activo) {
   `);
 }
 async function crearSubcat() {
-  const r = await fetch('/admin/api/menu/subcategorias', {method:'POST',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({nombre: document.getElementById('m-nombre').value, categoria_clave: document.getElementById('m-cat-clave').value})});
+  const r = await fetch('/admin/api/menu/subcategorias', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,categoria_clave:document.getElementById('m-cat-clave').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Sección creada'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Seccion creada'); }
   else mostrarToast(d.error || 'Error', true);
 }
 async function editarSubcat() {
   const id = document.getElementById('m-id').value;
-  const r = await fetch(`/admin/api/menu/subcategorias/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({nombre: document.getElementById('m-nombre').value, activo: document.getElementById('m-activo').value === 'true'})});
+  const r = await fetch(`/admin/api/menu/subcategorias/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,activo:document.getElementById('m-activo').value==='true'})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Sección actualizada'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Seccion actualizada'); }
 }
 async function eliminarSubcat(id) {
-  if (!confirm('¿Desactivar esta sección y todos sus platos?')) return;
+  if (!confirm('Desactivar esta seccion y todos sus platos?')) return;
   await fetch(`/admin/api/menu/subcategorias/${id}`, {method:'DELETE'});
-  cargarMenuAdmin(); mostrarToast('Sección desactivada');
+  cargarMenuAdmin(); mostrarToast('Seccion desactivada');
 }
 
-// ITEMS
 function abrirModalNuevoItem(subcatId, subcatNombre) {
   abrirModalMenu(`Nuevo plato en "${subcatNombre}"`, `
     <input type="hidden" id="m-subcat-id" value="${subcatId}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Pizza napolitana"/></div>
-    <div class="mfield"><label>Descripción</label><input type="text" id="m-desc" placeholder="Ingredientes o descripción breve"/></div>
+    <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" placeholder="Ingredientes o descripcion breve"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" placeholder="1500" min="1"/></div>
     <button class="btn-guardar-ben" onclick="crearItem()">Agregar plato</button>
   `);
@@ -1103,46 +687,31 @@ function abrirModalNuevoItem(subcatId, subcatNombre) {
 function abrirModalEditarItem(it) {
   abrirModalMenu('Editar plato', `
     <input type="hidden" id="m-id" value="${it.id}"/>
-    <input type="hidden" id="m-emoji" value="${it.emoji}"/>
+    <input type="hidden" id="m-emoji" value="${it.emoji || ''}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${it.nombre}"/></div>
-    <div class="mfield"><label>Descripción</label><input type="text" id="m-desc" value="${it.desc ?? it.descripcion ?? ''}"/></div>
+    <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" value="${it.desc ?? it.descripcion ?? ''}"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" value="${it.precio}" min="1"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${it.activo?'selected':''}>Activo</option><option value="false" ${!it.activo?'selected':''}>Inactivo</option></select></div>
     <button class="btn-guardar-ben" onclick="editarItem()">Guardar</button>
   `);
 }
 async function crearItem() {
-  const r = await fetch('/admin/api/menu/items', {method:'POST',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      subcategoria_id: document.getElementById('m-subcat-id').value,
-      emoji:  '',
-      nombre: document.getElementById('m-nombre').value,
-      desc:   document.getElementById('m-desc').value,
-      precio: document.getElementById('m-precio').value,
-    })});
+  const r = await fetch('/admin/api/menu/items', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subcategoria_id:document.getElementById('m-subcat-id').value,emoji:'',nombre:document.getElementById('m-nombre').value,desc:document.getElementById('m-desc').value,precio:document.getElementById('m-precio').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Plato agregado'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Plato agregado'); }
   else mostrarToast(d.error || 'Error', true);
 }
 async function editarItem() {
   const id = document.getElementById('m-id').value;
-  const r = await fetch(`/admin/api/menu/items/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      emoji:  document.getElementById('m-emoji').value,
-      nombre: document.getElementById('m-nombre').value,
-      desc:   document.getElementById('m-desc').value,
-      precio: document.getElementById('m-precio').value,
-      activo: document.getElementById('m-activo').value === 'true',
-    })});
+  const r = await fetch(`/admin/api/menu/items/${id}`, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({emoji:document.getElementById('m-emoji').value,nombre:document.getElementById('m-nombre').value,desc:document.getElementById('m-desc').value,precio:document.getElementById('m-precio').value,activo:document.getElementById('m-activo').value==='true'})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast(' Plato actualizado'); }
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Plato actualizado'); }
 }
 async function eliminarItem(id) {
-  if (!confirm('¿Desactivar este plato?')) return;
+  if (!confirm('Desactivar este plato?')) return;
   await fetch(`/admin/api/menu/items/${id}`, {method:'DELETE'});
   cargarMenuAdmin(); mostrarToast('Plato desactivado');
 }
-
 </script>
 </body>
 </html>
