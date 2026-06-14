@@ -3,47 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TuMenú · Panel</title>
+<title>TuMenu · Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --accent: #c0392b;
-    --accent2: #e74c3c;
-    --text: #f0f0f0;
-    --muted: #777;
-    --gold: #f59e0b;
-    --green: #10b981;
-    --blue: #3b82f6;
-    --orange: #f97316;
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e; --border: #2a2a2a;
+    --accent: #c0392b; --accent2: #e74c3c; --text: #f0f0f0; --muted: #777;
+    --gold: #f59e0b; --green: #10b981; --blue: #3b82f6; --orange: #f97316;
   }
-
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  .topbar {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 0 2rem; height: 60px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100;
-  }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .topbar-left { display: flex; align-items: center; gap: 1.5rem; }
   .brand { font-size: 1.1rem; font-weight: 600; color: var(--text); }
   .brand span { color: var(--accent); }
-  .badge-panel {
-    font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--muted); border: 1px solid var(--border);
-    border-radius: 4px; padding: 2px 8px;
-  }
+  .badge-panel { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; }
   .topbar-right { display: flex; align-items: center; gap: 1rem; }
   .admin-name { font-size: 0.85rem; color: var(--muted); }
-  .btn-logout {
-    background: transparent; border: 1px solid var(--border); color: var(--muted);
-    border-radius: 6px; padding: 0.35rem 0.9rem; font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem; cursor: pointer; text-decoration: none; transition: all 0.2s;
-  }
+  .btn-logout { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.35rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; text-decoration: none; transition: all 0.2s; }
   .btn-logout:hover { border-color: var(--accent); color: var(--text); }
 
   .live-dot { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--green); }
@@ -55,15 +33,15 @@
   .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; position: relative; overflow: hidden; }
   .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .stat-card.rojo::after  { background: var(--accent); }
-  .stat-card.verde::after { background: var(--green); }
-  .stat-card.azul::after  { background: var(--blue); }
+  .stat-card.rojo::after   { background: var(--accent); }
+  .stat-card.verde::after  { background: var(--green); }
+  .stat-card.azul::after   { background: var(--blue); }
   .stat-card.naranja::after { background: var(--orange); }
   .stat-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.6rem; }
   .stat-value { font-size: 1.8rem; font-weight: 600; line-height: 1; }
-  .stat-card.rojo .stat-value   { color: #f87171; }
-  .stat-card.verde .stat-value  { color: var(--green); }
-  .stat-card.azul .stat-value   { color: #60a5fa; }
+  .stat-card.rojo .stat-value    { color: #f87171; }
+  .stat-card.verde .stat-value   { color: var(--green); }
+  .stat-card.azul .stat-value    { color: #60a5fa; }
   .stat-card.naranja .stat-value { color: #fb923c; }
 
   .filters-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -90,16 +68,16 @@
   .items-list strong { color: var(--text); }
 
   .badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 5px; padding: 3px 9px; font-size: 0.74rem; font-weight: 500; white-space: nowrap; }
-  .badge-local     { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
-  .badge-llevar    { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
-  .badge-efectivo  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
-  .badge-transf    { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+  .badge-local    { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .badge-llevar   { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+  .badge-efectivo { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+  .badge-transf   { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
 
   .total-cell { font-family: 'DM Mono', monospace; font-size: 0.95rem; font-weight: 500; color: var(--text); white-space: nowrap; }
   .pts-cell   { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--gold); }
 
   .estado-select { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 0.35rem 0.6rem; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; outline: none; transition: border-color 0.15s; }
-  .estado-select:focus { border-color: var(--accent); }
+  .estado-select:focus    { border-color: var(--accent); }
   .estado-pendiente   { border-color: #f59e0b; color: #fbbf24; }
   .estado-preparacion { border-color: var(--blue); color: #60a5fa; }
   .estado-listo       { border-color: var(--green); color: #34d399; }
@@ -108,37 +86,37 @@
   .hora-cell { font-family: 'DM Mono', monospace; font-size: 0.76rem; color: var(--muted); }
 
   .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
-  .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.4; }
   .empty-state p { font-size: 0.88rem; }
   .loading { text-align: center; padding: 3rem; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; }
 
   .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1.4rem; border-radius: 8px; font-size: 0.85rem; opacity: 0; transition: all 0.3s; z-index: 500; border-left: 3px solid var(--green); }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.error { border-left-color: var(--accent); }
 
   @keyframes newRow { from { background: rgba(192,57,43,0.15); } to { background: transparent; } }
   .nuevo { animation: newRow 2s ease forwards; }
 
-  .panel-nav { display:flex; gap:0.3rem; margin-left:1rem; }
+  .panel-nav { display: flex; gap: 0.3rem; margin-left: 1rem; }
   .panel-nav-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.35rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; }
-  .panel-nav-btn:hover { color: var(--text); border-color: #444; }
+  .panel-nav-btn:hover  { color: var(--text); border-color: #444; }
   .panel-nav-btn.active { background: rgba(192,57,43,0.15); border-color: var(--accent); color: var(--text); }
 
   .ben-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
   .ben-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; }
-  .ben-sub { font-size: 0.82rem; color: var(--muted); }
+  .ben-sub   { font-size: 0.82rem; color: var(--muted); }
   .config-ppp { display: flex; align-items: center; gap: 0.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.82rem; color: var(--muted); }
   .config-ppp input { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); padding: 0.2rem 0.4rem; font-size: 0.82rem; text-align: center; outline: none; }
   .btn-save-ppp { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 5px; padding: 0.25rem 0.7rem; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
   .btn-save-ppp:hover { border-color: var(--accent); }
   .btn-nuevo-ben { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
   .btn-nuevo-ben:hover { background: var(--accent2); }
+
   .ben-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
   .ben-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 0.2s; position: relative; }
   .ben-card:hover { border-color: #444; }
   .ben-card.inactivo { opacity: 0.45; }
   .ben-card-nombre { font-weight: 600; font-size: 0.95rem; padding-right: 4.5rem; }
-  .ben-card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+  .ben-card-desc   { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
   .ben-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.4rem; }
   .ben-pts { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: var(--gold); border-radius: 50px; padding: 3px 10px; font-size: 0.78rem; font-weight: 700; }
   .ben-actions { display: flex; gap: 0.4rem; }
@@ -163,16 +141,16 @@
   .btn-guardar-ben { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 600; cursor: pointer; margin-top: 0.3rem; transition: background 0.2s; }
   .btn-guardar-ben:hover { background: var(--accent2); }
 
-  .menu-cat-block { margin-bottom:1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .menu-cat-block  { margin-bottom:1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
   .menu-cat-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; cursor:pointer; }
-  .menu-cat-title { font-weight:600; font-size:0.95rem; display:flex; align-items:center; gap:0.5rem; }
+  .menu-cat-title  { font-weight:600; font-size:0.95rem; display:flex; align-items:center; gap:0.5rem; }
   .menu-cat-actions { display:flex; gap:0.4rem; }
-  .menu-subcat-block { border-top:1px solid var(--border); padding:0.8rem 1.2rem; }
+  .menu-subcat-block  { border-top:1px solid var(--border); padding:0.8rem 1.2rem; }
   .menu-subcat-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
-  .menu-subcat-title { font-size:0.85rem; color:var(--muted); font-weight:500; }
+  .menu-subcat-title  { font-size:0.85rem; color:var(--muted); font-weight:500; }
   .menu-items-list { display:flex; flex-direction:column; gap:0.4rem; }
-  .menu-item-row { display:flex; align-items:center; justify-content:space-between; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0.8rem; }
-  .menu-item-info { display:flex; align-items:center; gap:0.6rem; font-size:0.85rem; }
+  .menu-item-row   { display:flex; align-items:center; justify-content:space-between; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0.8rem; }
+  .menu-item-info  { display:flex; align-items:center; gap:0.6rem; font-size:0.85rem; }
   .menu-item-precio { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--gold); margin-left:0.4rem; }
   .menu-item-actions { display:flex; gap:0.3rem; }
   .btn-sm { background:var(--surface2); border:1px solid var(--border); color:var(--muted); border-radius:5px; padding:0.2rem 0.6rem; font-size:0.72rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
@@ -182,8 +160,19 @@
   .add-item-btn { margin-top:0.4rem; width:100%; background:transparent; border:1px dashed var(--border); color:var(--muted); border-radius:6px; padding:0.3rem; font-size:0.75rem; cursor:pointer; transition:all 0.15s; }
   .add-item-btn:hover { border-color:#555; color:var(--text); }
 
+  /* USUARIOS */
+  .usuarios-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .ustat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; }
+  .ustat-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .ustat-value { font-size: 1.5rem; font-weight: 600; color: var(--text); }
+  .usuario-puntos { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--gold); }
+  .usuario-pedidos { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--muted); }
+  .usuario-total { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--green); }
+  .usuario-fecha { font-family: 'DM Mono', monospace; font-size: 0.76rem; color: var(--muted); }
+
   @media (max-width: 900px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .usuarios-stats { grid-template-columns: repeat(2, 1fr); }
     .main { padding: 1rem; }
     table { font-size: 0.8rem; }
     td, th { padding: 0.7rem 0.8rem; }
@@ -194,13 +183,14 @@
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="brand">Tu<span>Menú</span></div>
+    <div class="brand">Tu<span>Menu</span></div>
     <div class="badge-panel">Panel vendedor</div>
     <div class="live-dot">EN VIVO</div>
     <nav class="panel-nav">
       <button class="panel-nav-btn active" onclick="showTab('pedidos', this)">Pedidos</button>
       <button class="panel-nav-btn" onclick="showTab('beneficios', this)">Beneficios</button>
       <button class="panel-nav-btn" onclick="showTab('menu', this)">Menu</button>
+      <button class="panel-nav-btn" onclick="showTab('usuarios', this)">Usuarios</button>
     </nav>
   </div>
   <div class="topbar-right">
@@ -209,6 +199,7 @@
   </div>
 </div>
 
+<!-- PEDIDOS TAB -->
 <div class="main">
   <div class="stats-row">
     <div class="stat-card rojo"><div class="stat-label">Recaudado hoy</div><div class="stat-value" id="stat-total">—</div></div>
@@ -216,7 +207,6 @@
     <div class="stat-card naranja"><div class="stat-label">Pendientes</div><div class="stat-value" id="stat-pendientes">—</div></div>
     <div class="stat-card azul"><div class="stat-label">En preparacion</div><div class="stat-value" id="stat-prep">—</div></div>
   </div>
-
   <div class="filters-row">
     <span class="filters-label">Filtrar:</span>
     <button class="filter-btn active" onclick="setFiltro('todos', this)">Todos</button>
@@ -225,15 +215,12 @@
     <button class="filter-btn" onclick="setFiltro('listo', this)">Listos</button>
     <button class="filter-btn" onclick="setFiltro('entregado', this)">Entregados</button>
   </div>
-
   <div class="table-wrap">
     <div class="table-header">
       <div class="table-title">Pedidos</div>
       <div class="table-count" id="table-count">—</div>
     </div>
-    <div id="table-body-wrap">
-      <div class="loading">Cargando pedidos...</div>
-    </div>
+    <div id="table-body-wrap"><div class="loading">Cargando pedidos...</div></div>
   </div>
 </div>
 
@@ -253,9 +240,7 @@
       <button class="btn-nuevo-ben" onclick="abrirModalBen()">+ Nuevo beneficio</button>
     </div>
   </div>
-  <div class="ben-grid" id="ben-grid">
-    <div class="loading">Cargando beneficios...</div>
-  </div>
+  <div class="ben-grid" id="ben-grid"><div class="loading">Cargando beneficios...</div></div>
 </div>
 </div>
 
@@ -271,8 +256,30 @@
       <button class="btn-nuevo-ben" style="background:#3b82f6" onclick="abrirModalNuevaCat()">+ Nueva categoria</button>
     </div>
   </div>
-  <div id="menu-admin-content">
-    <div class="loading">Cargando menu...</div>
+  <div id="menu-admin-content"><div class="loading">Cargando menu...</div></div>
+</div>
+</div>
+
+<!-- USUARIOS TAB -->
+<div id="tab-usuarios" style="display:none">
+<div class="main">
+  <div class="ben-header">
+    <div>
+      <h2 class="ben-title">Usuarios registrados</h2>
+      <p class="ben-sub">Detalle de todas las cuentas creadas en la plataforma.</p>
+    </div>
+  </div>
+  <div class="usuarios-stats">
+    <div class="ustat-card"><div class="ustat-label">Total de usuarios</div><div class="ustat-value" id="ustat-total">—</div></div>
+    <div class="ustat-card"><div class="ustat-label">Total recaudado</div><div class="ustat-value" id="ustat-recaudado">—</div></div>
+    <div class="ustat-card"><div class="ustat-label">Total de pedidos</div><div class="ustat-value" id="ustat-pedidos">—</div></div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">Cuentas</div>
+      <div class="table-count" id="usuarios-count">—</div>
+    </div>
+    <div id="usuarios-body"><div class="loading">Cargando usuarios...</div></div>
   </div>
 </div>
 </div>
@@ -296,25 +303,10 @@
   </div>
   <div class="modal-ben-body">
     <input type="hidden" id="ben-edit-id" value="" />
-    <div class="mfield">
-      <label>Nombre</label>
-      <input type="text" id="ben-nombre" placeholder="Ej: Cafe con medialunas" />
-    </div>
-    <div class="mfield">
-      <label>Descripcion</label>
-      <input type="text" id="ben-desc" placeholder="Ej: 2 medialunas + cafe a eleccion" />
-    </div>
-    <div class="mfield">
-      <label>Puntos necesarios</label>
-      <input type="number" id="ben-puntos" placeholder="50" min="1" />
-    </div>
-    <div class="mfield">
-      <label>Estado</label>
-      <select id="ben-activo">
-        <option value="true">Activo</option>
-        <option value="false">Inactivo</option>
-      </select>
-    </div>
+    <div class="mfield"><label>Nombre</label><input type="text" id="ben-nombre" placeholder="Ej: Cafe con medialunas" /></div>
+    <div class="mfield"><label>Descripcion</label><input type="text" id="ben-desc" placeholder="Ej: 2 medialunas + cafe a eleccion" /></div>
+    <div class="mfield"><label>Puntos necesarios</label><input type="number" id="ben-puntos" placeholder="50" min="1" /></div>
+    <div class="mfield"><label>Estado</label><select id="ben-activo"><option value="true">Activo</option><option value="false">Inactivo</option></select></div>
     <button class="btn-guardar-ben" onclick="guardarBeneficio()">Guardar</button>
   </div>
 </div>
@@ -327,13 +319,15 @@ function showTab(tab, btn) {
   document.querySelectorAll('.panel-nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-beneficios').style.display = tab === 'beneficios' ? 'block' : 'none';
-  document.getElementById('tab-menu').style.display = tab === 'menu' ? 'block' : 'none';
+  document.getElementById('tab-menu').style.display       = tab === 'menu'        ? 'block' : 'none';
+  document.getElementById('tab-usuarios').style.display   = tab === 'usuarios'    ? 'block' : 'none';
   document.querySelectorAll('.main').forEach(el => {
-    if (!el.closest('#tab-beneficios') && !el.closest('#tab-menu'))
+    if (!el.closest('#tab-beneficios') && !el.closest('#tab-menu') && !el.closest('#tab-usuarios'))
       el.style.display = tab === 'pedidos' ? '' : 'none';
   });
   if (tab === 'beneficios') { cargarBeneficios(); cargarConfig(); }
-  if (tab === 'menu') { cargarMenuAdmin(); }
+  if (tab === 'menu')       { cargarMenuAdmin(); }
+  if (tab === 'usuarios')   { cargarUsuarios(); }
 }
 
 // PEDIDOS
@@ -352,10 +346,10 @@ async function cargarStats() {
   try {
     const r = await fetch('/admin/api/stats');
     const d = await r.json();
-    document.getElementById('stat-total').textContent = '$' + d.total_hoy.toLocaleString('es-AR');
-    document.getElementById('stat-cant').textContent = d.cant_hoy;
+    document.getElementById('stat-total').textContent     = '$' + d.total_hoy.toLocaleString('es-AR');
+    document.getElementById('stat-cant').textContent      = d.cant_hoy;
     document.getElementById('stat-pendientes').textContent = d.pendientes;
-    document.getElementById('stat-prep').textContent = d.en_preparacion;
+    document.getElementById('stat-prep').textContent      = d.en_preparacion;
   } catch(e) {}
 }
 
@@ -365,7 +359,7 @@ async function cargarPedidos() {
     const pedidos = await r.json();
     document.getElementById('table-count').textContent = pedidos.length + ' pedido' + (pedidos.length !== 1 ? 's' : '');
     if (pedidos.length === 0) {
-      document.getElementById('table-body-wrap').innerHTML = `<div class="empty-state"><div class="icon"></div><p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p></div>`;
+      document.getElementById('table-body-wrap').innerHTML = `<div class="empty-state"><p>No hay pedidos${filtroActual !== 'todos' ? ' en este estado' : ''} por el momento.</p></div>`;
       return;
     }
     const nuevos = new Set();
@@ -375,37 +369,30 @@ async function cargarPedidos() {
     }
     pedidos.forEach(p => pedidosConocidos.add(p.id));
     primeraVez = false;
-
     const rows = pedidos.map(p => {
-      const itemsHtml = p.items.map(i => `<span><strong>${i.cantidad}x</strong> ${i.nombre}</span>`).join('<br>');
-      const tipoHtml = p.tipo === 'local'
-        ? '<span class="badge badge-local">Para comer</span>'
-        : '<span class="badge badge-llevar">Para llevar</span>';
-      const pagoHtml = p.pago === 'efectivo'
-        ? '<span class="badge badge-efectivo">Efectivo</span>'
-        : '<span class="badge badge-transf">Transferencia</span>';
+      const itemsHtml   = p.items.map(i => `<span><strong>${i.cantidad}x</strong> ${i.nombre}</span>`).join('<br>');
+      const tipoHtml    = p.tipo === 'local' ? '<span class="badge badge-local">Para comer</span>' : '<span class="badge badge-llevar">Para llevar</span>';
+      const pagoHtml    = p.pago === 'efectivo' ? '<span class="badge badge-efectivo">Efectivo</span>' : '<span class="badge badge-transf">Transferencia</span>';
       const estadoClass = {pendiente:'estado-pendiente',en_preparacion:'estado-preparacion',listo:'estado-listo',entregado:'estado-entregado'}[p.estado] || '';
-      const esNuevo = nuevos.has(p.id) ? 'nuevo' : '';
-      return `
-        <tr class="${esNuevo}" id="row-${p.id}">
-          <td><div class="pedido-num">#${String(p.id).padStart(4,'0')}</div></td>
-          <td><div class="cliente-nombre">${p.usuario_nombre}</div><div class="cliente-email">${p.usuario_email}</div></td>
-          <td><div class="items-list">${itemsHtml}</div></td>
-          <td>${tipoHtml}</td>
-          <td>${pagoHtml}</td>
-          <td><div class="total-cell">$${p.total.toLocaleString('es-AR')}</div><div class="pts-cell">+${p.puntos_ganados} pts</div></td>
-          <td>
-            <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
-              <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>Pendiente</option>
-              <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}>En preparacion</option>
-              <option value="listo"          ${p.estado==='listo'?'selected':''}>Listo</option>
-              <option value="entregado"      ${p.estado==='entregado'?'selected':''}>Entregado</option>
-            </select>
-          </td>
-          <td><div class="hora-cell">${p.hora}</div></td>
-        </tr>`;
+      const esNuevo     = nuevos.has(p.id) ? 'nuevo' : '';
+      return `<tr class="${esNuevo}" id="row-${p.id}">
+        <td><div class="pedido-num">#${String(p.id).padStart(4,'0')}</div></td>
+        <td><div class="cliente-nombre">${p.usuario_nombre}</div><div class="cliente-email">${p.usuario_email}</div></td>
+        <td><div class="items-list">${itemsHtml}</div></td>
+        <td>${tipoHtml}</td>
+        <td>${pagoHtml}</td>
+        <td><div class="total-cell">$${p.total.toLocaleString('es-AR')}</div><div class="pts-cell">+${p.puntos_ganados} pts</div></td>
+        <td>
+          <select class="estado-select ${estadoClass}" onchange="cambiarEstado(${p.id}, this)">
+            <option value="pendiente"      ${p.estado==='pendiente'?'selected':''}>Pendiente</option>
+            <option value="en_preparacion" ${p.estado==='en_preparacion'?'selected':''}>En preparacion</option>
+            <option value="listo"          ${p.estado==='listo'?'selected':''}>Listo</option>
+            <option value="entregado"      ${p.estado==='entregado'?'selected':''}>Entregado</option>
+          </select>
+        </td>
+        <td><div class="hora-cell">${p.hora}</div></td>
+      </tr>`;
     }).join('');
-
     document.getElementById('table-body-wrap').innerHTML = `
       <table>
         <thead><tr><th>#</th><th>Cliente</th><th>Items</th><th>Tipo</th><th>Pago</th><th>Total</th><th>Estado</th><th>Hora</th></tr></thead>
@@ -443,10 +430,7 @@ async function cargarBeneficios() {
   const r = await fetch('/admin/api/beneficios');
   const lista = await r.json();
   const grid = document.getElementById('ben-grid');
-  if (!lista.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay beneficios todavia.</p></div>';
-    return;
-  }
+  if (!lista.length) { grid.innerHTML = '<div class="empty-state"><p>No hay beneficios todavia.</p></div>'; return; }
   grid.innerHTML = lista.map(b => `
     <div class="ben-card ${b.activo ? '' : 'inactivo'}">
       <span class="ben-status ${b.activo ? 'activo' : 'inactivo'}">${b.activo ? 'ACTIVO' : 'INACTIVO'}</span>
@@ -459,8 +443,7 @@ async function cargarBeneficios() {
           <button class="btn-ben-del" onclick="eliminarBeneficio(${b.id}, '${b.nombre.replace(/'/g,"\'")}')">Eliminar</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function cargarConfig() {
@@ -480,10 +463,10 @@ async function guardarPPP() {
 
 function abrirModalBen() {
   document.getElementById('ben-edit-id').value = '';
-  document.getElementById('ben-nombre').value = '';
-  document.getElementById('ben-desc').value = '';
-  document.getElementById('ben-puntos').value = '';
-  document.getElementById('ben-activo').value = 'true';
+  document.getElementById('ben-nombre').value  = '';
+  document.getElementById('ben-desc').value    = '';
+  document.getElementById('ben-puntos').value  = '';
+  document.getElementById('ben-activo').value  = 'true';
   document.getElementById('modal-ben-titulo').textContent = 'Nuevo beneficio';
   document.getElementById('modal-ben-overlay').classList.add('open');
   document.getElementById('modal-ben').classList.add('open');
@@ -491,10 +474,10 @@ function abrirModalBen() {
 
 function editarBeneficio(b) {
   document.getElementById('ben-edit-id').value = b.id;
-  document.getElementById('ben-nombre').value = b.nombre;
-  document.getElementById('ben-desc').value = b.descripcion;
-  document.getElementById('ben-puntos').value = b.puntos;
-  document.getElementById('ben-activo').value = b.activo ? 'true' : 'false';
+  document.getElementById('ben-nombre').value  = b.nombre;
+  document.getElementById('ben-desc').value    = b.descripcion;
+  document.getElementById('ben-puntos').value  = b.puntos;
+  document.getElementById('ben-activo').value  = b.activo ? 'true' : 'false';
   document.getElementById('modal-ben-titulo').textContent = 'Editar beneficio';
   document.getElementById('modal-ben-overlay').classList.add('open');
   document.getElementById('modal-ben').classList.add('open');
@@ -531,6 +514,44 @@ async function eliminarBeneficio(id, nombre) {
   else mostrarToast('Error', true);
 }
 
+// USUARIOS
+async function cargarUsuarios() {
+  try {
+    const r = await fetch('/admin/api/usuarios');
+    const lista = await r.json();
+    document.getElementById('usuarios-count').textContent = lista.length + ' cuenta' + (lista.length !== 1 ? 's' : '');
+
+    const totalRecaudado = lista.reduce((s, u) => s + (u.total_gastado || 0), 0);
+    const totalPedidos   = lista.reduce((s, u) => s + (u.cantidad_pedidos || 0), 0);
+    document.getElementById('ustat-total').textContent      = lista.length;
+    document.getElementById('ustat-recaudado').textContent  = '$' + totalRecaudado.toLocaleString('es-AR');
+    document.getElementById('ustat-pedidos').textContent    = totalPedidos;
+
+    if (!lista.length) {
+      document.getElementById('usuarios-body').innerHTML = '<div class="empty-state"><p>No hay usuarios registrados todavia.</p></div>';
+      return;
+    }
+
+    const rows = lista.map((u, i) => `
+      <tr>
+        <td><div class="pedido-num">${String(i+1).padStart(3,'0')}</div></td>
+        <td><div class="cliente-nombre">${u.nombre}</div><div class="cliente-email">${u.email}</div></td>
+        <td><div class="usuario-fecha">${u.creado_en ? u.creado_en.slice(0,10) : '—'}</div></td>
+        <td><div class="usuario-puntos">${u.puntos} pts</div></td>
+        <td><div class="usuario-pedidos">${u.cantidad_pedidos} pedido${u.cantidad_pedidos !== 1 ? 's' : ''}</div></td>
+        <td><div class="usuario-total">$${(u.total_gastado || 0).toLocaleString('es-AR')}</div></td>
+      </tr>`).join('');
+
+    document.getElementById('usuarios-body').innerHTML = `
+      <table>
+        <thead><tr><th>#</th><th>Usuario</th><th>Registro</th><th>Puntos</th><th>Pedidos</th><th>Total gastado</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('usuarios-body').innerHTML = '<div class="empty-state"><p>Error al cargar usuarios.</p></div>';
+  }
+}
+
 // MENU ADMIN
 let menuAdminData = [];
 
@@ -542,17 +563,11 @@ async function cargarMenuAdmin() {
 
 function renderMenuAdmin() {
   const cont = document.getElementById('menu-admin-content');
-  if (!menuAdminData.length) {
-    cont.innerHTML = '<div class="empty-state"><div class="icon"></div><p>No hay categorias todavia.</p></div>';
-    return;
-  }
+  if (!menuAdminData.length) { cont.innerHTML = '<div class="empty-state"><p>No hay categorias todavia.</p></div>'; return; }
   cont.innerHTML = menuAdminData.map(cat => `
     <div class="menu-cat-block">
       <div class="menu-cat-header" onclick="toggleCat('cat-${cat.id}')">
-        <div class="menu-cat-title">
-          ${cat.nombre}
-          ${!cat.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactiva)</span>' : ''}
-        </div>
+        <div class="menu-cat-title">${cat.nombre} ${!cat.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactiva)</span>' : ''}</div>
         <div class="menu-cat-actions" onclick="event.stopPropagation()">
           <button class="btn-sm primary" onclick="abrirModalNuevaSubcat('${cat.clave}', '${cat.nombre}')">+ Seccion</button>
           <button class="btn-sm" onclick="abrirModalEditarCat(${JSON.stringify(cat).replace(/"/g,'&quot;')})">Editar</button>
@@ -581,26 +596,17 @@ function renderMenuAdmin() {
                     <button class="btn-sm" onclick='abrirModalEditarItem(${JSON.stringify(it)})'>Editar</button>
                     <button class="btn-sm danger" onclick="eliminarItem(${it.id})">Eliminar</button>
                   </div>
-                </div>
-              `).join('')}
+                </div>`).join('')}
               <button class="add-item-btn" onclick="abrirModalNuevoItem(${sub.id}, '${sub.nombre.replace(/'/g,"\'")}')">+ Agregar plato</button>
             </div>
-          </div>
-        `).join('')}
+          </div>`).join('')}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function toggleCat(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = el.style.display === 'none' ? '' : 'none';
-}
+function toggleCat(id) { const el = document.getElementById(id); if (el) el.style.display = el.style.display === 'none' ? '' : 'none'; }
 
-function cerrarModalMenu() {
-  document.getElementById('modal-menu-overlay').classList.remove('open');
-  document.getElementById('modal-menu').classList.remove('open');
-}
+function cerrarModalMenu() { document.getElementById('modal-menu-overlay').classList.remove('open'); document.getElementById('modal-menu').classList.remove('open'); }
 function abrirModalMenu(titulo, bodyHtml) {
   document.getElementById('modal-menu-titulo').textContent = titulo;
   document.getElementById('modal-menu-body').innerHTML = bodyHtml;
@@ -612,8 +618,7 @@ function abrirModalNuevaCat() {
   abrirModalMenu('Nueva categoria', `
     <input type="hidden" id="m-emoji" value=""/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Entradas"/></div>
-    <button class="btn-guardar-ben" onclick="crearCat()">Crear categoria</button>
-  `);
+    <button class="btn-guardar-ben" onclick="crearCat()">Crear categoria</button>`);
 }
 function abrirModalEditarCat(cat) {
   abrirModalMenu('Editar categoria', `
@@ -621,14 +626,12 @@ function abrirModalEditarCat(cat) {
     <input type="hidden" id="m-emoji" value="${cat.emoji}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${cat.nombre}"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${cat.activo?'selected':''}>Activa</option><option value="false" ${!cat.activo?'selected':''}>Inactiva</option></select></div>
-    <button class="btn-guardar-ben" onclick="editarCat()">Guardar</button>
-  `);
+    <button class="btn-guardar-ben" onclick="editarCat()">Guardar</button>`);
 }
 async function crearCat() {
   const r = await fetch('/admin/api/menu/categorias', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,emoji:document.getElementById('m-emoji').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Categoria creada'); }
-  else mostrarToast(d.error || 'Error', true);
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Categoria creada'); } else mostrarToast(d.error||'Error',true);
 }
 async function editarCat() {
   const id = document.getElementById('m-id').value;
@@ -646,22 +649,19 @@ function abrirModalNuevaSubcat(catClave, catNombre) {
   abrirModalMenu(`Nueva seccion en "${catNombre}"`, `
     <input type="hidden" id="m-cat-clave" value="${catClave}"/>
     <div class="mfield"><label>Nombre de la seccion</label><input type="text" id="m-nombre" placeholder="Ej: Pizzas"/></div>
-    <button class="btn-guardar-ben" onclick="crearSubcat()">Crear seccion</button>
-  `);
+    <button class="btn-guardar-ben" onclick="crearSubcat()">Crear seccion</button>`);
 }
 function abrirModalEditarSubcat(id, nombre, activo) {
   abrirModalMenu('Editar seccion', `
     <input type="hidden" id="m-id" value="${id}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${nombre}"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${activo?'selected':''}>Activa</option><option value="false" ${!activo?'selected':''}>Inactiva</option></select></div>
-    <button class="btn-guardar-ben" onclick="editarSubcat()">Guardar</button>
-  `);
+    <button class="btn-guardar-ben" onclick="editarSubcat()">Guardar</button>`);
 }
 async function crearSubcat() {
   const r = await fetch('/admin/api/menu/subcategorias', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('m-nombre').value,categoria_clave:document.getElementById('m-cat-clave').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Seccion creada'); }
-  else mostrarToast(d.error || 'Error', true);
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Seccion creada'); } else mostrarToast(d.error||'Error',true);
 }
 async function editarSubcat() {
   const id = document.getElementById('m-id').value;
@@ -681,25 +681,22 @@ function abrirModalNuevoItem(subcatId, subcatNombre) {
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Pizza napolitana"/></div>
     <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" placeholder="Ingredientes o descripcion breve"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" placeholder="1500" min="1"/></div>
-    <button class="btn-guardar-ben" onclick="crearItem()">Agregar plato</button>
-  `);
+    <button class="btn-guardar-ben" onclick="crearItem()">Agregar plato</button>`);
 }
 function abrirModalEditarItem(it) {
   abrirModalMenu('Editar plato', `
     <input type="hidden" id="m-id" value="${it.id}"/>
-    <input type="hidden" id="m-emoji" value="${it.emoji || ''}"/>
+    <input type="hidden" id="m-emoji" value="${it.emoji||''}"/>
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" value="${it.nombre}"/></div>
     <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" value="${it.desc ?? it.descripcion ?? ''}"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" value="${it.precio}" min="1"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${it.activo?'selected':''}>Activo</option><option value="false" ${!it.activo?'selected':''}>Inactivo</option></select></div>
-    <button class="btn-guardar-ben" onclick="editarItem()">Guardar</button>
-  `);
+    <button class="btn-guardar-ben" onclick="editarItem()">Guardar</button>`);
 }
 async function crearItem() {
   const r = await fetch('/admin/api/menu/items', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subcategoria_id:document.getElementById('m-subcat-id').value,emoji:'',nombre:document.getElementById('m-nombre').value,desc:document.getElementById('m-desc').value,precio:document.getElementById('m-precio').value})});
   const d = await r.json();
-  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Plato agregado'); }
-  else mostrarToast(d.error || 'Error', true);
+  if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Plato agregado'); } else mostrarToast(d.error||'Error',true);
 }
 async function editarItem() {
   const id = document.getElementById('m-id').value;
