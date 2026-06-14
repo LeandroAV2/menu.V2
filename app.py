@@ -579,6 +579,23 @@ def admin_api_usuarios():
     rows = c.fetchall(); c.close(); conn.close()
     return jsonify([dict(r) for r in rows])
 
+@app.route("/admin/api/usuarios/<int:uid>", methods=["DELETE"])
+def admin_eliminar_usuario(uid):
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT email FROM usuarios WHERE id=%s", (uid,))
+    u = c.fetchone()
+    if not u:
+        c.close(); conn.close()
+        return jsonify({"error":"Usuario no encontrado"}), 404
+    email = u["email"]
+    c.execute("DELETE FROM pedidos WHERE usuario_email=%s", (email,))
+    c.execute("DELETE FROM canjes WHERE usuario_email=%s", (email,))
+    c.execute("DELETE FROM pagos_mp WHERE usuario_email=%s", (email,))
+    c.execute("DELETE FROM usuarios WHERE id=%s", (uid,))
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True})
+
 @app.route("/admin/api/beneficios")
 def admin_get_beneficios():
     if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
