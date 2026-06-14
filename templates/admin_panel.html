@@ -540,16 +540,27 @@ async function cargarUsuarios() {
         <td><div class="usuario-puntos">${u.puntos} pts</div></td>
         <td><div class="usuario-pedidos">${u.cantidad_pedidos} pedido${u.cantidad_pedidos !== 1 ? 's' : ''}</div></td>
         <td><div class="usuario-total">$${(u.total_gastado || 0).toLocaleString('es-AR')}</div></td>
+        <td><button class="btn-ben-del" onclick="eliminarUsuario(${u.id}, '${u.nombre.replace(/'/g,"\'")}')">Eliminar</button></td>
       </tr>`).join('');
 
     document.getElementById('usuarios-body').innerHTML = `
       <table>
-        <thead><tr><th>#</th><th>Usuario</th><th>Registro</th><th>Puntos</th><th>Pedidos</th><th>Total gastado</th></tr></thead>
+        <thead><tr><th>#</th><th>Usuario</th><th>Registro</th><th>Puntos</th><th>Pedidos</th><th>Total gastado</th><th>Acciones</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
     document.getElementById('usuarios-body').innerHTML = '<div class="empty-state"><p>Error al cargar usuarios.</p></div>';
   }
+}
+
+async function eliminarUsuario(id, nombre) {
+  if (!confirm(`Eliminar definitivamente la cuenta de "${nombre}"?\n\nEsto borrara tambien todos sus pedidos, canjes y pagos asociados. Esta accion no se puede deshacer.`)) return;
+  try {
+    const r = await fetch(`/admin/api/usuarios/${id}`, {method:'DELETE'});
+    const d = await r.json();
+    if (d.ok) { cargarUsuarios(); mostrarToast('Usuario y todos sus datos eliminados'); }
+    else mostrarToast(d.error || 'Error al eliminar', true);
+  } catch(e) { mostrarToast('Error de conexion', true); }
 }
 
 // MENU ADMIN
