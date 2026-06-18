@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const primerSubBtn  = document.querySelector(`#sub-${primeraCat} .subcat-btn`);
   if (primerSubBtn) primerSubBtn.classList.add('active');
   renderItems(primeraCat, primeraSubcat);
-  if (AUTH_ERROR) abrirModal(AUTH_TAB || 'login');
+  if (AUTH_ERROR || AUTH_INFO) abrirModal(AUTH_TAB || 'login');
   actualizarPuntosUI();
   verificarPagoMP();
 });
@@ -318,8 +318,10 @@ function cerrarModal() {
 function switchTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-registro').classList.toggle('active', tab === 'registro');
-  document.getElementById('form-login').style.display    = tab === 'login'    ? 'block' : 'none';
-  document.getElementById('form-registro').style.display = tab === 'registro' ? 'block' : 'none';
+  document.getElementById('form-login').style.display      = tab === 'login'     ? 'block' : 'none';
+  document.getElementById('form-registro').style.display   = tab === 'registro'  ? 'block' : 'none';
+  const rec = document.getElementById('form-recuperar');
+  if (rec) rec.style.display = tab === 'recuperar' ? 'block' : 'none';
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { cerrarModal(); cerrarBeneficios(); cerrarModalPedido(); }

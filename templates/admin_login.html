@@ -142,6 +142,34 @@
     font-size: 0.84rem;
     margin-bottom: 1.2rem;
   }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    margin-top: 0.8rem;
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+  }
+  .link-btn:hover { color: var(--text); }
+  .info-box {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: #34d399;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.84rem;
+    margin-bottom: 1.2rem;
+  }
+  .recover-form { display: none; }
+  .recover-form.visible { display: block; }
+  .login-form.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -152,13 +180,23 @@
   </div>
 
   <div class="card">
-    <div class="card-title">Acceso para vendedores</div>
+    <div class="card-title" id="login-titulo">Acceso para vendedores</div>
 
     {% if error %}
       <div class="error-box">{{ error }}</div>
     {% endif %}
 
-    <form method="POST" action="/admin/login">
+    {% set info = request.args.get('info', '') %}
+    {% set reset_ok = request.args.get('reset', '') %}
+    {% if info %}
+      <div class="info-box">{{ info.replace('+', ' ') }}</div>
+    {% endif %}
+    {% if reset_ok == 'ok' %}
+      <div class="info-box">✓ Contraseña actualizada. Ya podés iniciar sesión.</div>
+    {% endif %}
+
+    <!-- Formulario login -->
+    <form method="POST" action="/admin/login" class="login-form" id="login-form">
       <div class="field">
         <label>Email</label>
         <input type="email" name="email" placeholder="admin@tumenu.com" required autofocus />
@@ -168,8 +206,37 @@
         <input type="password" name="password" placeholder="••••••••" required />
       </div>
       <button type="submit" class="btn-submit">Ingresar al panel</button>
+      <button type="button" class="link-btn" onclick="toggleRecover()">¿Olvidaste tu contraseña?</button>
+    </form>
+
+    <!-- Formulario recuperar contraseña -->
+    <form method="POST" action="/admin/recuperar-password" class="recover-form" id="recover-form">
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem">Ingresá tu email de administrador y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="admin@tumenu.com" required />
+      </div>
+      <button type="submit" class="btn-submit">Enviar enlace</button>
+      <button type="button" class="link-btn" onclick="toggleRecover()">← Volver al login</button>
     </form>
   </div>
 </div>
+
+<script>
+function toggleRecover() {
+  const lf = document.getElementById('login-form');
+  const rf = document.getElementById('recover-form');
+  const titulo = document.getElementById('login-titulo');
+  if (rf.classList.contains('visible')) {
+    rf.classList.remove('visible');
+    lf.classList.remove('hidden');
+    titulo.textContent = 'Acceso para vendedores';
+  } else {
+    lf.classList.add('hidden');
+    rf.classList.add('visible');
+    titulo.textContent = 'Recuperar contraseña';
+  }
+}
+</script>
 </body>
 </html>

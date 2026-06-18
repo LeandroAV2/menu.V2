@@ -129,6 +129,11 @@
     {% if request.args.get('auth_error') %}
       <div class="auth-error">{{ request.args.get('auth_error') }}</div>
     {% endif %}
+    {% if request.args.get('auth_info') %}
+      <div class="auth-info" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#34d399;border-radius:8px;padding:.6rem 1rem;font-size:.84rem;margin-bottom:.8rem">
+        {{ request.args.get('auth_info').replace('+', ' ') }}
+      </div>
+    {% endif %}
     <form id="form-login" method="POST" action="/login">
       <input type="hidden" name="next" value="/" />
       <div class="form-group">
@@ -140,6 +145,16 @@
         <input type="password" name="password" placeholder="••••••••" required />
       </div>
       <button type="submit" class="btn-primary">Ingresar</button>
+      <button type="button" onclick="switchTab('recuperar')" style="background:none;border:none;color:#777;font-size:.8rem;cursor:pointer;text-decoration:underline;margin-top:.5rem;display:block;text-align:center;width:100%">¿Olvidaste tu contraseña?</button>
+    </form>
+    <form id="form-recuperar" method="POST" action="/recuperar-password" style="display:none">
+      <p style="font-size:.82rem;color:#888;margin-bottom:1rem">Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="tu@email.com" required />
+      </div>
+      <button type="submit" class="btn-primary">Enviar enlace</button>
+      <button type="button" onclick="switchTab('login')" style="background:none;border:none;color:#777;font-size:.8rem;cursor:pointer;text-decoration:underline;margin-top:.5rem;display:block;text-align:center;width:100%">← Volver al login</button>
     </form>
     <form id="form-registro" method="POST" action="/registro" style="display:none">
       <input type="hidden" name="next" value="/" />
@@ -227,6 +242,7 @@
   const MENU_DATA      = {{ menu.categorias | tojson }};
   const USUARIO        = {{ usuario | tojson if usuario else 'null' }};
   const AUTH_ERROR     = {{ request.args.get('auth_error') | tojson if request.args.get('auth_error') else 'null' }};
+  const AUTH_INFO      = {{ request.args.get('auth_info') | tojson if request.args.get('auth_info') else 'null' }};
   const AUTH_TAB       = {{ request.args.get('tab') | tojson if request.args.get('tab') else 'null' }};
   const BENEFICIOS_DATA= {{ beneficios | tojson }};
   const PUNTOS_POR_PESO= {{ puntos_por_peso }};

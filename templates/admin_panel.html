@@ -189,6 +189,7 @@
     <nav class="panel-nav">
       <button class="panel-nav-btn active" onclick="showTab('pedidos', this)">Pedidos</button>
       <button class="panel-nav-btn" onclick="showTab('beneficios', this)">Beneficios</button>
+      <button class="panel-nav-btn" onclick="showTab('canjes', this)">Canjes</button>
       <button class="panel-nav-btn" onclick="showTab('menu', this)">Menu</button>
       <button class="panel-nav-btn" onclick="showTab('usuarios', this)">Usuarios</button>
     </nav>
@@ -241,6 +242,25 @@
     </div>
   </div>
   <div class="ben-grid" id="ben-grid"><div class="loading">Cargando beneficios...</div></div>
+</div>
+</div>
+
+<!-- CANJES TAB -->
+<div id="tab-canjes" style="display:none">
+<div class="main">
+  <div class="ben-header">
+    <div>
+      <h2 class="ben-title">Historial de Canjes</h2>
+      <p class="ben-sub">Registro de todos los puntos canjeados por los clientes.</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">Canjes de puntos</div>
+      <div class="table-count" id="canjes-count">—</div>
+    </div>
+    <div id="canjes-body"><div class="loading">Cargando historial...</div></div>
+  </div>
 </div>
 </div>
 
@@ -319,13 +339,15 @@ function showTab(tab, btn) {
   document.querySelectorAll('.panel-nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-beneficios').style.display = tab === 'beneficios' ? 'block' : 'none';
+  document.getElementById('tab-canjes').style.display     = tab === 'canjes'     ? 'block' : 'none';
   document.getElementById('tab-menu').style.display       = tab === 'menu'        ? 'block' : 'none';
   document.getElementById('tab-usuarios').style.display   = tab === 'usuarios'    ? 'block' : 'none';
   document.querySelectorAll('.main').forEach(el => {
-    if (!el.closest('#tab-beneficios') && !el.closest('#tab-menu') && !el.closest('#tab-usuarios'))
+    if (!el.closest('#tab-beneficios') && !el.closest('#tab-canjes') && !el.closest('#tab-menu') && !el.closest('#tab-usuarios'))
       el.style.display = tab === 'pedidos' ? '' : 'none';
   });
   if (tab === 'beneficios') { cargarBeneficios(); cargarConfig(); }
+  if (tab === 'canjes')     { cargarCanjes(); }
   if (tab === 'menu')       { cargarMenuAdmin(); }
   if (tab === 'usuarios')   { cargarUsuarios(); }
 }
@@ -599,6 +621,7 @@ function renderMenuAdmin() {
               ${sub.items.map(it => `
                 <div class="menu-item-row">
                   <div class="menu-item-info">
+                    ${it.imagen ? `<img src="${it.imagen}" style="width:32px;height:32px;object-fit:cover;border-radius:4px;border:1px solid var(--border)" title="Tiene imagen"/>` : `<span style="width:32px;height:32px;background:var(--surface2);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--muted)">IMG</span>`}
                     <span>${it.nombre}</span>
                     <span class="menu-item-precio">$${it.precio.toLocaleString('es-AR')}</span>
                     ${!it.activo ? '<span style="color:var(--muted);font-size:0.7rem">(inactivo)</span>' : ''}
@@ -692,9 +715,14 @@ function abrirModalNuevoItem(subcatId, subcatNombre) {
     <div class="mfield"><label>Nombre</label><input type="text" id="m-nombre" placeholder="Ej: Pizza napolitana"/></div>
     <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" placeholder="Ingredientes o descripcion breve"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" placeholder="1500" min="1"/></div>
+    <div class="mfield"><label>Imagen del plato (opcional)</label>
+      <input type="file" id="m-img-input" accept="image/*" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem;color:var(--text);width:100%;font-size:.85rem"/>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:.3rem">Podés agregar la imagen después de crear el plato.</p>
+    </div>
     <button class="btn-guardar-ben" onclick="crearItem()">Agregar plato</button>`);
 }
 function abrirModalEditarItem(it) {
+  const imgPreview = it.imagen ? `<img id="m-img-preview" src="${it.imagen}" style="width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;border:1px solid var(--border)"/>` : `<div id="m-img-preview-empty" style="background:var(--bg);border:1px dashed var(--border);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.78rem;margin-bottom:.5rem">Sin imagen</div>`;
   abrirModalMenu('Editar plato', `
     <input type="hidden" id="m-id" value="${it.id}"/>
     <input type="hidden" id="m-emoji" value="${it.emoji||''}"/>
@@ -702,7 +730,31 @@ function abrirModalEditarItem(it) {
     <div class="mfield"><label>Descripcion</label><input type="text" id="m-desc" value="${it.desc ?? it.descripcion ?? ''}"/></div>
     <div class="mfield"><label>Precio ($)</label><input type="number" id="m-precio" value="${it.precio}" min="1"/></div>
     <div class="mfield"><label>Estado</label><select id="m-activo"><option value="true" ${it.activo?'selected':''}>Activo</option><option value="false" ${!it.activo?'selected':''}>Inactivo</option></select></div>
-    <button class="btn-guardar-ben" onclick="editarItem()">Guardar</button>`);
+    <div class="mfield">
+      <label>Imagen del plato</label>
+      ${imgPreview}
+      <input type="file" id="m-img-input" accept="image/*" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem;color:var(--text);width:100%;font-size:.85rem" onchange="previewImg(this)"/>
+      <button type="button" style="margin-top:.4rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.35rem .9rem;font-size:.8rem;cursor:pointer" onclick="subirImagenItem(${it.id})">Subir imagen</button>
+    </div>
+    <button class="btn-guardar-ben" onclick="editarItem()">Guardar datos</button>`);
+}
+
+function previewImg(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    let preview = document.getElementById('m-img-preview');
+    if (!preview) {
+      preview = document.createElement('img');
+      preview.id = 'm-img-preview';
+      preview.style = 'width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:.5rem;border:1px solid var(--border)';
+      const empty = document.getElementById('m-img-preview-empty');
+      if (empty) empty.replaceWith(preview);
+      else input.parentElement.prepend(preview);
+    }
+    preview.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 async function crearItem() {
   const r = await fetch('/admin/api/menu/items', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subcategoria_id:document.getElementById('m-subcat-id').value,emoji:'',nombre:document.getElementById('m-nombre').value,desc:document.getElementById('m-desc').value,precio:document.getElementById('m-precio').value})});
@@ -715,10 +767,68 @@ async function editarItem() {
   const d = await r.json();
   if (d.ok) { cerrarModalMenu(); cargarMenuAdmin(); mostrarToast('Plato actualizado'); }
 }
-async function eliminarItem(id) {
-  if (!confirm('Desactivar este plato?')) return;
-  await fetch(`/admin/api/menu/items/${id}`, {method:'DELETE'});
-  cargarMenuAdmin(); mostrarToast('Plato desactivado');
+// CANJES
+async function cargarCanjes() {
+  try {
+    const r = await fetch('/admin/api/canjes');
+    const lista = await r.json();
+    document.getElementById('canjes-count').textContent = lista.length + ' canje' + (lista.length !== 1 ? 's' : '');
+    if (!lista.length) {
+      document.getElementById('canjes-body').innerHTML = '<div class="empty-state"><p>No hay canjes registrados todavía.</p></div>';
+      return;
+    }
+    const rows = lista.map((c, i) => `
+      <tr>
+        <td><div class="pedido-num">#${String(i+1).padStart(4,'0')}</div></td>
+        <td>
+          <div class="cliente-nombre">${c.usuario_nombre || '—'}</div>
+          <div class="cliente-email">${c.usuario_email}</div>
+        </td>
+        <td><div style="font-size:.88rem">${c.beneficio_nombre}</div></td>
+        <td><div class="usuario-puntos">${c.puntos_usados} pts</div></td>
+        <td><div class="hora-cell">${c.hora}</div></td>
+      </tr>`).join('');
+    document.getElementById('canjes-body').innerHTML = `
+      <table>
+        <thead><tr><th>#</th><th>Cliente</th><th>Beneficio canjeado</th><th>Puntos usados</th><th>Fecha/Hora</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('canjes-body').innerHTML = '<div class="empty-state"><p>Error al cargar historial.</p></div>';
+  }
+}
+
+// IMAGEN DE PLATO
+async function subirImagenItem(itemId) {
+  const input = document.getElementById('m-img-input');
+  if (!input || !input.files || !input.files[0]) {
+    mostrarToast('Seleccioná una imagen primero', true);
+    return;
+  }
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const dataUrl = e.target.result;
+    try {
+      const r = await fetch(`/admin/api/menu/items/${itemId}/imagen`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({imagen: dataUrl})
+      });
+      const d = await r.json();
+      if (d.ok) {
+        mostrarToast('Imagen guardada ✓');
+        cargarMenuAdmin();
+        const preview = document.getElementById('m-img-preview');
+        if (preview) preview.src = d.url + '?t=' + Date.now();
+      } else {
+        mostrarToast(d.error || 'Error al subir imagen', true);
+      }
+    } catch(err) {
+      mostrarToast('Error de conexión', true);
+    }
+  };
+  reader.readAsDataURL(file);
 }
 </script>
 </body>

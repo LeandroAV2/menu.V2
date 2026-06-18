@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
-import hashlib, datetime, os, json
+import hashlib, datetime, os, json, secrets, smtplib, base64
+from email.mime.text import MIMEText
 import psycopg
 from psycopg.rows import dict_row
 import requests as http_requests
@@ -10,6 +11,17 @@ app.secret_key = os.environ.get("SECRET_KEY", "tumenu_secret_2025")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 MPAT = os.environ.get("MPAT", "")
 MPPK = os.environ.get("MPPK", "")
+
+# Email config (usar variables de entorno)
+SMTP_HOST   = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT   = int(os.environ.get("SMTP_PORT", "587"))
+SMTP_USER   = os.environ.get("SMTP_USER", "")
+SMTP_PASS   = os.environ.get("SMTP_PASS", "")
+EMAIL_FROM  = os.environ.get("EMAIL_FROM", SMTP_USER)
+
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "static", "img", "platos")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 def mp_get(endpoint):
     headers = {"Authorization": f"Bearer {MPAT}"}
@@ -106,6 +118,15 @@ def init_db():
         clave TEXT PRIMARY KEY,
         valor TEXT NOT NULL
     )""")
+    # Tabla para tokens de recuperación de contraseña
+    c.execute("""CREATE TABLE IF NOT EXISTS password_resets (
+        id SERIAL PRIMARY KEY,
+        email TEXT NOT NULL,
+        token TEXT NOT NULL,
+        tipo TEXT NOT NULL DEFAULT 'usuario',
+        expira_en TEXT NOT NULL,
+        usado BOOLEAN NOT NULL DEFAULT FALSE
+    )""")
     c.execute("""CREATE TABLE IF NOT EXISTS menu_categorias (
         id SERIAL PRIMARY KEY,
         clave TEXT UNIQUE NOT NULL,
@@ -129,6 +150,7 @@ def init_db():
         descripcion TEXT NOT NULL DEFAULT '',
         precio INTEGER NOT NULL,
         emoji TEXT NOT NULL DEFAULT '',
+        imagen TEXT NOT NULL DEFAULT '',
         orden INTEGER NOT NULL DEFAULT 0,
         activo BOOLEAN NOT NULL DEFAULT TRUE
     )""")
@@ -212,6 +234,10 @@ def init_db():
               ("Admin", "admin@tumenu.com",
                hashlib.sha256("admin123".encode()).hexdigest(),
                datetime.datetime.now().isoformat()))
+    # Migración: agregar columna imagen si no existe
+    c.execute("""
+        ALTER TABLE menu_items ADD COLUMN IF NOT EXISTS imagen TEXT NOT NULL DEFAULT ''
+    """)
     conn.commit()
     c.close()
     conn.close()
@@ -239,7 +265,7 @@ def get_menu_db():
             subcategorias[sub["clave"]] = {
                 "nombre": sub["nombre"],
                 "items": [{"id": it["id"], "nombre": it["nombre"], "desc": it["descripcion"],
-                           "precio": it["precio"], "emoji": it["emoji"]} for it in items]
+                           "precio": it["precio"], "emoji": it["emoji"], "imagen": it["imagen"]} for it in items]
             }
         menu["categorias"][cat["clave"]] = {
             "nombre": cat["nombre"], "emoji": cat["emoji"],
@@ -263,6 +289,25 @@ def get_puntos_por_peso():
 def hashear(p): return hashlib.sha256(p.encode()).hexdigest()
 def usuario_logueado(): return session.get("usuario")
 def admin_logueado(): return session.get("admin")
+
+def enviar_email(destinatario, asunto, cuerpo_html):
+    """Envía un email usando SMTP configurado en variables de entorno."""
+    if not SMTP_USER or not SMTP_PASS:
+        print(f"[EMAIL SKIP] No hay SMTP configurado. Asunto: {asunto}, Para: {destinatario}")
+        return False
+    try:
+        msg = MIMEText(cuerpo_html, "html", "utf-8")
+        msg["Subject"] = asunto
+        msg["From"]    = EMAIL_FROM
+        msg["To"]      = destinatario
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
+            s.starttls()
+            s.login(SMTP_USER, SMTP_PASS)
+            s.sendmail(EMAIL_FROM, [destinatario], msg.as_string())
+        return True
+    except Exception as e:
+        print(f"[EMAIL ERROR] {e}")
+        return False
 
 def get_puntos(email):
     conn = get_db(); c = conn.cursor()
@@ -324,6 +369,103 @@ def registro():
 def logout():
     session.pop("usuario", None)
     return redirect("/")
+
+# ===== RECUPERACIÓN DE CONTRASEÑA (CLIENTE) =====
+@app.route("/recuperar-password", methods=["POST"])
+def recuperar_password():
+    email = request.form.get("email","").strip().lower()
+    if not email or "@" not in email:
+        return redirect("/?auth_error=Email+invalido&tab=login")
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM usuarios WHERE email=%s", (email,))
+    u = c.fetchone()
+    if not u:
+        # Por seguridad, no revelamos si el email existe o no
+        c.close(); conn.close()
+        return redirect("/?auth_info=Si+el+email+esta+registrado+recibirás+las+instrucciones&tab=login")
+    token = secrets.token_urlsafe(32)
+    expira = (datetime.datetime.now() + datetime.timedelta(hours=1)).isoformat()
+    c.execute("INSERT INTO password_resets (email,token,tipo,expira_en) VALUES (%s,%s,'usuario',%s)",
+              (email, token, expira))
+    conn.commit(); c.close(); conn.close()
+    base_url = request.host_url.rstrip("/")
+    link = f"{base_url}/reset-password?token={token}&tipo=usuario"
+    cuerpo = f"""
+    <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">
+      <h2 style="color:#c0392b">TuMenú · Recuperar contraseña</h2>
+      <p>Hola <strong>{u['nombre']}</strong>,</p>
+      <p>Recibimos una solicitud para restablecer tu contraseña. Hacé click en el siguiente botón:</p>
+      <a href="{link}" style="display:inline-block;background:#c0392b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+        Restablecer contraseña
+      </a>
+      <p style="color:#888;font-size:13px">Este enlace expira en 1 hora. Si no solicitaste esto, ignorá este mensaje.</p>
+      <p style="color:#888;font-size:12px">O copiá este enlace: {link}</p>
+    </div>"""
+    ok = enviar_email(email, "TuMenú · Recuperar contraseña", cuerpo)
+    if not ok:
+        return redirect("/?auth_error=No+se+pudo+enviar+el+email.+Intenta+más+tarde&tab=login")
+    return redirect("/?auth_info=Te+enviamos+un+email+con+las+instrucciones&tab=login")
+
+@app.route("/reset-password", methods=["GET","POST"])
+def reset_password():
+    token = request.args.get("token","") or request.form.get("token","")
+    tipo  = request.args.get("tipo","usuario") or request.form.get("tipo","usuario")
+    if request.method == "GET":
+        if not token:
+            return redirect("/")
+        conn = get_db(); c = conn.cursor()
+        c.execute("SELECT * FROM password_resets WHERE token=%s AND tipo=%s AND usado=FALSE", (token, tipo))
+        reset = c.fetchone(); c.close(); conn.close()
+        if not reset or reset["expira_en"] < datetime.datetime.now().isoformat():
+            return "<h3 style='font-family:sans-serif;text-align:center;margin-top:60px;color:#c0392b'>Enlace inválido o expirado. Solicitá uno nuevo.</h3>"
+        back = "/admin/login" if tipo == "admin" else "/"
+        return f"""<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Nueva contraseña · TuMenú</title>
+        <style>
+          *{{box-sizing:border-box;margin:0;padding:0}}
+          body{{font-family:'DM Sans',sans-serif;background:#0d0d0d;color:#f0f0f0;min-height:100vh;display:flex;align-items:center;justify-content:center}}
+          .wrap{{width:100%;max-width:400px;padding:2rem}}
+          .card{{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:2rem}}
+          h2{{font-size:1.1rem;margin-bottom:1.5rem;color:#f0f0f0}}
+          .brand{{text-align:center;margin-bottom:2rem;font-size:1.5rem;font-weight:600}}
+          .brand span{{color:#c0392b}}
+          .field{{margin-bottom:1rem}}
+          label{{display:block;font-size:.7rem;color:#777;letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem}}
+          input{{width:100%;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;padding:.7rem 1rem;color:#f0f0f0;font-size:.95rem;outline:none}}
+          input:focus{{border-color:#c0392b}}
+          .btn{{width:100%;padding:.85rem;background:#c0392b;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:.5rem}}
+          .btn:hover{{background:#e74c3c}}
+          .error{{background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.35);color:#f87171;border-radius:8px;padding:.6rem 1rem;font-size:.84rem;margin-bottom:1rem}}
+        </style></head><body>
+        <div class="wrap"><div class="brand">Tu<span>Menú</span></div>
+        <div class="card"><h2>Nueva contraseña</h2>
+        <form method="POST" action="/reset-password">
+          <input type="hidden" name="token" value="{token}"/>
+          <input type="hidden" name="tipo"  value="{tipo}"/>
+          <div class="field"><label>Nueva contraseña</label><input type="password" name="password" minlength="6" required placeholder="Mínimo 6 caracteres"/></div>
+          <div class="field"><label>Confirmar contraseña</label><input type="password" name="password2" minlength="6" required placeholder="Repetí la contraseña"/></div>
+          <button type="submit" class="btn">Guardar nueva contraseña</button>
+        </form></div></div></body></html>"""
+    # POST
+    password  = request.form.get("password","")
+    password2 = request.form.get("password2","")
+    if not password or len(password) < 6:
+        return redirect(f"/reset-password?token={token}&tipo={tipo}&error=minlen")
+    if password != password2:
+        return redirect(f"/reset-password?token={token}&tipo={tipo}&error=mismatch")
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM password_resets WHERE token=%s AND tipo=%s AND usado=FALSE", (token, tipo))
+    reset = c.fetchone()
+    if not reset or reset["expira_en"] < datetime.datetime.now().isoformat():
+        c.close(); conn.close()
+        return "<h3 style='font-family:sans-serif;text-align:center;margin-top:60px;color:#c0392b'>Enlace inválido o expirado.</h3>"
+    tabla = "admins" if tipo == "admin" else "usuarios"
+    c.execute(f"UPDATE {tabla} SET password=%s WHERE email=%s", (hashear(password), reset["email"]))
+    c.execute("UPDATE password_resets SET usado=TRUE WHERE token=%s", (token,))
+    conn.commit(); c.close(); conn.close()
+    destino = "/admin/login?reset=ok" if tipo == "admin" else "/?auth_info=Contraseña+actualizada.+Ya+podés+iniciar+sesión&tab=login"
+    return redirect(destino)
 
 @app.route("/pedido", methods=["POST"])
 def pedido():
@@ -501,6 +643,41 @@ def admin_login():
 def admin_logout():
     session.pop("admin", None)
     return redirect("/admin/login")
+
+# ===== RECUPERACIÓN DE CONTRASEÑA (ADMIN) =====
+@app.route("/admin/recuperar-password", methods=["POST"])
+def admin_recuperar_password():
+    email = request.form.get("email","").strip().lower()
+    if not email or "@" not in email:
+        return redirect("/admin/login?error=Email+invalido")
+    conn = get_db(); c = conn.cursor()
+    c.execute("SELECT * FROM admins WHERE email=%s", (email,))
+    a = c.fetchone()
+    if not a:
+        c.close(); conn.close()
+        return redirect("/admin/login?info=Si+el+email+está+registrado+recibirás+las+instrucciones")
+    token = secrets.token_urlsafe(32)
+    expira = (datetime.datetime.now() + datetime.timedelta(hours=1)).isoformat()
+    c.execute("INSERT INTO password_resets (email,token,tipo,expira_en) VALUES (%s,%s,'admin',%s)",
+              (email, token, expira))
+    conn.commit(); c.close(); conn.close()
+    base_url = request.host_url.rstrip("/")
+    link = f"{base_url}/reset-password?token={token}&tipo=admin"
+    cuerpo = f"""
+    <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">
+      <h2 style="color:#c0392b">TuMenú · Panel Admin · Recuperar contraseña</h2>
+      <p>Hola <strong>{a['nombre']}</strong>,</p>
+      <p>Recibimos una solicitud para restablecer tu contraseña de administrador.</p>
+      <a href="{link}" style="display:inline-block;background:#c0392b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;margin:16px 0">
+        Restablecer contraseña
+      </a>
+      <p style="color:#888;font-size:13px">Este enlace expira en 1 hora. Si no solicitaste esto, ignorá este mensaje.</p>
+      <p style="color:#888;font-size:12px">O copiá este enlace: {link}</p>
+    </div>"""
+    ok = enviar_email(email, "TuMenú Admin · Recuperar contraseña", cuerpo)
+    if not ok:
+        return redirect("/admin/login?error=No+se+pudo+enviar+el+email.+Intenta+más+tarde")
+    return redirect("/admin/login?info=Te+enviamos+un+email+con+las+instrucciones")
 
 @app.route("/admin/panel")
 def admin_panel():
@@ -793,6 +970,54 @@ def admin_eliminar_item(iid):
     c.execute("UPDATE menu_items SET activo=FALSE WHERE id=%s", (iid,))
     conn.commit(); c.close(); conn.close()
     return jsonify({"ok": True})
+
+@app.route("/admin/api/menu/items/<int:iid>/imagen", methods=["POST"])
+def admin_subir_imagen_item(iid):
+    """Recibe imagen como base64 y la guarda en disco."""
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    d = request.get_json()
+    data_url = d.get("imagen","")
+    if not data_url:
+        return jsonify({"error":"No se recibió imagen"}), 400
+    # Soporta data:image/jpeg;base64,... o data:image/png;base64,...
+    try:
+        if "," in data_url:
+            header, encoded = data_url.split(",", 1)
+            ext = "jpg"
+            if "png" in header:  ext = "png"
+            elif "webp" in header: ext = "webp"
+            elif "gif" in header: ext = "gif"
+        else:
+            encoded = data_url
+            ext = "jpg"
+        img_bytes = base64.b64decode(encoded)
+    except Exception as e:
+        return jsonify({"error": f"Imagen inválida: {e}"}), 400
+    filename = f"item_{iid}.{ext}"
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    with open(filepath, "wb") as f:
+        f.write(img_bytes)
+    url_imagen = f"/static/img/platos/{filename}"
+    conn = get_db(); c = conn.cursor()
+    c.execute("UPDATE menu_items SET imagen=%s WHERE id=%s", (url_imagen, iid))
+    conn.commit(); c.close(); conn.close()
+    return jsonify({"ok": True, "url": url_imagen})
+
+@app.route("/admin/api/canjes")
+def admin_api_canjes():
+    """Historial de canjes de puntos."""
+    if not admin_logueado(): return jsonify({"error":"no_auth"}), 401
+    conn = get_db(); c = conn.cursor()
+    c.execute("""
+        SELECT c.id, c.usuario_email, u.nombre as usuario_nombre,
+               c.beneficio_nombre, c.puntos_usados, c.hora
+        FROM canjes c
+        LEFT JOIN usuarios u ON u.email = c.usuario_email
+        ORDER BY c.id DESC
+        LIMIT 200
+    """)
+    rows = c.fetchall(); c.close(); conn.close()
+    return jsonify([dict(r) for r in rows])
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
